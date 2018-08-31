@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class name="fmss.dao.entity.VmsCostCenterInst"
+  		table="vms_costcenter_inst"
+        dynamic-update="true"
+        dynamic-insert="true">
+        
+  	<id
+        name="costCenter"
+        column="COSTCENTER"
+        type="java.lang.String"
+        unsaved-value="null"/>
+        
+     <property
+          name="instId"
+          type="java.lang.String"
+          update="true"
+          insert="true"
+          column="INST_ID"
+          length="20"/>
+        
+     <property
+          name="instName"
+          type="java.lang.String"
+          update="true"
+          insert="true"
+          column="INST_NAME"
+          length="20"/>
+        
+     <!-- <property
+          name="costCenter"
+          type="java.lang.String"
+          update="true"
+          insert="true"
+          column="COSTCENTER"
+          length="20"/> -->
+          
+     <property
+          name="costCenterName"
+          type="java.lang.String"
+          update="true"
+          insert="true"
+          column="COSTCENTER_NAME"
+          length="20"/>
+        
+     <property
+          name="parentInstId"
+          type="java.lang.String"
+          update="true"
+          insert="true"
+          column="PARENT_INST_ID"
+          length="20"/>
+          
+      <!-- <property
+          name="parentInstName"
+          type="java.lang.String"
+          update="true"
+          insert="true"
+          column="PARENT_INST_NAME"
+          length="20"/> -->
+          
+      <property
+          name="dsource"
+          type="java.lang.String"
+          update="true"
+          insert="true"
+          column="DSOURCE"
+          length="10"/>
+          
+      <property
+         name="instLevel"
+         type="java.lang.String"
+         update="true"
+         insert="true"
+         column="INSTLEVEL"
+         length="10"/>
+  </class>
+</hibernate-mapping>

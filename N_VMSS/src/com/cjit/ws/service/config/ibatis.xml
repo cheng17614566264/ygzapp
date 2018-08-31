@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap>
+	<typeAlias type="com.cjit.ws.entity.VmsTransType" alias="vmsTransType" />
+	<typeAlias type="com.cjit.ws.entity.VmsCustomerInfo" alias="vmsCustomerInfo" />
+	<typeAlias type="com.cjit.ws.entity.VmsTransInfo" alias="vmsTransInfo" />
+
+	<resultMap id="ibatisTest1" class="vmsTransType">
+		<result column="trans_type_id" property="insCod" jdbcType="VARCHAR" />
+		<result column="trans_type_name" property="insNam" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="ibatisTest2" class="vmsCustomerInfo">
+		<result column="customer_cname" property="customerName"
+			jdbcType="VARCHAR" />
+		<result column="customer_taxno" property="customerTaxno"
+			jdbcType="VARCHAR" />
+		<result column="customer_address" property="customerAddressand"
+			jdbcType="VARCHAR" />
+		<result column="taxpayer_type" property="taxpayerType"
+			jdbcType="VARCHAR" />
+		<result column="customer_phone" property="customerPhone"
+			jdbcType="VARCHAR" />
+		<result column="customer_cbank" property="customerBankand"
+			jdbcType="VARCHAR" />
+		<result column="customer_account" property="customerAccount"
+			jdbcType="VARCHAR" />
+		<result column="fapiao_type" property="invtyp" jdbcType="VARCHAR" />
+		<result column="customer_id" property="businessId" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="ibatisTest3" class="vmsTransInfo">
+		<result column="trans_id" property="businessId" jdbcType="VARCHAR" />
+		<result column="instcode" property="instId" jdbcType="VARCHAR" />
+		<result column="instname" property="qdFlag" jdbcType="VARCHAR" />
+		<result column="chernum" property="chernum" jdbcType="VARCHAR" />
+		<result column="trans_bus_id" property="repnum" jdbcType="VARCHAR" />
+		<result column="ttmprcno" property="ttmprcno" jdbcType="VARCHAR" />
+		<result column="trans_curr" property="origcurr" jdbcType="VARCHAR" />
+		<result column="amt_ccy" property="origamt" jdbcType="double" />
+		<result column="balance" property="acctamt" jdbcType="double" />
+		<result column="trans_date" property="trdt" jdbcType="VARCHAR" />
+		<result column="fapiao_type" property="invtyp" jdbcType="VARCHAR" />
+		<result column="feetyp" property="bustyp" jdbcType="VARCHAR" />
+		<result column="billfreq" property="billfreq" jdbcType="VARCHAR" />
+		<result column="polyear" property="polyear" jdbcType="int" />
+		<result column="hissdte" property="hissdte" jdbcType="VARCHAR" />
+		<result column="historyflag" property="planlongdesc" jdbcType="VARCHAR" />
+		<result column="instfrom" property="instfrom" jdbcType="VARCHAR" />
+		<result column="instto" property="instto" jdbcType="VARCHAR" />
+		<result column="occdate" property="occdate" jdbcType="VARCHAR" />
+		<result column="premterm" property="premterm" jdbcType="int" />
+		<result column="org_trans_type" property="feetyp" jdbcType="VARCHAR" />
+		<result column="amt_cny" property="amtCny" jdbcType="double" />
+		<result column="tax_amt_cny" property="taxAmtCny" jdbcType="double" />
+		<result column="income_cny" property="incomeCny" jdbcType="double" />
+		<result column="tax_rate" property="taxRate" jdbcType="double" />
+		<result column="trans_type" property="transType" jdbcType="VARCHAR" />
+		<result column="inscode" property="insCod" jdbcType="VARCHAR" />
+		<result column="insnam" property="insNam" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 新增用户对象 -->
+	<insert id="insertVmsTransType" parameterClass="vmsTransType">
+		insert into
+		vms_trans_type (trans_type_id,trans_type_name) values
+		(#insCod#,#insNam#)
+	</insert>
+
+	<insert id="insertVmsCustomerInfo" parameterClass="vmsCustomerInfo">
+		insert into
+		VMS_CUSTOMER_INFO(customer_cname,customer_taxno,customer_address,
+		taxpayer_type,customer_phone,customer_cbank,
+		customer_account,fapiao_type,customer_id,customer_fapiao_flag,customer_email,chernum)
+		values
+		(#customerName#, #customerTaxno#,#customerAddressand#,
+		#taxpayerType#, #customerPhone#,#customerBankand#,
+		#customerAccount#,#invtyp#,#customerNo#,'M',#customerEmail#,#chernum#)
+	</insert>
+
+	<update id="updateVmsCustomerInfo" parameterClass="vmsCustomerInfo">
+		update
+		VMS_CUSTOMER_INFO set
+		customer_cname=#customerName#,customer_taxno=#customerTaxno#,customer_address=#customerAddressand#,
+		taxpayer_type=#taxpayerType#,customer_phone=#customerPhone#,customer_cbank=#customerBankand#,
+		customer_account=#customerAccount#,fapiao_type=#invtyp#,customer_id=#businessId#,CUSTOMER_FAPIAO_FLAG='M'
+		where customer_id=#businessId#
+	</update>
+
+	<insert id="insertVmsTransInfo" parameterClass="vmsTransInfo">
+		insert into VMS_TRANS_INFO (instcode,instname,chernum,
+		trans_bus_id, ttmprcno,trans_curr, amt_ccy,
+		balance,trans_date,fapiao_type, feetyp,
+		billfreq,polyear, hissdte, planlongdesc,
+		instfrom, instto,occdate, premterm,
+		org_trans_type,amt_cny, tax_amt_cny,income_cny,
+		tax_rate,trans_type,inscod,insnam,customer_id,DATASTATUS,IS_REVERSE,Trans_FaPiao_Flag,Trans_Flag,tax_cny_balance,businessid,TRANS_UUID)
+		values
+		(#instId#,#qdFlag#,#chernum#,
+		#repnum#,#ttmprcno#,#origcurr#, #amtCny#,
+		#amtCny#,#trdt#,#invtyp#,#bustyp#,
+		#billfreq#,#polyear#,#hissdte#,#planlongdesc#,
+		#instfrom#,#instto#,#occdate#,#premterm#,
+		#feetyp#,#amtCny#,#taxAmtCny#,#incomeCny#,
+		#taxRate#,#transType#,#insCod#,#insNam#,#customerid#,'1','N','A','2',#taxAmtCny#,#businessId#,#transUUID#)
+	</insert>
+
+	<select id="existSameCustomerByCustomerTaxno" parameterClass="java.util.Map"
+		resultClass="String">
+		select 1 from vms_customer_info where customer_id =
+		#customerId#
+	</select>
+
+
+</sqlMap>  

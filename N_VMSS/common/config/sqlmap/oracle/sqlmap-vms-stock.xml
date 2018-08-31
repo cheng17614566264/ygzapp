@@ -1,0 +1,1115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="vms_stock">
+	<typeAlias alias="billInventory" type="com.cjit.vms.stock.entity.BillInventory" />
+	<typeAlias alias="billDistribution" type="com.cjit.vms.stock.entity.BillDistribution" />
+	<typeAlias alias="lostRecycle" type="com.cjit.vms.stock.entity.LostRecycle" />
+	<typeAlias alias="printBill" type="com.cjit.vms.stock.entity.PrintBill" />
+	<typeAlias alias="user" type="com.cjit.gjsz.system.model.User" />
+	<typeAlias alias="billInfo" type="com.cjit.vms.trans.model.BillInfo" /> 
+	<!--库存 VMS_BILL_INVENTORY -->
+	<resultMap class="billInventory" id="get-billInventory">
+		<result property="putInDate" column="PUT_IN_DATE" />
+		<result property="inventoryId" column="INVENTORY_ID" />
+		<result property="instName" column="INST_NAME" />
+		<result property="instId" column="INST_ID" />
+		<result property="count" column="COUNT" />
+		<result property="billType" column="BILL_TYPE" />
+		<result property="billStartNo" column="BILL_START_NO" />
+		<result property="billId" column="BILL_ID" />
+		<result property="billEndNo" column="BILL_END_NO" />
+		<result property="syCount" column="SY_COUNT" />
+	</resultMap>
+
+	<!-- 票据分发记录表 VMS_BILL_DISTRIBUTION -->
+	<resultMap class="billDistribution" id="get-billDistribution">
+		<result property="ykpCount" column="YKP_COUNT" />
+		<result property="yhcCount" column="YHC_COUNT" />
+		<result property="yffCount" column="YFF_COUNT" />
+		<result property="ydyCount" column="YDY_COUNT" />
+		<result property="taxNo" column="TAX_NO" />
+		<result property="kpyName" column="KPY_NAME" />
+		<result property="kpyId" column="KPY_ID" />
+		<result property="jsEnter" column="JS_ENTER" />
+		<result property="instId" column="INST_ID" />
+		<result property="ffCount" column="FF_COUNT" />
+		<result property="disId" column="DIS_ID" />
+		<result property="disDate" column="DIS_DATE" />
+		<result property="billType" column="BILL_TYPE" />
+		<result property="billStartNo" column="BILL_START_NO" />
+		<result property="billId" column="BILL_ID" />
+		<result property="billEndNo" column="BILL_END_NO" />
+		<result property="inventoryId" column="INVENTORY_ID" />
+		<result property="syCount" column="SY_COUNT" />
+		<result property="instName" column="INSTNAME" />
+		<result property="syfpYsCount" column="SYFP_YS_COUNT" />
+		<result property="syfpHsCount" column="SYFP_HS_COUNT" />
+		<result property="syfpZfCount" column="SYFP_ZF_COUNT" />
+	</resultMap>
+	<!--发票遗失或回收信息记录表 VMS_LOST_RECYCLE -->
+	<resultMap class="lostRecycle" id="get-lostRecycle">
+		<result property="state" column="STATE" />
+		<result property="operateDate" column="OPERATE_DATE" />
+		<result property="kpyName" column="KPY_NAME" />
+		<result property="kpyId" column="KPY_ID" />
+		<result property="instId" column="INST_ID" />
+		<result property="id" column="ID" />
+		<result property="flag" column="FLAG" />
+		<result property="count" column="COUNT" />
+		<result property="billType" column="BILL_TYPE" />
+		<result property="billStartNo" column="BILL_START_NO" />
+		<result property="billId" column="BILL_ID" />
+		<result property="billEndNo" column="BILL_END_NO" />
+		<result property="instName" column="INST_NAME" />
+		<result property="datastatus" column="DATASTATUS" />
+		<result property="disId" column="DIS_ID" />
+		<result property="remark" column="REMARK" />
+	</resultMap>
+	<!-- 已打印发票 -->
+	<resultMap class="printBill" id="get-printBill">
+		<result property="billId" column="BILL_ID" />
+		<result property="ttmprcNo" column="TTMPRCNO" />
+		<result property="insureId" column="INSURE_ID" />
+		<result property="billCode" column="BILL_CODE" />
+		<result property="billNo" column="BILL_NO" />
+		<result property="amtSum" column="AMT_SUM" />
+		<result property="taxAmtSum" column="TAX_AMT_SUM" />
+		<result property="sumAmt" column="SUM_AMT" />
+		<result property="billDate" column="BILL_DATE" />
+		<result property="customerName" column="CUSTOMER_NAME" />
+		<result property="billType" column="FAPIAO_TYPE" />
+		<result property="datastatus" column="DATASTATUS" />
+		<result property="recycleStatus" column="RECYCLE_STATUS" />
+		<result property="instId" column="INSTCODE" />
+	</resultMap>
+	<insert id="insertBillDistributionList" parameterClass="billDistribution">
+		INSERT
+		INTO VMS_BILL_DISTRIBUTION A(
+		A.YKP_COUNT,
+		A.YHC_COUNT,
+		A.YFF_COUNT,
+		A.YDY_COUNT,
+		A.TAX_NO,
+		A.KPY_NAME,
+		A.KPY_ID,
+		A.JS_ENTER,
+		A.INST_ID,
+		A.FF_COUNT,
+		A.DIS_ID,
+		A.DIS_DATE,
+		A.BILL_TYPE,
+		A.BILL_START_NO,
+		A.BILL_ID,
+		A.BILL_END_NO,
+		A.INVENTORY_ID,
+		A.SY_COUNT,
+		A.INSTNAME,
+		SYFP_YS_COUNT,
+		SYFP_HS_COUNT,
+		SYFP_ZF_COUNT
+		)
+		VALUES (
+		#ykpCount#,
+		#yhcCount#,
+		#yffCount#,
+		#ydyCount#,
+		#taxNo#,
+		#kpyName#,
+		#kpyId#,
+		#jsEnter#,
+		#instId#,
+		#ffCount#,
+		VMS_BILL_DISTRIBUTION_SEQ.NEXTVAL,
+		#disDate#,
+		#billType#,
+		#billStartNo#,
+		#billId#,
+		#billEndNo#,
+		#inventoryId#,
+		#syCount#,
+		#instName#,
+		0, 0, 0
+		)
+	</insert>
+
+	<insert id="insertBillInventoryList" parameterClass="billInventory">
+		INSERT INTO
+		VMS_BILL_INVENTORY A(
+		A.PUT_IN_DATE,
+		A.INVENTORY_ID,
+		A.INST_NAME,
+		A.INST_ID,
+		A.COUNT,
+		A.BILL_TYPE,
+		A.BILL_START_NO,
+		A.BILL_ID,
+		A.BILL_END_NO,
+		A.SY_COUNT
+		) VALUES(
+		#putInDate#,
+		VMS_BILL_INVENTORY_SEQ.NEXTVAL,
+		#instName#,
+		#instId#,
+		#count#,
+		#billType#,
+		#billStartNo#,
+		#billId#,
+		#billEndNo#,
+		#syCount#
+		)
+	</insert>
+
+	<insert id="insertLostRecycle" parameterClass="lostRecycle">
+		INSERT INTO
+		VMS_LOST_RECYCLE A(
+		A.STATE,
+		A.OPERATE_DATE,
+		A.KPY_NAME,
+		A.KPY_ID,
+		A.INST_ID,
+		A.ID,
+		A.FLAG,
+		A.COUNT,
+		A.BILL_TYPE,
+		A.BILL_START_NO,
+		A.BILL_ID,
+		A.BILL_END_NO,
+		A.DIS_ID,
+		A.INST_NAME,
+		A.DATASTATUS,
+		A.REMARK
+		)
+		VALUES (
+		#state#,
+		#operateDate#,
+		#kpyName#,
+		#kpyId#,
+		#instId#,
+		VMS_LOST_RECYCLE_SEQ.Nextval,
+		#flag#,
+		#count#,
+		#billType#,
+		#billStartNo#,
+		#billId#,
+		#billEndNo#,
+		#disId#,
+		#instName#,
+		#datastatus#,
+		#remark#
+		)
+	</insert>
+
+	<update id="updateBillInventoryList" parameterClass="billInventory">
+		UPDATE
+		VMS_BILL_INVENTORY a 
+		<dynamic prepend="SET ">
+			<isNotNull prepend="," property="instId">
+				a.INST_ID = #instId#
+			</isNotNull>
+			<isNotEmpty prepend="," property="instName">
+				a.INST_NAME = #instName#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="count">
+				a.COUNT = #count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="billId">
+				a.BILL_ID = #billId#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="billStartNo">
+				a.BILL_START_NO = #billStartNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="billEndNo">
+				a.BILL_END_NO = #billEndNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="billType">
+				a.BILL_TYPE = #billType#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="syCount">
+				a.SY_COUNT = #syCount#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+		a.INVENTORY_ID=#inventoryId#
+	</update>
+
+
+	<update id="updateBillDistributionList" parameterClass="billDistribution">
+		UPDATE
+		VMS_BILL_DISTRIBUTION A
+		<dynamic prepend="SET ">
+			<isNotNull prepend="," property="ykpCount">
+				a.YKP_COUNT = #ykpCount#
+			</isNotNull>
+			<isNotEmpty prepend="," property="yhcCount">
+				a.YHC_COUNT = #yhcCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="yffCount">
+				a.YFF_COUNT = #yffCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ydyCount">
+				a.YDY_COUNT = #ydyCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="jsEnter">
+				a.JS_ENTER = #jsEnter#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="syCount">
+				a.SY_COUNT = #syCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="billStartNo">
+				a.BILL_START_NO = #billStartNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="billEndNo">
+				a.BILL_END_NO = #billEndNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ffCount">
+				a.FF_COUNT = #ffCount#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="," property="syfpYsCount">
+				a.SYFP_YS_COUNT = #syfpYsCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="syfpHsCount">
+				a.SYFP_HS_COUNT = #syfpHsCount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="syfpZfCount">
+				a.SYFP_ZF_COUNT = #syfpZfCount#
+			</isNotEmpty>
+		</dynamic>
+		WHERE A.DIS_ID=#disId#
+	</update>
+	
+
+	<update id="updateLostRecycle" parameterClass="lostRecycle">
+		UPDATE
+		VMS_LOST_RECYCLE A SET A.STATE=#state# WHERE A.ID=#id#
+	</update>
+
+
+	<select id="findBillInventoryListCount" parameterClass="java.util.Map"
+		resultClass="long">
+		SELECT COUNT(1) FROM VMS_BILL_INVENTORY A
+		<dynamic prepend="WHERE ">
+			<isNotEmpty prepend="AND" property="billInventory.putInDate">
+				<!-- TO_CHAR(A.PUT_IN_DATE,'YYYY-MM-DD')=TO_CHAR(#billInventory.putInDate#,'YYYY-MM-DD') -->
+				date_format(A.PUT_IN_DATE,'%Y-%m-%d')=date_format(#billInventory.putInDate#,'%Y-%m-%d')
+			</isNotEmpty>
+			<!-- <isNotEmpty prepend="AND" property="billInventory.putInStartDate">
+				<![CDATA[ A.PUT_IN_DATE >= TO_DATE(#billInventory.putInStartDate#,'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billInventory.putInEndDate">
+				<![CDATA[ A.PUT_IN_DATE <= TO_DATE(#billInventory.putInEndDate#,'yyyy-mm-dd') ]]>
+			</isNotEmpty> -->
+			
+			 <isNotEmpty prepend="AND" property="billInventory.putInStartDate">
+				<![CDATA[ A.PUT_IN_DATE >= date_format(#billInventory.putInStartDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billInventory.putInEndDate">
+				<![CDATA[ A.PUT_IN_DATE <= date_format(#billInventory.putInEndDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			
+			
+			<isNotEmpty prepend="AND" property="billInventory.inventoryId">
+				A.INVENTORY_ID=#billInventory.inventoryId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billInventory.instName">
+				A.INST_NAME
+			=#billInventory.instName#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billInventory.instId">
+			    A.INST_ID IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				<!-- (SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#billInventory.instId#)) -->
+				(SELECT concat(C.INST_PATH,'%') FROM U_BASE_INST C WHERE C.INST_ID=#billInventory.instId#))
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billInventory.billType">
+				A.BILL_TYPE
+				=#billInventory.billType#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+<!--oracle版本 -->
+<!-- 	<select id="findBillInventoryList" parameterClass="java.util.Map"
+		resultMap="get-billInventory">
+		SELECT * FROM
+		(SELECT ROWNUM AS rowIndex,N.* FROM (
+		SELECT * FROM
+		VMS_BILL_INVENTORY A
+		WHERE 1=1
+		<isNotEmpty prepend="AND" property="billInventory.putInDate">
+			TO_CHAR(A.PUT_IN_DATE,'YYYY-MM-DD')=TO_CHAR(#billInventory.putInDate#,'YYYY-MM-DD')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.putInStartDate">
+				<![CDATA[ A.PUT_IN_DATE >= TO_DATE(#billInventory.putInStartDate#,'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.putInEndDate">
+				<![CDATA[ A.PUT_IN_DATE <= TO_DATE(#billInventory.putInEndDate#,'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.instName">
+			A.INST_NAME
+			=#billInventory.instName#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billType">
+			A.BILL_TYPE
+			=#billInventory.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billId">
+			A.BILL_ID
+			=#billInventory.billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billStartNo">
+			A.BILL_START_NO
+			=#billInventory.billStartNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billEndNo">
+			A.BILL_END_NO
+			=#billInventory.billEndNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex">
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.inventoryId">
+			A.INVENTORY_ID=#billInventory.inventoryId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.instName">
+			A.INST_NAME
+			=#billInventory.instName#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.instId">
+			A.INST_ID IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				(SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#billInventory.instId#))
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billType">
+			A.BILL_TYPE
+			=#billInventory.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billId">
+			A.BILL_ID
+			=#billInventory.billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billStartNo">
+			A.BILL_START_NO
+			=#billInventory.billStartNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billEndNo">
+			A.BILL_END_NO
+			=#billInventory.billEndNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex"> 
+
+				<![CDATA[ ROWNUM <= #endIndex#]]>
+		</isNotEmpty>
+		) N
+		) T WHERE 1=1
+		<isNotEmpty prepend="and" property="startIndex"> 
+				<![CDATA[ T.rowIndex > #startIndex#  ]]>
+		</isNotEmpty>
+		 order by   T.PUT_IN_DATE desc 
+	</select> -->
+	
+	<!--Mysql版本时间格式待定  -->
+		<select id="findBillInventoryList" parameterClass="java.util.Map"
+		resultMap="get-billInventory">
+		SELECT * FROM
+		(SELECT (@rowNum:=@rowNum+1) AS rowIndex,N.* FROM (
+		SELECT * FROM
+		VMS_BILL_INVENTORY A
+		WHERE 1=1
+		<isNotEmpty prepend="AND" property="billInventory.putInDate">
+			date_format(A.PUT_IN_DATE,'%Y-%m-%d')=date_format(#billInventory.putInDate#,'%Y-%m-%d')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.putInStartDate">
+				<![CDATA[ A.PUT_IN_DATE >= STR_TO_DATE(#billInventory.putInStartDate#,'%Y-%m-%d') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.putInEndDate">
+				<![CDATA[ A.PUT_IN_DATE <= STR_TO_DATE(#billInventory.putInEndDate#,'%Y-%m-%d') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.instName">
+			A.INST_NAME
+			=#billInventory.instName#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billType">
+			A.BILL_TYPE
+			=#billInventory.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billId">
+			A.BILL_ID
+			=#billInventory.billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billStartNo">
+			A.BILL_START_NO
+			=#billInventory.billStartNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billEndNo">
+			A.BILL_END_NO
+			=#billInventory.billEndNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex">
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.inventoryId">
+			A.INVENTORY_ID=#billInventory.inventoryId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.instName">
+			A.INST_NAME
+			=#billInventory.instName#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.instId">
+			A.INST_ID IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				<!-- (SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#billInventory.instId#)) -->
+				(SELECT concat(C.INST_PATH,'%') FROM U_BASE_INST C WHERE C.INST_ID=#billInventory.instId#))
+				
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billType">
+			A.BILL_TYPE
+			=#billInventory.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billId">
+			A.BILL_ID
+			=#billInventory.billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billStartNo">
+			A.BILL_START_NO
+			=#billInventory.billStartNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billInventory.billEndNo">
+			A.BILL_END_NO
+			=#billInventory.billEndNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex"> 
+
+				<![CDATA[ ROWNUM <= #endIndex#]]>
+		</isNotEmpty>
+		) N
+		) T WHERE 1=1
+		<isNotEmpty prepend="and" property="startIndex"> 
+				<![CDATA[ T.rowIndex > #startIndex#  ]]>
+		</isNotEmpty>
+		 order by   T.PUT_IN_DATE desc 
+	</select>
+	
+	
+	
+	
+
+	<select id="findBillDistributionCount" parameterClass="java.util.Map"
+		resultClass="long">
+		SELECT count(1) FROM VMS_BILL_DISTRIBUTION A
+		<dynamic prepend="WHERE ">
+			<isNotEmpty prepend="AND" property="billDistribution.taxNo">
+				A.TAX_NO
+				=#billDistribution.taxNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billDistribution.jsEnter">
+				A.JS_ENTER
+				=#billDistribution.jsEnter#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billDistribution.disDate">
+		   <!--  to_char(A.DIS_DATE,'%Y-%M-%D')
+				=to_char(#billDistribution.disDate#,'%Y-%M-%D') 有疑问 原始数据-->
+				date_format(A.DIS_DATE,'%Y-%m-%d')
+				=date_format(#billDistribution.disDate#,'%Y-%m-%d')
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billDistribution.disStartDate">
+			<!-- <![CDATA[ A.DIS_DATE <= TO_DATE(#billDistribution.disStartDate#,yyyy-mM-dD') ]]> -->
+				<![CDATA[ A.DIS_DATE >= Str_TO_DATE(#billDistribution.disStartDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billDistribution.disEndDate">
+			<!-- <![CDATA[ A.DIS_DATE <= TO_DATE(#billDistribution.disEndDate#,yyyy-mM-dD') ]]> -->
+				<![CDATA[ A.DIS_DATE <= Str_TO_DATE(#billDistribution.disEndDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billDistribution.billType">
+				A.BILL_TYPE=#billDistribution.billType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billDistribution.kpyId">
+				A.KPY_ID=#billDistribution.kpyId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billDistribution.kpyName">
+				A.KPY_NAME  like '%$billDistribution.kpyName$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billDistribution.disId">
+			A.DIS_ID=#billDistribution.disId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="billInventory.instId">
+			A.INST_ID IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				<!-- (SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#billInventory.instId#)) -->
+				(SELECT concat(C.INST_PATH,'%') FROM U_BASE_INST C WHERE C.INST_ID=#billInventory.instId#))
+		</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	
+	<!--Oracle版本  -->
+	<!-- <select id="findBillDistribution" parameterClass="java.util.Map"
+		resultMap="get-billDistribution">
+		SELECT * FROM
+		(SELECT ROWNUM AS rowIndex,N.* FROM (
+		SELECT * FROM
+		VMS_BILL_DISTRIBUTION A
+		WHERE 1=1
+		<isNotEmpty prepend="AND" property="billDistribution.taxNo">
+			A.TAX_NO
+			=#billDistribution.taxNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.jsEnter">
+			A.JS_ENTER
+			=#billDistribution.jsEnter#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disDate">
+			TO_CHAR(A.DIS_DATE,'YYYY-MM-DD')
+			=TO_CHAR(#billDistribution.disDate#,'YYYY-MM-DD')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.taxNo">
+			A.TAX_NO
+			=#billDistribution.taxNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.jsEnter">
+			A.JS_ENTER
+			=#billDistribution.jsEnter#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.instId">
+			A.INST_ID IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				(SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#billDistribution.instId#))
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disDate">
+			TO_CHAR(A.DIS_DATE,'YYYY-MM-DD')
+			=TO_CHAR(#billDistribution.disDate#,'YYYY-MM-DD')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disStartDate">
+
+				<![CDATA[ A.DIS_DATE >= TO_DATE(#billDistribution.disStartDate#,'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disEndDate">
+				<![CDATA[ A.DIS_DATE <= TO_DATE(#billDistribution.disEndDate#,'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.billType">
+			A.BILL_TYPE=#billDistribution.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.kpyId">
+			A.KPY_ID=#billDistribution.kpyId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.kpyName">
+			A.KPY_NAME  like '%$billDistribution.kpyName$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.billId">
+			A.BILL_ID=#billDistribution.billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.billStartNo">
+			A.BILL_START_NO=#billDistribution.billStartNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.billEndNo">
+			A.BILL_END_NO=#billDistribution.billEndNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disId">
+			A.DIS_ID=#billDistribution.disId#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex"> 
+				<![CDATA[ ROWNUM <= #endIndex#]]>
+		</isNotEmpty>
+		ORDER BY A.DIS_DATE DESC
+		 )N
+		) T WHERE 1=1
+		<isNotEmpty prepend="and" property="startIndex"> 
+				<![CDATA[ T.rowIndex > #startIndex#  ]]>
+		</isNotEmpty>
+	</select> -->
+	
+	
+	<!--Mysql版本时间格式待定  -->
+	<select id="findBillDistribution" parameterClass="java.util.Map"
+		resultMap="get-billDistribution">
+		SELECT * FROM
+		(SELECT (@rowNum:=@rowNum+1) AS rowIndex,N.* FROM (
+		SELECT * FROM
+		VMS_BILL_DISTRIBUTION A
+		WHERE 1=1
+		<isNotEmpty prepend="AND" property="billDistribution.taxNo">
+			A.TAX_NO
+			=#billDistribution.taxNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.jsEnter">
+			A.JS_ENTER
+			=#billDistribution.jsEnter#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disDate">
+		<!-- to_char(A.DIS_DATE,'yyyY-mM-dD')
+			=to_char(#billDistribution.disDate#,'yyyY-mM-dD') -->
+		
+			date_format(A.DIS_DATE,'%Y-%m-%d')
+			=date_format(#billDistribution.disDate#,'%Y-%m-%d')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.taxNo">
+			A.TAX_NO
+			=#billDistribution.taxNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.jsEnter">
+			A.JS_ENTER
+			=#billDistribution.jsEnter#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.instId">
+			A.INST_ID IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				<!-- (SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#billDistribution.instId#)) -->
+				(SELECT concat(C.INST_PATH,'%') FROM U_BASE_INST C WHERE C.INST_ID=#billDistribution.instId#))
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disDate">
+			<!-- TO_CHAR(A.DIS_DATE,'YYYY-MM-DD')
+			=TO_CHAR(#billDistribution.disDate#,'YYYY-MM-DD') -->
+			
+			date_format(A.DIS_DATE,'%Y-%m-%d')
+			=date_format(#billDistribution.disDate#,'%Y-%m-%d')
+			
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disStartDate">
+
+				<![CDATA[ A.DIS_DATE >= STR_TO_DATE(#billDistribution.disStartDate#,'%Y-%m-%d') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disEndDate">
+				<![CDATA[ A.DIS_DATE <= STR_TO_DATE(#billDistribution.disEndDate#,'%Y-%m-%d') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.billType">
+			A.BILL_TYPE=#billDistribution.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.kpyId">
+			A.KPY_ID=#billDistribution.kpyId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.kpyName">
+			A.KPY_NAME  like '%$billDistribution.kpyName$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.billId">
+			A.BILL_ID=#billDistribution.billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.billStartNo">
+			A.BILL_START_NO=#billDistribution.billStartNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.billEndNo">
+			A.BILL_END_NO=#billDistribution.billEndNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="billDistribution.disId">
+			A.DIS_ID=#billDistribution.disId#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex"> 
+				<![CDATA[ ROWNUM <= #endIndex#]]>
+		</isNotEmpty>
+		ORDER BY A.DIS_DATE DESC
+		 )N
+		) T WHERE 1=1
+		<isNotEmpty prepend="and" property="startIndex"> 
+				<![CDATA[ T.rowIndex > #startIndex#  ]]>
+		</isNotEmpty>
+	</select>
+	
+
+	<select id="findLostRecycleCount" parameterClass="java.util.Map"
+		resultClass="long">
+		SELECT count(1) FROM VMS_LOST_RECYCLE A
+		<dynamic prepend="WHERE ">
+			<isNotEmpty prepend="AND" property="lostRecycle.state">
+				A.STATE=#lostRecycle.state#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lostRecycle.operateDate">
+			<!-- to_char(A.OPERATE_DATE,'YYYY-MM-DD')=to_char(#lostRecycle.operateDate#,'YYYY-MM-DD') -->
+				date_format(A.OPERATE_DATE,'%Y-%m-%d')=date_format(#lostRecycle.operateDate#,'%Y-%m-%d')
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lostRecycle.operateStartDate">
+				<![CDATA[ A.OPERATE_DATE >= STR_TO_DATE(#lostRecycle.operateStartDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lostRecycle.operateEndDate">
+				<![CDATA[ A.OPERATE_DATE <= STR_TO_DATE(#lostRecycle.operateEndDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lostRecycle.instId">
+				A.INST_ID IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				<!-- (SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#lostRecycle.instId#)) -->
+				(SELECT concat(C.INST_PATH,'%') FROM U_BASE_INST C WHERE C.INST_ID=#lostRecycle.instId#))
+		 	</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lostRecycle.billType">
+				A.BILL_TYPE=#lostRecycle.billType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lostRecycle.flag">
+				A.FLAG=#lostRecycle.flag#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lostRecycle.datastatus">
+				A.DATASTATUS=#lostRecycle.datastatus#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lostRecycle.kpyName">
+			A.KPY_NAME  like '%$lostRecycle.kpyName$%'
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+<!--Oracle版本  -->
+<!-- 	<select id="findLostRecycle" parameterClass="java.util.Map"
+		resultMap="get-lostRecycle">
+		SELECT * FROM
+		(SELECT ROWNUM AS rowIndex,N.* FROM(
+		SELECT * FROM
+		VMS_LOST_RECYCLE A
+		WHERE 1=1
+		<isNotEmpty prepend="AND" property="lostRecycle.state">
+			A.STATE=#lostRecycle.state#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.operateDate">
+			TO_CHAR(A.OPERATE_DATE,'YYYY-MM-DD')=TO_CHAR(#lostRecycle.operateDate#,'YYYY-MM-DD')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.operateStartDate">
+				<![CDATA[ A.OPERATE_DATE >= TO_DATE(#lostRecycle.operateStartDate#,'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.operateEndDate">
+				<![CDATA[ A.OPERATE_DATE <= TO_DATE(#lostRecycle.operateEndDate#,'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.instId">
+			A.INST_ID IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				(SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#lostRecycle.instId#))
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billType">
+			A.BILL_TYPE=#lostRecycle.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.flag">
+			A.FLAG=#lostRecycle.flag#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex">
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.instId">
+			A.INST_ID like
+			'%$lostRecycle.instId$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billType">
+			A.BILL_TYPE=#lostRecycle.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.flag">
+			A.FLAG=#lostRecycle.flag#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex"> 
+
+				<![CDATA[ ROWNUM <= #endIndex#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billId">
+			A.BILL_ID=#lostRecycle.billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billStartNo">
+			A.BILL_START_NO=#lostRecycle.billStartNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billEndNo">
+			A.BILL_END_NO=#lostRecycle.billEndNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.datastatus">
+			A.DATASTATUS=#lostRecycle.datastatus#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.id">
+			A.ID=#lostRecycle.id#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.kpyName">
+			A.KPY_NAME  like '%$lostRecycle.kpyName$%'
+		</isNotEmpty>
+		) N
+		) T WHERE 1=1
+		<isNotEmpty prepend="and" property="startIndex"> 
+				<![CDATA[ T.rowIndex > #startIndex#  ]]>
+		</isNotEmpty>
+		order by  T.OPERATE_DATE desc
+	</select> -->
+	
+	<!--Mysql版本时间格式待定  -->
+		<select id="findLostRecycle" parameterClass="java.util.Map"
+		resultMap="get-lostRecycle">
+		SELECT * FROM
+		(SELECT (@rowNum:=@rowNum+1) AS rowIndex,N.* FROM(
+		SELECT * FROM
+		VMS_LOST_RECYCLE A
+		WHERE 1=1
+		<isNotEmpty prepend="AND" property="lostRecycle.state">
+			A.STATE=#lostRecycle.state#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.operateDate">
+			<!-- TO_CHAR(A.OPERATE_DATE,'YYYY-MM-DD')=TO_CHAR(#lostRecycle.operateDate#,'YYYY-MM-DD') -->
+			date_format(A.OPERATE_DATE,'%Y-%m-%d')=date_format(#lostRecycle.operateDate#,'%Y-%m-%d')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.operateStartDate">
+		<!-- <![CDATA[ A.OPERATE_DATE <= TO_DATE(#lostRecycle.operateStartDate#,'YYYY-MM-DD') ]]> -->
+				<![CDATA[ A.OPERATE_DATE >= STR_TO_DATE(#lostRecycle.operateStartDate#,'%Y-%m-%d') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.operateEndDate">
+		<!-- <![CDATA[ A.OPERATE_DATE <= TO_DATE(#lostRecycle.operateEndDate#,'YYYY-MM-DD') ]]> -->
+				<![CDATA[ A.OPERATE_DATE <= STR_TO_DATE(#lostRecycle.operateEndDate#,'%Y-%m-%d') ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.instId">
+			A.INST_ID IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				<!-- (SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#lostRecycle.instId#)) -->
+				(SELECT concat(C.INST_PATH,'%') FROM U_BASE_INST C WHERE C.INST_ID=#lostRecycle.instId#))
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billType">
+			A.BILL_TYPE=#lostRecycle.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.flag">
+			A.FLAG=#lostRecycle.flag#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex">
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.instId">
+			A.INST_ID like
+			'%$lostRecycle.instId$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billType">
+			A.BILL_TYPE=#lostRecycle.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.flag">
+			A.FLAG=#lostRecycle.flag#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="endIndex"> 
+
+				<![CDATA[ ROWNUM <= #endIndex#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billId">
+			A.BILL_ID=#lostRecycle.billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billStartNo">
+			A.BILL_START_NO=#lostRecycle.billStartNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.billEndNo">
+			A.BILL_END_NO=#lostRecycle.billEndNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.datastatus">
+			A.DATASTATUS=#lostRecycle.datastatus#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.id">
+			A.ID=#lostRecycle.id#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="lostRecycle.kpyName">
+			A.KPY_NAME  like '%$lostRecycle.kpyName$%'
+		</isNotEmpty>
+		) N
+		) T WHERE 1=1
+		<isNotEmpty prepend="and" property="startIndex"> 
+				<![CDATA[ T.rowIndex > #startIndex#  ]]>
+		</isNotEmpty>
+		order by  T.OPERATE_DATE desc
+	</select>
+	
+	
+	
+	
+	<select id="finduserbyid" parameterClass="java.util.Map"
+		resultClass="billDistribution">
+		select a.user_id as kpyId ,
+		a.user_cname as kpyName,
+		a.inst_id as instId,
+		t.inst_name as instName
+		from u_base_user a
+		left join
+		u_base_inst t on t.inst_id=a.inst_id
+		where
+		a.user_id=#billDistribution.kpyId#
+	</select>
+	<select id="getInsrtName" parameterClass="java.util.Map"
+		resultClass="java.lang.String">
+		select INST_NAME as instName from u_base_inst where
+		INST_ID=#InstId#
+	</select>
+	<select id="findPrintBillCount" parameterClass="java.util.Map"
+		resultMap="get-printBill">
+		select
+		count(1)
+		from VMS_BILL_INFO A
+		<dynamic prepend="WHERE ">
+			<isNotEmpty prepend="AND" property="printBill.ttmprcNo">
+				A.TTMPRCNO=#printBill.ttmprcNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="printBill.insureId">
+				A.INSURE_ID=#printBill.insureId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="printBill.billCode">
+				A.BILL_CODE=#printBill.billCode#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="printBill.billNo">
+				A.BILL_NO=#printBill.billNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="printBill.billType">
+				A.FAPIAO_TYPE=#printBill.billType#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="printBill.recycleStatus">
+				A.RECYCLE_STATUS=#printBill.recycleStatus#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="printBill.instId">
+				A.INSTCODE IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				<!-- (SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#printBill.instId#)) -->
+				(SELECT concat(C.INST_PATH,'%') FROM U_BASE_INST C WHERE C.INST_ID=#printBill.instId#))
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="printBill.billStartDate">
+				<![CDATA[ A.BILL_DATE >= #printBill.billStartDate# ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="printBill.billEndDate">
+				<![CDATA[ A.BILL_DATE <= #printBill.billEndDate# ]]>
+			</isNotEmpty>
+			AND A.DATASTATUS IN ('8','13','14','15','16','17','18','99')
+			AND A.BILL_CODE IS NOT NULL
+			AND A.BILL_NO IS NOT NULL
+		</dynamic>
+	</select>
+	<select id="findPrintBill" parameterClass="java.util.Map"
+		resultMap="get-printBill">
+		select
+		A.BILL_ID ,
+		A.TTMPRCNO ,
+		A.INSURE_ID ,
+		A.BILL_CODE ,
+		A.BILL_NO ,
+		A.AMT_SUM ,
+		A.TAX_AMT_SUM ,
+		A.SUM_AMT ,
+		A.BILL_DATE ,
+		A.CUSTOMER_NAME ,
+		A.FAPIAO_TYPE,
+		A.DATASTATUS ,
+		<!--Oracle版本  -->
+		<!-- NVL(A.RECYCLE_STATUS,'0') as RECYCLE_STATUS, -->
+		<!--Mysql版本  -->
+		ifnull(A.RECYCLE_STATUS,'0') as RECYCLE_STATUS,
+		
+		A.INSTCODE
+		from VMS_BILL_INFO A 
+		WHERE 1=1
+		<isNotEmpty prepend="AND" property="printBill.ttmprcNo">
+			A.TTMPRCNO=#printBill.ttmprcNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="printBill.insureId">
+			A.INSURE_ID=#printBill.insureId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="printBill.billCode">
+			A.BILL_CODE=#printBill.billCode#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="printBill.billNo">
+			A.BILL_NO=#printBill.billNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="printBill.billType">
+			A.FAPIAO_TYPE=#printBill.billType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="printBill.recycleStatus">
+			A.RECYCLE_STATUS=#printBill.recycleStatus#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="printBill.instId">
+			A.INSTCODE IN (select B.INST_ID from U_BASE_INST B WHERE B.INST_PATH LIKE 
+				<!-- (SELECT C.INST_PATH||'%' FROM U_BASE_INST C WHERE C.INST_ID=#printBill.instId#)) -->
+				(SELECT concat(C.INST_PATH,'%') FROM U_BASE_INST C WHERE C.INST_ID=#printBill.instId#))
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="printBill.billStartDate">
+				<![CDATA[ A.BILL_DATE >= #printBill.billStartDate# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="printBill.billEndDate">
+				<![CDATA[ A.BILL_DATE <= #printBill.billEndDate# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="printBill.billId">
+			A.BILL_ID=#printBill.billId#
+		</isNotEmpty>
+		AND A.DATASTATUS IN ('8','13','14','15','16','17','18','99')
+		AND A.BILL_CODE IS NOT NULL
+		AND A.BILL_NO IS NOT NULL
+		ORDER BY a.BILL_CODE,a.BILL_NO DESC
+	</select>
+
+	<!--发票开具、打印、红冲、作废、红冲开具时修开分发表的发票数量 -->
+	<update id="updateBillCount" parameterClass="java.util.Map">
+		UPDATE
+		VMS_BILL_DISTRIBUTION a
+		<dynamic prepend="set ">
+			<isEqual prepend="," property="ykpCount" compareValue="Y">
+				a.YKP_COUNT=a.YKP_COUNT+1
+			</isEqual>
+			<isEqual prepend="," property="syCount" compareValue="Y">
+				a.SY_COUNT=a.SY_COUNT-1
+			</isEqual>
+			<isEqual prepend="," property="ydyCount" compareValue="Y">
+				a.YDY_COUNT=a.YDY_COUNT+1
+			</isEqual>
+			<isEqual prepend="," property="yhcCount" compareValue="Y">
+				a.YHC_COUNT=a.YHC_COUNT+1
+			</isEqual>
+			<isEqual prepend="," property="yffCount" compareValue="Y">
+				a.YFF_COUNT=a.YFF_COUNT+1
+			</isEqual>
+		</dynamic>
+		where 1=1
+		<isNotEmpty prepend="and" property="billNo">
+			<![CDATA[BILL_START_NO <= #billNo#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="billNo">
+			<![CDATA[BILL_END_NO >= #billNo#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="billId">
+			a.BILL_ID=#billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="instId">
+			a.INST_ID=#instId#
+		</isNotEmpty>
+	</update>
+	<!-- 发票作废跟新发票 开具张数  -->
+	<update id="updateBillKJCount" parameterClass="java.util.Map">
+		UPDATE
+		VMS_BILL_DISTRIBUTION a
+		<dynamic prepend="set ">
+			<isEqual prepend="," property="ykpCount" compareValue="Y">
+				a.YKP_COUNT=a.YKP_COUNT-1
+			</isEqual>
+			<isEqual prepend="," property="syCount" compareValue="Y">
+				a.SY_COUNT=a.SY_COUNT-1
+			</isEqual>
+			<isEqual prepend="," property="ydyCount" compareValue="Y">
+				a.YDY_COUNT=a.YDY_COUNT+1
+			</isEqual>
+			<isEqual prepend="," property="yhcCount" compareValue="Y">
+				a.YHC_COUNT=a.YHC_COUNT+1
+			</isEqual>
+			<isEqual prepend="," property="yffCount" compareValue="Y">
+				a.YFF_COUNT=a.YFF_COUNT+1
+			</isEqual>
+		</dynamic>
+		where 1=1
+		<isNotEmpty prepend="and" property="billNo">
+			<![CDATA[BILL_START_NO <= #billNo#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="billNo">
+			<![CDATA[BILL_END_NO >= #billNo#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="billId">
+			a.BILL_ID=#billId#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="instId">
+			a.INST_ID=#instId#
+		</isNotEmpty>
+	</update>
+	
+	<!-- 更新已打印发票回收状态 -->
+	<update id="updatePrintBillRecycleStatus" parameterClass="printBill">
+		UPDATE VMS_BILL_INFO A SET A.RECYCLE_STATUS=#recycleStatus# WHERE A.BILL_ID=#billId#
+	</update>
+	
+	<delete id="deleteBillDistribution" parameterClass="java.util.Map">
+		DELETE FROM
+		VMS_BILL_DISTRIBUTION A WHERE A.DIS_ID=#disid#
+	</delete>
+ 	
+	<select id="findUserByOrgIdX" parameterClass="java.util.Map" resultClass="user">
+		 select 
+		 m.user_id as id,
+		 m.user_cname as name
+         from u_base_user m
+         where m.user_id in
+         (select v.user_id
+         from U_AUTH_ROLE_USER v
+         where v.role_id in
+         (select h.object_id
+         from U_AUTH_ROLE_RESOURCE h
+         where h.RES_DETAIL_VALUE = '0002.0006'))
+         and m.INST_ID = #orgId#
+	</select>
+
+	<select id="findBillMakeUseDistribution" parameterClass="java.util.Map" resultClass="billInfo">
+		SELECT T.BILL_CODE as billCode, T.BILL_NO  as billNo , T.DRAWER as drawer ,T.DATASTATUS as dataStatus ,
+		T.BILL_DATE as billDate , T.FAPIAO_TYPE  as fapiaoType
+      	FROM VMS_BILL_INFO T where T.DATASTATUS  IN ('5','15','8','18','99')
+      	order by  T.BILL_CODE DESC, BILL_NO DESC
+	</select>
+</sqlMap>
+

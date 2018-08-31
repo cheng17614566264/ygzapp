@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+    "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="vms_stock" extends="vms" namespace="/">
+		<!--发票入库 -->
+		<action name="billInventoryList" method="billInventoryList"
+			class="billInventoryAction">
+			<result name="success">WEB-INF/vms/stock/billStorage.jsp</result>
+		</action>
+		<!-- 发票分发 -->
+		<action name="billDistributeList" method="billDistributeList"
+			class="billDistributeAction">
+			<result name="success">WEB-INF/vms/stock/billDistribute.jsp</result>
+		</action>
+		<action name="billStatisticsList" method="billStatisticsList"
+			class="billStatisticsAction">
+			<result name="success">WEB-INF/vms/stock/billStatistics.jsp</result>
+			<result name="tax">WEB-INF/vms/stock/billTrack.jsp</result>
+		</action>
+		<action name="jsEnter" method="jsEnter" class="billStatisticsAction">
+		</action>
+		<action name="exportBillDistribution" method="exportBillDistribution"
+			class="billStatisticsAction">
+		</action>
+		<!-- 发票遗失 -->
+		<action name="billLostList" method="billLostList" class="billLostRecycleAction">
+			<result name="success">WEB-INF/vms/stock/billLost.jsp</result>
+		</action>
+		<!-- 发票回收 -->
+		<action name="billRecycleList" method="billRecycleList" class="billLostRecycleAction">
+			<result name="success">WEB-INF/vms/stock/billRecycle.jsp</result>
+		</action>
+		<!-- 发票库存信息报表下载 -->
+		<action name="createbillInventoryExcel" method="createbillInventoryExcel"
+			class="billInventoryAction">
+			<result name="success">WEB-INF/vms/stock/billStorage.jsp</result>
+		</action>
+		<!-- 发票统计信息报表下载 -->
+		<action name="createbillStatisticsActionExcel" method="createbillStatisticsActionExcel"
+			class="billStatisticsAction">
+			<result name="success">WEB-INF/vms/stock/billStatistics.jsp</result>
+		</action>
+		<!-- 发票入库信息新增 -->
+		<action name="addbillInventory" method="addbillInventory"
+			class="billInventoryAction">
+			<result name="success">WEB-INF/vms/stock/billInventoryAdd.jsp</result>
+		</action>
+		<action name="addjy" method="addjy" class="billInventoryAction">
+		</action>
+		<action name="savebillInventory" method="savebillInventory"
+			class="billInventoryAction">
+			<result name="success" type="redirect">billInventoryList.action</result>
+		</action>
+
+		<!-- 分发 页面跳转 -->
+		<action name="initDistrubute" method="initDistrubute" class="billInventoryAction">
+			<result name="success">WEB-INF/vms/stock/billInventoryFF.jsp</result>
+		</action>
+		<action name="massageinstId" method="massageinstId" class="billInventoryAction">
+		</action>
+		<!-- 分发提交 -->
+		<action name="doDistrubute" method="doDistrubute" class="billInventoryAction">
+			<result name="success" type="redirect">billDistributeList.action</result>
+		</action>
+		<!-- 发票遗失,回收 录入页面 -->
+		<action name="lostRecycleAdd" method="lostRecycleAdd" class="billLostRecycleAction">
+			<result name="success">WEB-INF/vms/stock/billLostRecycleAdd.jsp</result>
+		</action>
+		<!-- 票据 填写信息校验 遗失提交 -->
+		<action name="checkjy" method="checkjy" class="billLostRecycleAction">
+		</action>
+		<!-- 遗失 收回 提交 -->
+		<action name="savelostRecycle" method="savelostRecycle" class="billLostRecycleAction">
+			<result name="success" type="redirect">billStatisticsList.action</result>
+		</action>
+		<!-- 遗失 回收 导出 -->
+		<action name="createExecllostRecycle" method="createExecllostRecycle"
+			class="billLostRecycleAction">
+		</action>
+		<action name="updatestar" method="updatestar" class="billLostRecycleAction">
+		</action>
+
+		<!--已打印发票回收列表 -->
+		<action name="billPrintRecycleList" method="billPrintRecycleList"
+			class="billPrintRecycleAction">
+			<result name="success">WEB-INF/vms/stock/billPrintRecycle.jsp</result>
+		</action>
+		<!-- 已打印发票回收信息报表下载 -->
+		<action name="exportPrintBill" method="exportPrintBill" class="billPrintRecycleAction">
+			<result name="success">WEB-INF/vms/stock/billPrintRecycle.jsp</result>
+		</action>
+		<!-- 回收确认 -->
+		<action name="recycleEnter" method="recycleEnter" class="billPrintRecycleAction">
+		</action>
+
+		<!-- 发票入库信息修改 -->
+		<action name="updatebillInventory" method="updatebillInventory"
+			class="billInventoryAction">
+			<result name="success">WEB-INF/vms/stock/billInventoryXG.jsp</result>
+		</action>
+		<action name="updatbill" method="updatbill" class="billInventoryAction">
+			<result name="success" type="redirect">billInventoryList.action</result>
+		</action>
+
+		<!-- 发票遗失回收 -->
+		<action name="billTrackaction" method="billStatisticsList"
+			class="billStatisticsAction">
+			<result name="success">WEB-INF/vms/stock/billTrack.jsp</result>
+		</action>
+
+		<!-- 空白发票作废 -->
+		<action name="SelectNoneAction" method="SelectNoneAction"
+			class="billLostRecycleAction">
+			<result name="success">WEB-INF/vms/stock/billNoneCancelZF.jsp</result>
+		</action>
+
+		<!-- goSelect -->
+		<action name="goSelect" method="goSelect" class="billStatisticsAction">
+			<result name="success">WEB-INF/vms/stock/billStatisticsMassage.jsp
+			</result>
+		</action>
+
+		<!-- 空白发票作废记录 -->
+		<action name="SelectAction" method="SelectAction" class="billLostRecycleAction">
+			<result name="success">WEB-INF/vms/stock/billNoneCancel.jsp</result>
+		</action>
+
+		<action name="zfcannot" method="zfcannot" class="billLostRecycleAction">
+		</action>
+
+		<action name="viewImgFromLostRecycle" method="viewImgFromLostRecycle"
+			class="billLostRecycleAction">
+			<result name="success">WEB-INF/vms/stock/viewImgFJ.jsp</result>
+			<result name="tax">WEB-INF/vms/viewImgFJ404.jsp</result>
+		</action>
+		<action name="viewImgFromLostRecycleJAjax" method="viewImgFromLostRecycleJAjax"
+			class="billLostRecycleAction">
+		</action>
+		<action name="billTrackUploaAaction" method="billTrackUploaAaction"
+			class="billLostRecycleAction">
+			<result name="success" type="redirect">billStatisticsList.action</result>
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="vms"
+  id="myeclipse.1465267933031"
+  context-root="/vms"
+  j2ee-spec="6.0"
+  archive="vms.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="vms">
+	<!-- 交易 -->
+	<typeAlias alias="transInfo" type="com.cjit.vms.trans.model.TransInfo" />
+	<typeAlias alias="transInfoYS" type="com.cjit.vms.trans.model.TransInfoYS" />
+	<typeAlias alias="transBillInfo" type="com.cjit.vms.trans.model.TransBillInfo" />
+	<typeAlias alias="connCust" type="com.cjit.vms.trans.model.trans.ConnCust" />
+	<typeAlias alias="billTtransInfo" type="com.cjit.vms.trans.model.createBill.TransInfo" />
+	<!--新增
+		日期：2018-08-30
+		作者：刘俊杰
+	-->
+	<typeAlias alias="TransInfoTemp" type="com.cjit.vms.trans.model.TransInfoTemp" />
+	<!-- end 2018-08-30 -->
+
+
+	<!--Oracle版本 -->
+	<!-- <select id="outPutInvoiceApplyList" parameterClass="java.util.Map" 
+		resultClass="transInfo" remapResults="true"> select * from ( select rownum 
+		as rowindex, t.TRANS_ID as transId, t.TRANS_DATE as transDate, t.TRANS_TYPE 
+		as transType, t.CUSTOMER_ID as customerId, nvl(b.TRANS_TYPE_NAME,'-') as 
+		transTypeName, t.CUSTOMER_ACCOUNT as customerAccount, t.TAX_FLAG as taxFlag, 
+		t.INCOME_CNY as amt, t.TAX_RATE as taxRate, t.TAX_AMT_CNY as taxAmt, t.AMT_CNY 
+		as reverseAmt, t.IS_REVERSE as isReverse, t.BANK_CODE as bankCode, t.REMARK 
+		as remark, t.ORG_CURR_CODE as orgCurrCode, t.ORG_ACC_NO as orgAccNo, t.AMT_CCY 
+		as amtCcy, t.REVERSE_TRANS_ID as reverseTransId, t.SHORT_AND_OVER as shortAndOver, 
+		t.BALANCE as balance, t.INSTCODE as instCode, t.INSTNAME as instName, t.DATASTATUS 
+		as dataStatus, t.ORG_Trans_Type as orgTransType, t.ORG_Trans_SUB_Type as 
+		orgTransSubType, t.REVERSE_TRANS_DATE as reverseTransDate, t.TRANS_BUS_ID 
+		as transBusId, t.Trans_Curr as transCurr, t.TAX_AMT_CCY as taxAmtCcy, t.INCOME_CCY 
+		as incomeCcy, t.Surtax1_AMT_CNY as surtax1, t.Surtax2_AMT_CNY as surtax2, 
+		t.Surtax3_AMT_CNY as surtax3, t.Surtax4_AMT_CNY as surtax4, t.Trans_FaPiao_Flag 
+		as transFapiaoFlag, t.FaPiao_Date as fapiaoDate, t.FaPiao_Type as fapiaoType, 
+		t.Trans_Flag as transFlag, t.VAT_Rate_Code as vatRateCode, c.customer_cname 
+		as customerName, c.customer_taxno as customerTaxno, c.customer_address as 
+		customerAddress, c.customer_phone as customerTel, c.taxpayer_type as customerTaxPayerType, 
+		c.fapiao_type as customerFaPiaoType, c.customer_type as customerType, t.CHERNUM 
+		as cherNum, t.REPNUM as repNum, t.TTMPRCNO as ttmpRcno, t.FEETYP as feeTyp, 
+		t.BILLFREQ as billFreq, t.POLYEAR as polYear, t.HISSDTE as hissDte, t.DSOURCE 
+		as dsouRce, t.CHANNEL as chanNel, t.PREMTERM as premTerm, t.OCCDATE as occDate, 
+		t.INSTFROM as instFrom, t.INSTTO as instTo, t.HESITATE_PERIOD as hesitatePeriod, 
+		t.isYK as isYK, t.batch_no as batchNo, t.batch_type as batchType, t2.wkze 
+		as wkze from (SELECT * FROM VMS_TRANS_INFO t where 1 = 1 <dynamic> <isNotEmpty 
+		prepend="and" property="transInfo.isYK"> t.ISYK=#transInfo.isYK# </isNotEmpty> 
+		<isNotEmpty prepend="and" property="auth_inst_ids"> t.Instcode in <iterate 
+		property="auth_inst_ids" conjunction="," open="(" close=")"> #auth_inst_ids[]# 
+		</iterate> </isNotEmpty> <isNotEmpty prepend="and" property="transInfo.cherNum"> 
+		t.CHERNUM = #transInfo.cherNum# </isNotEmpty> <isNotEmpty prepend="and" property="transInfo.repNum"> 
+		t.REPNUM like '%$transInfo.repNum$%' </isNotEmpty> <isNotEmpty prepend="and" 
+		property="transInfo.ttmpRcno"> t.TTMPRCNO = #transInfo.ttmpRcno# </isNotEmpty> 
+		<isNotEmpty prepend="and" property="transInfo.feeTyp"> t.FEETYP = #transInfo.feeTyp# 
+		</isNotEmpty> <isNotEmpty prepend="and" property="transInfo.billFreq"> t.BILLFREQ 
+		= #transInfo.billFreq# </isNotEmpty> <isNotEmpty prepend="and" property="transInfo.billBeginDate"> 
+		<![CDATA[ to_date(t.Trans_Date,'yyyy-mm-dd') >= to_date(#transInfo.billBeginDate#,'yyyy-mm-dd') 
+		]]> </isNotEmpty> <isNotEmpty prepend="and" property="transInfo.billEndDate"> 
+		<![CDATA[ to_date(t.Trans_Date,'yyyy-mm-dd') <= to_date(#transInfo.billEndDate#,'yyyy-mm-dd') 
+		]]> </isNotEmpty> <isNotEmpty prepend="and" property="transInfo.hissBeginDte"> 
+		<![CDATA[ to_date(to_char(t.HISSDTE,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#transInfo.hissBeginDte#,'yyyy-mm-dd') 
+		]]> </isNotEmpty> <isNotEmpty prepend="and" property="transInfo.hissEndDte"> 
+		<![CDATA[ to_date(to_char(t.HISSDTE,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#transInfo.hissEndDte#,'yyyy-mm-dd') 
+		]]> </isNotEmpty> <isNotEmpty prepend="and" property="transInfo.dsouRce"> 
+		t.DSOURCE = #transInfo.dsouRce# </isNotEmpty> <isNotEmpty prepend="and" property="transInfo.chanNel"> 
+		t.CHANNEL = #transInfo.chanNel# </isNotEmpty> <isNotEmpty prepend="and" property="transInfo.batchNo"> 
+		t.BATCH_NO = #transInfo.batchNo# </isNotEmpty> <isNotEmpty prepend="and" 
+		property="transInfo.batchType"> t.BATCH_TYPE = #transInfo.batchType# </isNotEmpty> 
+		</dynamic> and REVERSE_TRANS_ID is null and DATASTATUS in ('1', '2', '3') 
+		and IS_REVERSE = 'N' and Trans_FaPiao_Flag in ('A', 'M') and Trans_Flag = 
+		'2' <include refid="transInfo_fragment" /> ORDER BY t.TRANS_DATE desc, t.CHERNUM,t.businessid,t.CUSTOMER_ID,t.POLYEAR,t.PREMTERM 
+		)t left join VMS_TRANS_TYPE b on t.TRANS_TYPE = b.TRANS_TYPE_ID left join 
+		VMS_TRANS_CKECK_VIEW T2 on t.CHERNUM=T2.CHERNUM left join VMS_CUSTOMER_INFO 
+		c on t.CUSTOMER_ID = c.customer_id where 1 = 1 <include refid="transCust_link_fragment" 
+		/> <include refid="page_fragment" /> </select> -->
+
+
+	<!--Mysql版本待定 -->
+	<select id="outPutInvoiceApplyList" parameterClass="java.util.Map"
+		resultClass="transInfo" remapResults="true">
+		select * from (
+		select
+		(@rowNum:=@rowNum+1) as rowindex,
+		t.TRANS_ID as
+		transId,
+		t.TRANS_DATE as transDate,
+		t.TRANS_TYPE as transType,
+		t.CUSTOMER_ID as customerId,
+
+		<!--Oracle版本 -->
+		<!-- nvl(b.TRANS_TYPE_NAME,'-') as transTypeName, -->
+		<!--Mysql版本 -->
+		ifnull(b.TRANS_TYPE_NAME,'-') as transTypeName,
+		
+		
+		t.CUSTOMER_ACCOUNT as customerAccount,
+		t.TAX_FLAG as taxFlag,
+		t.INCOME_CNY as amt,
+		t.TAX_RATE as taxRate,
+		t.TAX_AMT_CNY as taxAmt,
+		t.AMT_CNY as reverseAmt,
+		t.IS_REVERSE as
+		isReverse,
+		t.BANK_CODE as bankCode,
+		t.REMARK as remark,
+		t.ORG_CURR_CODE
+		as orgCurrCode,
+		t.ORG_ACC_NO as orgAccNo,
+		t.AMT_CCY as
+		amtCcy,
+		t.REVERSE_TRANS_ID as reverseTransId,
+		t.SHORT_AND_OVER as
+		shortAndOver,
+		t.BALANCE as balance,
+		t.INSTCODE as
+		instCode,
+		t.INSTNAME as
+		instName,
+		t.DATASTATUS as dataStatus,
+		t.ORG_Trans_Type as orgTransType,
+		t.ORG_Trans_SUB_Type as
+		orgTransSubType,
+		t.REVERSE_TRANS_DATE as
+		reverseTransDate,
+		t.TRANS_BUS_ID as transBusId,
+		t.Trans_Curr as
+		transCurr,
+		t.TAX_AMT_CCY
+		as taxAmtCcy,
+		t.INCOME_CCY as incomeCcy,
+		t.Surtax1_AMT_CNY as surtax1,
+		t.Surtax2_AMT_CNY as surtax2,
+		t.Surtax3_AMT_CNY as surtax3,
+		t.Surtax4_AMT_CNY as surtax4,
+		t.Trans_FaPiao_Flag as transFapiaoFlag,
+		t.FaPiao_Date as fapiaoDate,
+		t.FaPiao_Type as fapiaoType,
+		t.Trans_Flag
+		as transFlag,
+		t.VAT_Rate_Code
+		as vatRateCode,
+		c.customer_cname as
+		customerName,
+		c.customer_taxno as
+		customerTaxno,
+		c.customer_address as customerAddress,
+		c.customer_phone
+		as customerTel,
+		c.taxpayer_type as customerTaxPayerType,
+		c.fapiao_type
+		as customerFaPiaoType,
+		c.customer_type as customerType,
+		t.CHERNUM as
+		cherNum,
+		t.REPNUM as repNum,
+		t.TTMPRCNO as
+		ttmpRcno,
+		t.FEETYP as feeTyp,
+		t.BILLFREQ as billFreq,
+		t.POLYEAR as
+		polYear,
+		t.HISSDTE as hissDte,
+		t.DSOURCE as dsouRce,
+		t.CHANNEL as
+		chanNel,
+		t.PREMTERM as premTerm,
+		t.OCCDATE as occDate,
+		t.INSTFROM as instFrom,
+		t.INSTTO as instTo,
+		t.HESITATE_PERIOD as hesitatePeriod,
+		t.isYK as isYK,
+		t.batch_no as
+		batchNo,
+		t.batch_type as batchType,
+		t2.wkze as wkze
+		from (SELECT * FROM
+		VMS_TRANS_INFO t
+		where 1
+		= 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="transInfo.isYK">
+				t.ISYK=#transInfo.isYK#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.cherNum">
+				t.CHERNUM =
+				#transInfo.cherNum#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.repNum">
+				t.REPNUM like
+				'%$transInfo.repNum$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.ttmpRcno">
+				t.TTMPRCNO =
+				#transInfo.ttmpRcno#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.feeTyp">
+				t.FEETYP =
+				#transInfo.feeTyp#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.billFreq">
+				t.BILLFREQ =
+				#transInfo.billFreq#
+			</isNotEmpty>
+	    
+	    <!--oracle版本  -->
+		<!-- 	<isNotEmpty prepend="and" property="transInfo.billBeginDate">
+				<![CDATA[ to_date(t.Trans_Date,'yyyy-mm-dd') >= to_date(#transInfo.billBeginDate#,'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.billEndDate">
+				<![CDATA[ to_date(t.Trans_Date,'yyyy-mm-dd') <= to_date(#transInfo.billEndDate#,'yyyy-mm-dd')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.hissBeginDte">
+				<![CDATA[ to_date(to_char(t.HISSDTE,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#transInfo.hissBeginDte#,'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.hissEndDte">
+				<![CDATA[ to_date(to_char(t.HISSDTE,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#transInfo.hissEndDte#,'yyyy-mm-dd')  ]]>
+			</isNotEmpty> -->
+			
+		<!--Mysql版本  -->
+			<isNotEmpty prepend="and" property="transInfo.billBeginDate">
+				<![CDATA[ str_to_date(t.Trans_Date,'%Y-%m-%d') >= str_to_date(#transInfo.billBeginDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.billEndDate">
+				<![CDATA[ str_to_date(t.Trans_Date,'%Y-%m-%d') <= str_to_date(#transInfo.billEndDate#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.hissBeginDte">
+				<![CDATA[ str_to_date(date_format(t.HISSDTE,'%Y-%m-%d'),'%Y-%m-%d') >= str_to_date(#transInfo.hissBeginDte#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.hissEndDte">
+				<![CDATA[ str_to_date(date_format(t.HISSDTE,'%Y-%m-%d'),'%Y-%m-%d') <= str_to_date(#transInfo.hissEndDte#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+		
+			<!--添加的日期查询条件2017/9/9  -->
+			<isNotEmpty prepend="and" property="transInfo.transBeginDate">
+				<![CDATA[ str_to_date(t.Trans_Date,'%Y-%m-%d') >= str_to_date(#transInfo.transBeginDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.transEndDate">
+				<![CDATA[ str_to_date(t.Trans_Date,'%Y-%m-%d') <= str_to_date(#transInfo.transEndDate#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="transInfo.dsouRce">
+				t.DSOURCE =
+				#transInfo.dsouRce#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.chanNel">
+				t.CHANNEL =
+				#transInfo.chanNel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.batchNo">
+				t.BATCH_NO =
+				#transInfo.batchNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.batchType">
+				t.BATCH_TYPE =
+				#transInfo.batchType#
+			</isNotEmpty>
+		</dynamic>
+		and REVERSE_TRANS_ID is null
+		and DATASTATUS in ('1', '2', '3')
+		and
+		IS_REVERSE = 'N'
+		and Trans_FaPiao_Flag in ('A', 'M')
+		and Trans_Flag =
+		'2'
+		ORDER BY t.TRANS_DATE desc,
+		t.CHERNUM,t.businessid,t.CUSTOMER_ID,t.POLYEAR,t.PREMTERM
+		)t
+		left join
+		VMS_TRANS_TYPE b
+		on t.TRANS_TYPE = b.TRANS_TYPE_ID
+		left join
+		VMS_TRANS_CKECK_VIEW T2 on t.CHERNUM=T2.CHERNUM
+		left join
+		VMS_CUSTOMER_INFO c on t.CUSTOMER_ID = c.customer_id AND t.CHERNUM = c.CHERNUM
+		where 1 = 1
+		<include refid="transCust_link_fragment" />
+		<include refid="page_fragment" />
+	</select>
+	
+	<!-- 发票开具页面计数 -->
+	<select id='outPutInvoiceApplyListCount' parameterClass="java.util.Map"
+		resultClass="long">
+	SELECT 
+	   COUNT(*)
+	  FROM
+	    (SELECT 
+	      * 
+	    FROM
+	      VMS_TRANS_INFO t 
+	    WHERE 1 = 1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	      AND REVERSE_TRANS_ID IS NULL 
+	      AND DATASTATUS IN ('1', '2', '3') 
+	      AND IS_REVERSE = 'N' 
+	      AND Trans_FaPiao_Flag IN ('A', 'M') 
+	      AND Trans_Flag = '2' 
+	    ORDER BY t.TRANS_DATE DESC,
+	      t.CHERNUM,
+	      t.businessid,
+	      t.CUSTOMER_ID,
+	      t.POLYEAR,
+	      t.PREMTERM) t 
+	    LEFT JOIN VMS_TRANS_TYPE b 
+	      ON t.TRANS_TYPE = b.TRANS_TYPE_ID 
+	    LEFT JOIN VMS_TRANS_CKECK_VIEW T2 
+	      ON t.CHERNUM = T2.CHERNUM 
+	    LEFT JOIN VMS_CUSTOMER_INFO c 
+	      ON t.CUSTOMER_ID = c.customer_id 
+	      AND t.CHERNUM = c.CHERNUM 
+	  WHERE 1 = 1
+	</select>
+
+	<!--将数据从中间表插入到应用表中customer  -->
+    <insert id="insertIntoMyselfFromCustomerTemp" parameterClass="connCust">
+		INSERT INTO vms_customer_info
+		(
+		CUSTOMER_ID,
+		CUSTOMER_CNAME,
+		CUSTOMER_TAXNO,
+		CUSTOMER_ADDRESS,
+		TAXPAYER_TYPE,
+		CUSTOMER_PHONE,
+		CUSTOMER_CBANK,
+        CUSTOMER_ACCOUNT)
+        values(
+        1,
+        "小明",
+        "ss",
+        "ss",
+        "ss",
+        "ss",
+        "ss",
+        "ss"
+        )
+        
+		<!-- SELECT
+		CUSTOMER_NO,
+		CUSTOMER_NAME,
+		CUSTOMER_TAXNO,
+		CUSTOMER_ADDRESSAND,
+		TAXPAYER_TYPE,
+		CUSTOMER_PHONE,
+		CUSTOMER_BANKAND,
+		CUSTOMER_ACCOUNT 
+		FROM vms_customer_temp; -->
+
+	</insert>
+
+
+
+
+
+
+	<!--Oracle版本 -->
+	<!-- <select id="outPutInvoiceApplyDetail" parameterClass="java.util.Map" 
+		resultClass="transInfo" remapResults="true"> select * from ( select rownum 
+		as rowindex, t.TRANS_ID as transId, t.TRANS_DATE as transDate, t.TRANS_TYPE 
+		as transType, t.CUSTOMER_ID as customerId, nvl(b.TRANS_TYPE_NAME,'-') as 
+		transTypeName, t.CUSTOMER_ACCOUNT as customerAccount, t.TAX_FLAG as taxFlag, 
+		t.AMT_CNY as amt, t.TAX_RATE as taxRate, t.TAX_AMT_CNY as taxAmt, t.IS_REVERSE 
+		as isReverse, t.BANK_CODE as bankCode, t.REMARK as remark, t.ORG_CURR_CODE 
+		as orgCurrCode, t.ORG_ACC_NO as orgAccNo, t.AMT_CCY as amtCcy, t.REVERSE_TRANS_ID 
+		as reverseTransId, t.INCOME_CNY as income, t.SHORT_AND_OVER as shortAndOver, 
+		t.BALANCE as balance, t.INSTCODE as instCode, t.INSTNAME as instName, t.DATASTATUS 
+		as dataStatus, t.ORG_Trans_Type as orgTransType, t.ORG_Trans_SUB_Type as 
+		orgTransSubType, t.REVERSE_TRANS_DATE as reverseTransDate, t.TRANS_BUS_ID 
+		as transBusId, t.Trans_Curr as transCurr, t.TAX_AMT_CCY as taxAmtCcy, t.INCOME_CCY 
+		as incomeCcy, t.Surtax1_AMT_CNY as surtax1, t.Surtax2_AMT_CNY as surtax2, 
+		t.Surtax3_AMT_CNY as surtax3, t.Surtax4_AMT_CNY as surtax4, t.Trans_FaPiao_Flag 
+		as transFapiaoFlag, t.FaPiao_Date as fapiaoDate, t.FaPiao_Type as fapiaoType, 
+		t.Trans_Flag as transFlag, t.VAT_Rate_Code as vatRateCode, c.customer_cname 
+		as customerName, c.customer_taxno as customerTaxno, c.customer_address as 
+		customerAddress, c.customer_phone as customerTel, c.taxpayer_type as customerTaxPayerType, 
+		c.fapiao_type as customerFaPiaoType, t.CHERNUM as cherNum, t.REPNUM as repNum, 
+		t.TTMPRCNO as ttmpRcno, t.FEETYP as feeTyp, t.BILLFREQ as billFreq, t.POLYEAR 
+		as polYear, t.HISSDTE as hissDte, t.DSOURCE as dsouRce, t.CHANNEL as chanNel, 
+		t.PREMTERM as premTerm, t.OCCDATE as occDate, t.INSTFROM as instFrom, t.INSTTO 
+		as instTo, T2.WKZE as wkze, vp.vpt_product_name as proDuctName from (SELECT 
+		* FROM VMS_TRANS_INFO t where 1 = 1 <dynamic> <isNotEmpty prepend="and" property="auth_inst_ids"> 
+		t.Instcode in <iterate property="auth_inst_ids" conjunction="," open="(" 
+		close=")"> #auth_inst_ids[]# </iterate> </isNotEmpty> </dynamic> <include 
+		refid="transInfo_fragment" /> <include refid="page_fragment_base" /> ORDER 
+		BY t.businessid )t left join VMS_TRANS_TYPE b on t.TRANS_TYPE = b.TRANS_TYPE_ID 
+		left join VMS_TRANS_CKECK_VIEW T2 on T.CHERNUM=T2.CHERNUM inner join (select 
+		* from VMS_CUSTOMER_INFO) c on t.CUSTOMER_ID = c.customer_id ) where 1 = 
+		1 <include refid="transCust_link_fragment" /> </select> -->
+
+	<!--Mysql版本 -->
+	<select id="outPutInvoiceApplyDetail" parameterClass="java.util.Map"
+		resultClass="transInfo" remapResults="true">
+		select * from (
+		select
+		(@rowNum:=@rowNum+1) as rowindex,
+		t.TRANS_ID as
+		transId,
+		t.TRANS_DATE as transDate,
+		t.TRANS_TYPE as transType,
+		t.CUSTOMER_ID as
+		customerId,
+		ifnull(b.TRANS_TYPE_NAME,'-') as
+		transTypeName,
+		t.CUSTOMER_ACCOUNT as customerAccount,
+		t.TAX_FLAG as
+		taxFlag,
+		t.AMT_CNY
+		as amt,
+		t.TAX_RATE as
+		taxRate,
+		t.TAX_AMT_CNY as taxAmt,
+		t.IS_REVERSE as
+		isReverse,
+		t.BANK_CODE as bankCode,
+		t.REMARK as remark,
+		t.ORG_CURR_CODE
+		as orgCurrCode,
+		t.ORG_ACC_NO as orgAccNo,
+		t.AMT_CCY as
+		amtCcy,
+		t.REVERSE_TRANS_ID as
+		reverseTransId,
+		t.INCOME_CNY as income,
+		t.SHORT_AND_OVER as shortAndOver,
+		t.BALANCE as balance,
+		t.INSTCODE as
+		instCode,
+		t.INSTNAME as instName,
+		t.DATASTATUS as dataStatus,
+		t.ORG_Trans_Type as orgTransType,
+		t.ORG_Trans_SUB_Type as
+		orgTransSubType,
+		t.REVERSE_TRANS_DATE as reverseTransDate,
+		t.TRANS_BUS_ID as transBusId,
+		t.Trans_Curr as transCurr,
+		t.TAX_AMT_CCY
+		as taxAmtCcy,
+		t.INCOME_CCY as incomeCcy,
+		t.Surtax1_AMT_CNY as surtax1,
+		t.Surtax2_AMT_CNY as surtax2,
+		t.Surtax3_AMT_CNY as surtax3,
+		t.Surtax4_AMT_CNY as surtax4,
+		t.Trans_FaPiao_Flag as transFapiaoFlag,
+		t.FaPiao_Date as fapiaoDate,
+		t.FaPiao_Type as fapiaoType,
+		t.Trans_Flag
+		as transFlag,
+		t.VAT_Rate_Code as vatRateCode,
+		c.customer_cname as
+		customerName,
+		c.customer_taxno as customerTaxno,
+		c.customer_address as
+		customerAddress,
+		c.customer_phone as customerTel,
+		c.taxpayer_type as
+		customerTaxPayerType,
+		c.fapiao_type as customerFaPiaoType,
+		t.CHERNUM as
+		cherNum,
+		t.REPNUM as repNum,
+		t.TTMPRCNO as ttmpRcno,
+		t.FEETYP as feeTyp,
+		t.BILLFREQ as billFreq,
+		t.POLYEAR as polYear,
+		t.HISSDTE as hissDte,
+		t.DSOURCE as dsouRce,
+		t.CHANNEL as chanNel,
+		t.PREMTERM as premTerm,
+		t.OCCDATE as occDate,
+		t.INSTFROM as instFrom,
+		t.INSTTO as instTo,
+		T2.WKZE as wkze,
+		<!--有问题的点  -->
+		<!-- vp.vpt_product_name as proDuctName -->
+		from (SELECT * FROM
+		VMS_TRANS_INFO t
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="transInfo_fragment" />
+		<include refid="page_fragment_base" />
+		ORDER BY t.businessid
+		)t
+		left join VMS_TRANS_TYPE b
+		on t.TRANS_TYPE =
+		b.TRANS_TYPE_ID
+		left join VMS_TRANS_CKECK_VIEW T2 on
+		T.CHERNUM=T2.CHERNUM
+		inner join (select * from
+		VMS_CUSTOMER_INFO) c on t.CUSTOMER_ID =
+		c.customer_id,(SELECT (@rowNum :=0) ) fff )ffff
+		where 1 = 1
+		<include refid="transCust_link_fragment" />
+	</select>
+
+
+
+
+	<!--Oracle版本 -->
+	<!-- <select id="findTransInfo" parameterClass="java.util.Map" resultClass="transInfo" 
+		remapResults="true"> select * from ( select rownum as rowindex, t.TRANS_ID 
+		as transId, t.TRANS_DATE as transDate, t.TRANS_TYPE as transType, t.CUSTOMER_ID 
+		as customerId, nvl(b.TRANS_TYPE_NAME,'-') as transTypeName, t.CUSTOMER_ACCOUNT 
+		as customerAccount, t.TAX_FLAG as taxFlag, t.AMT_CNY as amt, t.TAX_RATE as 
+		taxRate, t.TAX_AMT_CNY as taxAmt, t.IS_REVERSE as isReverse, t.BANK_CODE 
+		as bankCode, t.REMARK as remark, t.ORG_CURR_CODE as orgCurrCode, t.ORG_ACC_NO 
+		as orgAccNo, t.AMT_CCY as amtCcy, t.REVERSE_TRANS_ID as reverseTransId, t.INCOME_CNY 
+		as income, t.SHORT_AND_OVER as shortAndOver, t.BALANCE as balance, t.INSTCODE 
+		as instCode, t.INSTNAME as instName, t.DATASTATUS as dataStatus, t.ORG_Trans_Type 
+		as orgTransType, t.ORG_Trans_SUB_Type as orgTransSubType, t.REVERSE_TRANS_DATE 
+		as reverseTransDate, t.TRANS_BUS_ID as transBusId, t.Trans_Curr as transCurr, 
+		t.TAX_AMT_CCY as taxAmtCcy, t.INCOME_CCY as incomeCcy, t.Surtax1_AMT_CNY 
+		as surtax1, t.Surtax2_AMT_CNY as surtax2, t.Surtax3_AMT_CNY as surtax3, t.Surtax4_AMT_CNY 
+		as surtax4, t.Trans_FaPiao_Flag as transFapiaoFlag, t.FaPiao_Date as fapiaoDate, 
+		t.FaPiao_Type as fapiaoType, t.Trans_Flag as transFlag, t.VAT_Rate_Code as 
+		vatRateCode, t.tax_cny_balance as taxCnyBalance, c.customer_cname as customerName, 
+		c.customer_taxno as customerTaxno, c.customer_address as customerAddress, 
+		c.customer_phone as customerTel, c.taxpayer_type as customerTaxPayerType, 
+		c.fapiao_type as customerFaPiaoType, c.customer_nationality as customerNationality, 
+		t2.wkze as wkze from (SELECT * FROM VMS_TRANS_INFO t where 1 = 1 <dynamic> 
+		<isNotEmpty prepend="and" property="auth_inst_ids"> t.Instcode in <iterate 
+		property="auth_inst_ids" conjunction="," open="(" close=")"> #auth_inst_ids[]# 
+		</iterate> </isNotEmpty> </dynamic> <include refid="transInfo_fragment" /> 
+		ORDER BY t.businessid )t left join VMS_TRANS_TYPE b on t.TRANS_TYPE = b.TRANS_TYPE_ID 
+		left join VMS_TRANS_CKECK_VIEW T2 on t.CHERNUM=t2.CHERNUM inner join (select 
+		* from VMS_CUSTOMER_INFO c where 1 = 1 <isNotEmpty prepend="and" property="transInfo.transCustomerList"> 
+		c.customer_id in <iterate property="transInfo.transCustomerList" conjunction="," 
+		open="(" close=")"> #transInfo.transCustomerList[]# </iterate> </isNotEmpty> 
+		<isEmpty prepend="and" property="transInfo.transCustomerList"> 1 != 1 </isEmpty> 
+		) c on t.CUSTOMER_ID = c.customer_id where 1 = 1 <include refid="transInfo_link_fragment" 
+		/> <include refid="page_fragment" /> order by transDate </select> -->
+
+
+
+
+	<!--Mysql版本视图编码格式不匹配 -->
+	<select id="findTransInfo" parameterClass="java.util.Map"
+		resultClass="transInfo" remapResults="true">
+		select * from (
+		select
+		(@rowNum:=@rowNum+1) as rowindex,
+		t.TRANS_ID as
+		transId,
+		t.TRANS_DATE as transDate,
+		t.TRANS_TYPE as transType,
+		t.CUSTOMER_ID as
+		customerId,
+		ifnull(b.TRANS_TYPE_NAME,'-') as
+		transTypeName,
+		t.CUSTOMER_ACCOUNT as customerAccount,
+		t.TAX_FLAG as
+		taxFlag,
+		t.AMT_CNY
+		as amt,
+		t.TAX_RATE as taxRate,
+		t.TAX_AMT_CNY as taxAmt,
+		t.IS_REVERSE as
+		isReverse,
+		t.BANK_CODE as bankCode,
+		t.REMARK as remark,
+		t.ORG_CURR_CODE
+		as orgCurrCode,
+		t.ORG_ACC_NO as orgAccNo,
+		t.AMT_CCY as
+		amtCcy,
+		t.REVERSE_TRANS_ID as reverseTransId,
+		t.INCOME_CNY as income,
+		t.SHORT_AND_OVER as shortAndOver,
+		t.BALANCE as balance,
+		t.INSTCODE as
+		instCode,
+		t.INSTNAME as instName,
+		t.DATASTATUS as dataStatus,
+		t.ORG_Trans_Type as orgTransType,
+		t.ORG_Trans_SUB_Type as
+		orgTransSubType,
+		t.REVERSE_TRANS_DATE as reverseTransDate,
+		t.TRANS_BUS_ID as transBusId,
+		t.Trans_Curr as transCurr,
+		t.TAX_AMT_CCY
+		as taxAmtCcy,
+		t.INCOME_CCY as incomeCcy,
+		t.Surtax1_AMT_CNY as surtax1,
+		t.Surtax2_AMT_CNY as surtax2,
+		t.Surtax3_AMT_CNY as surtax3,
+		t.Surtax4_AMT_CNY as surtax4,
+		t.Trans_FaPiao_Flag as transFapiaoFlag,
+		t.FaPiao_Date as fapiaoDate,
+		t.FaPiao_Type as fapiaoType,
+		t.Trans_Flag
+		as transFlag,
+		t.VAT_Rate_Code as vatRateCode,
+		t.tax_cny_balance as
+		taxCnyBalance,
+		c.customer_cname as customerName,
+		c.customer_taxno as
+		customerTaxno,
+		c.customer_address as customerAddress,
+		c.customer_phone
+		as customerTel,
+		c.taxpayer_type as customerTaxPayerType,
+		c.fapiao_type
+		as customerFaPiaoType,
+		c.customer_nationality as customerNationality,
+		t2.wkze as wkze
+		from (SELECT * FROM VMS_TRANS_INFO t
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="transInfo_fragment" />
+		ORDER BY t.businessid
+		)t
+		left join VMS_TRANS_TYPE b
+		on t.TRANS_TYPE =
+		b.TRANS_TYPE_ID
+		left join VMS_TRANS_CKECK_VIEW T2 on
+		t.CHERNUM=t2.CHERNUM
+		inner join (select * from
+		VMS_CUSTOMER_INFO c
+		<!-- where 1 = 1 <isNotEmpty prepend="and" property="transInfo.transCustomerList"> 
+			c.customer_id in <iterate property="transInfo.transCustomerList" conjunction="," 
+			open="(" close=")"> #transInfo.transCustomerList[]# </iterate> </isNotEmpty> 
+			<isEmpty prepend="and" property="transInfo.transCustomerList"> 1 != 1 </isEmpty> -->
+		) c
+		on t.CUSTOMER_ID = c.customer_id and t.chernum = c.chernum
+		where 1 = 1
+		<include refid="transInfo_link_fragment" />
+		<include refid="page_fragment" />
+		order by transDate
+	</select>
+
+
+	<insert id="saveConnCustHis" parameterClass="connCust">
+		insert into
+		VMS_TRANS_CUSTOMER_HIS
+		values(
+		VMS_TRANS_CUSTOMER_HIS_SEQ.nextval,
+		#transId#,
+		#orgCustomerId#,
+		#currCustomerId#,
+		#orgCustomerTaxNo#,
+		#currCustomerTaxNo#,
+		#orgCustomerName#,
+		#currCustomerName#,
+		<!--oracle版本  -->
+		<!-- to_char(sysdate,'yyyy-mm-dd HH24:MI:SS'), -->
+		<!--mysql版本  -->
+		date_format(sysdate(),''%Y-%m-%d' %H:%i:%s'),
+		#operUser#,
+		#conCustremark#
+		)
+	</insert>
+
+	<select id="findCheckApplyTransInfoCount" parameterClass="java.util.Map"
+		resultClass="long">
+		select count(*) from vms_trans_info t
+		where 1=1
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="repnum"> t.REPNUM = #repnum#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="businessType"> t.FEETYP in
+				('$businessType$')
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="source"> t.DSOURCE = #source#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="datastatus"> t.DATASTATUS !=
+				#datastatus#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 报文申请接口接收核心返回数据后，校验新单或是续期类型数据库中是否存在重复记录 -->
+	<select id="findTransByWhereSql" parameterClass="java.util.Map"
+		resultClass="com.cjit.vms.trans.model.createBill.TransInfo">
+		SELECT T.TRANS_ID as transId,T.TRANS_TYPE as transType,T.CHERNUM as
+		cherNum,t.REPNUM as repNum,T.PREMTERM as premTerm,t.DATASTATUS as
+		datastatus FROM VMS_TRANS_INFO T
+		WHERE 1=1
+		<isNotEmpty property="checkSameWhereSql" prepend="and">
+            <![CDATA[($checkSameWhereSql$)]]>
+		</isNotEmpty>
+	</select>
+
+	<insert id="saveTransInfos" parameterClass="com.cjit.vms.trans.model.createBill.TransInfo">
+		insert into
+		vms_trans_info(TRANS_ID,TRANS_DATE,TRANS_TYPE,CUSTOMER_ACCOUNT,TAX_FLAG,TAX_RATE,IS_REVERSE,BANK_CODE,
+		REMARK,ORG_CURR_CODE,ORG_ACC_NO,AMT_CCY,REVERSE_TRANS_ID,SHORT_AND_OVER,BALANCE,INSTCODE,DATASTATUS,CUSTOMER_ID,
+		AMT_CNY,TAX_AMT_CNY,INCOME_CNY,ORG_TRANS_TYPE,ORG_TRANS_SUB_TYPE,REVERSE_TRANS_DATE,REVERSE_TRANS_BUS_ID,TRANS_BUS_ID,
+		TRANS_CURR,TAX_AMT_CCY,INCOME_CCY,SURTAX1_AMT_CNY,SURTAX2_AMT_CNY,SURTAX3_AMT_CNY,SURTAX4_AMT_CNY,TRANS_FAPIAO_FLAG,
+		FAPIAO_DATE,FAPIAO_TYPE,TRANS_FLAG,VAT_RATE_CODE,BILLING_TIME,ASSOCIATE_ACCOUNT_NO,ORIG_CAP_WORKSTATION,ITEM_CODE,
+		INSTNAME,CHERNUM,REPNUM,TTMPRCNO,FEETYP,BILLFREQ,POLYEAR,HISSDTE,OCCDATE,DSOURCE,CHANNEL,PREMTERM,INSTFROM,INSTTO,
+		ALTREF,PLANLONGDESC,HISTORYFLAG,TAX_CNY_BALANCE)
+		values(
+		#transId#,
+		#transDate#,
+		#transType#,
+		#customerAccount#,
+		#taxFlag#,
+		#taxRate#,
+		#isReverse#,
+		#bankCode#,
+		#remark#,
+		#orgCurrCode#,
+		#orgAccNo#,
+		#amtCcy#,
+		#reverseTransId#,
+		#shortAndOver#,
+		#balance#,
+		#instCode#,
+		#datastatus#,
+		#customerId#,
+		#amtCny#,
+		#taxAmtCny#,
+		#incomeCny#,
+		#orgTransType#,
+		#orgTransSubType#,
+		#reverseTransDate#,
+		#reverseTransBusId#,
+		#transBusId#,
+		#transCurr#,
+		#taxAmtCcy#,
+		#incomeCcy#,
+		#surtax1AmtCny#,
+		#surtax2AmtCny#,
+		#surtax3AmtCny#,
+		#surtax4AmtCny#,
+		#transFapiaoFlag#,
+		#fapiaoDate#,
+		#fapiaoType#,
+		#transFlag#,
+		#vatRateCode#,
+		#billingTime#,
+		#associateAccountNo#,
+		#origCapWorkstation#,
+		#itemCode#,
+		#instname#,
+		#cherNum#,
+		#repNum#,
+		#ttmpRcno#,
+		#feeTyp#,
+		#billFreq#,
+		#polYear#,
+		#hissDte#,
+		#occDate#,
+		#dsouRce#,
+		#chanNel#,
+		#premTerm#,
+		#instFrom#,
+		#instTo#,
+		#altref#,
+		#planLongDesc#,
+		#hisToryFlag#,
+		#taxCnyBalance#
+		)
+	</insert>
+
+	<delete id="deleteTransInfos" parameterClass="java.util.Map">
+		delete from VMS_TRANS_INFO t
+		where 1=1
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="chernum"> t.CHERNUM in ($chernum$)
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="repnum"> t.REPNUM in ($repnum$)
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="businessType"> t.FEETYP in
+				('$businessType$')
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="source"> t.DSOURCE = #source#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="datastatus"> t.DATASTATUS =
+				#datastatus#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<delete id="deleteTransInfos2" parameterClass="java.util.Map">
+		delete from VMS_TRANS_INFO t
+		where 1=1
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="transid"> t.TRANS_ID = #transid#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="and">
+			<isNotEmpty prepend="" property="transtype"> t.TRANS_TYPE in
+				#transtype#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	<!-- 根据交易id查找该交易拆分的票据信息 -->
+	<select id="findTransInfoCancelCF" parameterClass="java.util.Map"
+		resultClass="com.cjit.vms.trans.model.BillInfo">
+		SELECT
+		A.TRANS_ID as transId,
+		B.BILL_CODE as billCode,
+		B.BILL_NO as billNo,
+		B.FAPIAO_TYPE as fapiaoType,
+		B.BUSINESSID as
+		businessid
+		FROM
+		VMS_TRANS_BILL A
+		LEFT JOIN
+		VMS_BILL_INFO B
+		ON
+		A.BILL_ID=B.BILL_ID
+		WHERE
+		A.TRANS_ID=#transId#
+	</select>
+	
+	<!--新增
+		日期：2018-08-30
+		作者：刘俊杰
+		功能：从vms_trans_info表中查询出犹豫期的电子发票(个险,首期) 
+	-->
+	<select id="selectTransInfoOfYouyuqi" parameterClass="java.util.Map" resultClass="TransInfoTemp">
+		SELECT TRANS_ID,
+		TRANS_DATE,
+		TRANS_TYPE,
+		TAX_FLAG,
+		TAX_RATE,
+		AMT_CCY,
+		BALANCE,
+		INSTCODE,
+		CUSTOMER_ID,
+		AMT_CNY,
+		TAX_AMT_CNY,
+		INCOME_CNY,
+		TRANS_CURR,
+		SURTAX1_AMT_CNY,
+		SURTAX2_AMT_CNY,
+		SURTAX3_AMT_CNY,
+		SURTAX4_AMT_CNY,
+		FAPIAO_TYPE,
+		VAT_RATE_CODE,
+		INSTNAME,
+		CHERNUM,
+		REPNUM,
+		TTMPRCNO,
+		FEETYP,
+		BILLFREQ,
+		POLYEAR,
+		HISSDTE,
+		OCCDATE,
+		INSTFROM,
+		INSTTO,
+		PREMTERM,
+		WITHDRAWYN,
+		PLANLONGDESC,
+		INSCOD,
+		INSNAM,
+		BUSINESSID,
+		QDFLAG,
+		HESITATE_PERIOD,
+		SYNCH_DATE,
+		ISYK,
+		REMARK
+		FROM vms_trans_info T 
+		WHERE QDFLAG='0' 
+		AND FEETYP='A'
+		AND DATASTATUS IN ('1')
+		<!-- AND STR_TO_DATE(HESITATE_PERIOD,'%Y-%m-%d') < NOW() -->
+	</select>
+
+</sqlMap>

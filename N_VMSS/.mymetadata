@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="N_VMSS"
+  id="myeclipse.1465198514975"
+  context-root="/vmss"
+  j2ee-spec="6.0"
+  archive="N_VMSS.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

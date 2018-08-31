@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<serviceGroup>
+	<service name="CostControl">
+		<description>web service</description>
+		<parameter name="ServiceObjectSupplier">
+			org.apache.axis2.extensions.spring.receivers.SpringServletContextObjectSupplier
+		</parameter>
+		<parameter name="SpringBeanName">CostControlService</parameter>
+	
+		<operation name="loadInputInfo">
+			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+		</operation>
+	
+	</service>
+
+	<!-- 新增电子发票webservice -->
+	<service name="vmsEletronService">
+		<description>
+			Spring aware
+		</description>
+		<parameter name="ServiceObjectSupplier">
+			org.apache.axis2.extensions.spring.receivers.SpringServletContextObjectSupplier
+		</parameter>
+		
+		<parameter name="SpringBeanName">vmsElectronWebService</parameter>
+		<operation name="transService">
+			<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
+				class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+		</operation>
+	</service>
+</serviceGroup>

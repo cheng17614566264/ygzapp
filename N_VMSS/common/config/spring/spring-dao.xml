@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	<bean id="dao" class="com.cjit.common.dao.impl.GenericDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+	<bean id="datacoreDao" class="com.cjit.common.dao.impl.GenericDatacoreDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClientLinkDatacore" />
+	</bean>
+
+	<bean id="logManagerDAO" class="cjit.logger.LogManagerImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!--新增
+		日期：2018-08-22
+		作者：刘俊杰
+		功能：通过远程连接总账的数据库(oracle)
+	-->
+	<!-- start -->
+	<bean id="getGeneralIedgerService" class="com.cjit.vms.input.service.impl.GetGeneralIedgerServiceImpl">
+		<property name="sqlMapClient" ref="sqlMapClientLinkGeneralIedger" />
+	</bean>
+	<!-- end -->
+
+</beans>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="vms">
+	<typeAlias alias="transshi" type="com.cjit.vms.trans.model.BussInfo"></typeAlias>
+
+	<insert id="insertvms" parameterClass="java.util.Map">
+		insert into u_base_config
+		(system_id,
+		system_ename,
+		system_nick_ename,
+		system_cname,
+		system_nick_cname)
+		values
+		(#businessId#, '1', '1', '2', '3')
+	</insert>
+
+	<insert id="bussInfoId" parameterClass="java.util.List">
+		insert into u_base_config
+		(system_id,
+		system_ename,
+		system_nick_ename,
+		system_cname,
+		system_nick_cname)
+		values
+		(#businessId#, '2', '2', '2', '2')
+	</insert>
+	<insert id="covInfoId" parameterClass="java.util.Map">
+
+	</insert>
+	<insert id="" parameterClass="java.util.Map">
+	</insert>
+	<insert id="" parameterClass="java.util.Map">
+	</insert>
+
+
+</sqlMap>
+ 

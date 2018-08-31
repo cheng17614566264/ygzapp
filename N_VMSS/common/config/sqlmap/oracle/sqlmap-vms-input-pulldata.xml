@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="vms_input">
+	<!-- round(tax_amt/amt,2) tax_rate, (t2.TAX_AMT-nvl(t2.TRANSFER_AMT,0)) 
+		deduc_amt VMS_INPUT_PURPOSE_MAP不关联 -->
+	<!--attribute2为核销标志: 0-核销借款， 1-非核销借款 -->
+	
+	
+	<!--oracle版本  -->
+	<!-- <select id="queryNewOrChangeedInputInvoiceInGD" resultClass="java.util.HashMap"
+		remapResults="true" parameterClass="String">
+		select
+		t3.INST_ID,t2.inst_name,t2.bill_code,t2.bill_no,
+		t2.industry_type,t2.vendor_name,t2.tax_no,t2.amt,t2.tax_rate,
+		t2.tax_amt,t2.amt_tax_sum,to_char(t2.bill_date,'yyyy-mm-dd')
+		bill_date,t2.datastatus data_status,
+		t2.direction_id,t2.direction_name,t2.transfer_amt,t2.transfer_ratio,
+		t2.untransfer_amt,t2.PORPUSE_CODE,t2.PORPUSE,t2.transfer_status,
+		t2.data_source,t2.deduc_ratio, t2.deduc_amt,t2.deduc_date,
+		t2.bill_type ,t2.GL_INTERFACE_ID ,t2.EXP_REPORT_LINE_ID
+		,to_char(t2.WRITE_OFF_COMPLETED_DATE,'yyyy-mm-dd')
+		WRITE_OFF_COMPLETED_DATE,
+		to_char(t2.AUDIT_DATE,'yyyy-mm-dd') AUDIT_DATE,attribute2
+		from hec.VMS_INPUT_INVOICE_NEW@gd_db t2,VMS_INST_MAPPING t3
+		where t2.inst_id=t3.FK_INST_ID
+		and t2.imported_flag =#IMPORTED_FLAG#
+	</select> -->
+	
+	<!--mysql版本  -->
+	<select id="queryNewOrChangeedInputInvoiceInGD" resultClass="java.util.HashMap"
+		remapResults="true" parameterClass="String">
+		select
+		t3.INST_ID,t2.inst_name,t2.bill_code,t2.bill_no,
+		t2.industry_type,t2.vendor_name,t2.tax_no,t2.amt,t2.tax_rate,
+		t2.tax_amt,t2.amt_tax_sum,date_format(t2.bill_date,'%Y-%m-%d')
+		bill_date,t2.datastatus data_status,
+		t2.direction_id,t2.direction_name,t2.transfer_amt,t2.transfer_ratio,
+		t2.untransfer_amt,t2.PORPUSE_CODE,t2.PORPUSE,t2.transfer_status,
+		t2.data_source,t2.deduc_ratio, t2.deduc_amt,t2.deduc_date,
+		t2.bill_type ,t2.GL_INTERFACE_ID ,t2.EXP_REPORT_LINE_ID
+		,date_format(t2.WRITE_OFF_COMPLETED_DATE,'%Y-%m-%d')
+		WRITE_OFF_COMPLETED_DATE,
+		date_format(t2.AUDIT_DATE,'%Y-%m-%d') AUDIT_DATE,attribute2
+		from hec.VMS_INPUT_INVOICE_NEW@gd_db t2,VMS_INST_MAPPING t3
+		where t2.inst_id=t3.FK_INST_ID
+		and t2.imported_flag =#IMPORTED_FLAG#
+	</select>
+	
+	
+	
+	
+	
+	
+	
+
+	<!-- 插入核销的数据， 表AUDIT_DATE字段对应#AUDIT_DATE# -->
+	<insert id="insertInputInvoice_hx" parameterClass="java.util.HashMap">
+		insert into
+		VMS_INPUT_INVOICE_NEW (INST_ID,INST_NAME,BILL_CODE,BILL_NO,
+		INDUSTRY_TYPE,VENDOR_NAME,TAX_NO,AMT,TAX_RATE,
+		TAX_AMT,AMT_TAX_SUM,BILL_DATE,data_status,
+		DIRECTION_ID,DIRECTION_NAME,TRANSFER_AMT,TRANSFER_RATIO,
+		UNTRANSFER_AMT,PORPUSE_CODE,PORPUSE,TRANSFER_STATUS,
+		DATA_SOURCE,DEDUC_RATIO,DEDUC_AMT,DEDUC_DATE,
+		BILL_TYPE,GL_INTERFACE_ID ,EXP_REPORT_LINE_ID,temp1,pk,AUDIT_DATE)
+		values (#INST_ID#,#INST_NAME#,#BILL_CODE#,#BILL_NO#,
+		#INDUSTRY_TYPE#,#VENDOR_NAME#,#TAX_NO#,#AMT#,#TAX_RATE#,
+		#TAX_AMT#,#AMT_TAX_SUM#,#BILL_DATE#,#data_status#,
+		#DIRECTION_ID#,#DIRECTION_NAME#,#TRANSFER_AMT#,#TRANSFER_RATIO#,
+		#UNTRANSFER_AMT#,#PORPUSE_CODE#,#PORPUSE#,#TRANSFER_STATUS#,
+		#DATA_SOURCE#,#DEDUC_RATIO#,#DEDUC_AMT#,#DEDUC_DATE#,
+		#BILL_TYPE#,#GL_INTERFACE_ID#
+		,#EXP_REPORT_LINE_ID#,'A',VMS_INPUT_INVOICE_S.NEXTVAL,#AUDIT_DATE#)
+	</insert>
+
+
+	<!-- 插入核销的数据， 表AUDIT_DATE字段对应#WRITE_OFF_COMPLETED_DATE# -->
+	<insert id="insertInputInvoice_fhx" parameterClass="java.util.HashMap">
+		insert into
+		VMS_INPUT_INVOICE_NEW (INST_ID,INST_NAME,BILL_CODE,BILL_NO,
+		INDUSTRY_TYPE,VENDOR_NAME,TAX_NO,AMT,TAX_RATE,
+		TAX_AMT,AMT_TAX_SUM,BILL_DATE,data_status,
+		DIRECTION_ID,DIRECTION_NAME,TRANSFER_AMT,TRANSFER_RATIO,
+		UNTRANSFER_AMT,PORPUSE_CODE,PORPUSE,TRANSFER_STATUS,
+		DATA_SOURCE,DEDUC_RATIO,DEDUC_AMT,DEDUC_DATE,
+		BILL_TYPE,GL_INTERFACE_ID ,EXP_REPORT_LINE_ID,temp1,pk,AUDIT_DATE)
+		values (#INST_ID#,#INST_NAME#,#BILL_CODE#,#BILL_NO#,
+		#INDUSTRY_TYPE#,#VENDOR_NAME#,#TAX_NO#,#AMT#,#TAX_RATE#,
+		#TAX_AMT#,#AMT_TAX_SUM#,#BILL_DATE#,#data_status#,
+		#DIRECTION_ID#,#DIRECTION_NAME#,#TRANSFER_AMT#,#TRANSFER_RATIO#,
+		#UNTRANSFER_AMT#,#PORPUSE_CODE#,#PORPUSE#,#TRANSFER_STATUS#,
+		#DATA_SOURCE#,#DEDUC_RATIO#,#DEDUC_AMT#,#DEDUC_DATE#,
+		#BILL_TYPE#,#GL_INTERFACE_ID#
+		,#EXP_REPORT_LINE_ID#,'A',VMS_INPUT_INVOICE_S.NEXTVAL,#WRITE_OFF_COMPLETED_DATE#)
+	</insert>
+
+
+	<update id="updateInputInvoiceInLocal_hx" parameterClass="java.util.HashMap">
+		update
+		VMS_INPUT_INVOICE_NEW set
+		INST_ID=#INST_ID#,INST_NAME=#INST_NAME#,BILL_CODE=#BILL_CODE#,BILL_NO=#BILL_NO#,
+		INDUSTRY_TYPE=#INDUSTRY_TYPE#,VENDOR_NAME=#VENDOR_NAME#,TAX_NO=#TAX_NO#,AMT=#AMT#,TAX_RATE=#TAX_RATE#,
+		TAX_AMT=#TAX_AMT#,AMT_TAX_SUM=#AMT_TAX_SUM#,BILL_DATE=#BILL_DATE#,DATA_STATUS=#DATA_STATUS#,
+		DIRECTION_ID=#DIRECTION_ID#,DIRECTION_NAME=#DIRECTION_NAME#,TRANSFER_AMT=#TRANSFER_AMT#,TRANSFER_RATIO=#TRANSFER_RATIO#,
+		UNTRANSFER_AMT=#UNTRANSFER_AMT#,PORPUSE_CODE=#PORPUSE_CODE#,PORPUSE=#PORPUSE#,TRANSFER_STATUS=#TRANSFER_STATUS#,
+		DATA_SOURCE=#DATA_SOURCE#,DEDUC_RATIO=#DEDUC_RATIO#,DEDUC_AMT=#DEDUC_AMT#,DEDUC_DATE=#DEDUC_DATE#,
+		BILL_TYPE=#BILL_TYPE#,AUDIT_DATE=#AUDIT_DATE# where
+		GL_INTERFACE_ID=#GL_INTERFACE_ID# and
+		EXP_REPORT_LINE_ID=#EXP_REPORT_LINE_ID#
+	</update>
+
+	<update id="updateInputInvoiceInLocal_fhx" parameterClass="java.util.HashMap">
+		update VMS_INPUT_INVOICE_NEW set
+		INST_ID=#INST_ID#,INST_NAME=#INST_NAME#,BILL_CODE=#BILL_CODE#,BILL_NO=#BILL_NO#,
+		INDUSTRY_TYPE=#INDUSTRY_TYPE#,VENDOR_NAME=#VENDOR_NAME#,TAX_NO=#TAX_NO#,AMT=#AMT#,TAX_RATE=#TAX_RATE#,
+		TAX_AMT=#TAX_AMT#,AMT_TAX_SUM=#AMT_TAX_SUM#,BILL_DATE=#BILL_DATE#,DATA_STATUS=#DATA_STATUS#,
+		DIRECTION_ID=#DIRECTION_ID#,DIRECTION_NAME=#DIRECTION_NAME#,TRANSFER_AMT=#TRANSFER_AMT#,TRANSFER_RATIO=#TRANSFER_RATIO#,
+		UNTRANSFER_AMT=#UNTRANSFER_AMT#,PORPUSE_CODE=#PORPUSE_CODE#,PORPUSE=#PORPUSE#,TRANSFER_STATUS=#TRANSFER_STATUS#,
+		DATA_SOURCE=#DATA_SOURCE#,DEDUC_RATIO=#DEDUC_RATIO#,DEDUC_AMT=#DEDUC_AMT#,DEDUC_DATE=#DEDUC_DATE#,
+		BILL_TYPE=#BILL_TYPE#,AUDIT_DATE=#WRITE_OFF_COMPLETED_DATE# where
+		GL_INTERFACE_ID=#GL_INTERFACE_ID# and
+		EXP_REPORT_LINE_ID=#EXP_REPORT_LINE_ID#
+	</update>
+
+	<update id="updateInputInvoiceInGD" parameterClass="java.util.HashMap">
+		update
+		hec.VMS_INPUT_INVOICE_NEW@gd_db set imported_flag ='0' where
+		GL_INTERFACE_ID=#GL_INTERFACE_ID# and
+		EXP_REPORT_LINE_ID=#EXP_REPORT_LINE_ID#
+	</update>
+
+
+	<!-- oracle 拉数据sql -->
+
+	<!-- 按会计期删除本地 数据 -->
+	<delete id="deleteByPeriod" parameterClass="String">
+		delete from
+		cux_zzs_interface where PERIOD_NAME = #PERIOD_NAME#
+	</delete>
+	<!-- 按会计期查 数据 -->
+	<select id="queryDataByPeriod" parameterClass="String"
+		resultClass="java.util.HashMap">
+		select * from cux_zzs_interface@cwxt_db where PERIOD_NAME
+		= #PERIOD_NAME#
+	</select>
+
+	<!-- -->
+	<insert id="pullCuxData" parameterClass="String">
+		insert into
+		cux_zzs_interface (COMPANY_CODE,COMPANY_NAME,ACCOUNT_CODE,
+		ACCOUNT_NAME,ACCOUNT_DETAIL_CODE,ACCOUNT_DETAIL_NAME,
+		PRODUCT_CODE,PRODUCT_NAME,PERIOD_NAME,
+		BEGIN_BALANCE_AMOUNT,PERIOD_NET_DR,PERIOD_NET_CR,END_BALANCE_AMOUNT,
+		SYSTIME)
+		(select t2.inst_id COMPANY_CODE,t.COMPANY_NAME,t.ACCOUNT_CODE,
+		t.ACCOUNT_NAME,t.ACCOUNT_DETAIL_CODE,t.ACCOUNT_DETAIL_NAME,
+		t.PRODUCT_CODE,t.PRODUCT_NAME,t.PERIOD_NAME,
+		t.BEGIN_BALANCE_AMOUNT,t.PERIOD_NET_DR,t.PERIOD_NET_CR,t.END_BALANCE_AMOUNT,
+		t.SYSTIME from cux_zzs_interface@cwxt_db t,vms_inst_mapping
+		t2,CUX_FILTER_CONDITION t3
+		where t.PERIOD_NAME = #PERIOD_NAME# and t2.fk_inst_id = t.company_code and
+		t3.account_code = t.account_code and t3.account_detail_code =
+		t.account_detail_code)
+	</insert>
+
+</sqlMap>

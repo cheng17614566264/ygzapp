@@ -1,0 +1,686 @@
+<!--file: /vmss/WEB-INF/vms/taxServer/billIssueList.jsp -->
+
+
+
+
+
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/Comm.js" charset="utf-8"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/validator.js" charset="uft-8"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/jquery/jquery_1.42.js" charset="uft-8"></script>
+<script type="text/javascript">
+	var screenHeight = screen.availHeight;
+</script>
+<script language="javascript" type="text/javascript" charset="UTF-8">
+	
+	function Timeajax(){
+				$.ajax({
+							   type: "get",
+							   async:true,
+							   cache:false,
+							   url: 'timeAjax.action',
+							   //data:{billId:id},
+							   dataType: 'html',
+							   success : function(result){
+								   alert(result);
+							 
+							   },
+							   error:function(){
+							   }
+							 });
+				setInterval(Timeajax,10000);
+		}
+</script>
+<link type="text/css"
+	href="http://localhost:8080/vms/themes/css/default.css"
+	rel="stylesheet" />
+<link type="text/css"
+	href="http://localhost:8080/vms/themes/css/menu.css"
+	rel="stylesheet" />
+<script language="javascript" type="text/javascript" charset="UTF-8">
+	function doSomething(){
+		alert(1);
+	}
+window.onload = function(){
+	var hightValue = screen.availHeight - 5 - 280;
+	var hightValueStr = "height:"+ hightValue + "px";
+	
+	var hightValue1 = screen.availHeight - 5 - 313;
+	var hightValueStr1 = "height:"+ hightValue1 + "px";
+	
+	var hightValue2 = screen.availHeight - 5 - 227;
+	var hightValueStr2 = "height:"+ hightValue2 + "px";
+	
+	var hightValue3 = screen.availHeight - 5 - 395;
+	var hightValueStr3 = "height:"+ hightValue3 + "px";
+	
+	var hightValue4 = screen.availHeight - 5 - 353;
+	var hightValueStr4 = "height:"+ hightValue4 + "px";
+
+	var hightValue5 = screen.availHeight - 5 - 400;
+	var hightValueStr5 = "height:"+ hightValue5 + "px";
+	
+	var hightValue6 = screen.availHeight - 5 - 320;
+	var hightValueStr6 = "height:"+ hightValue6 + "px";
+	
+	var hightValue7 = screen.availHeight - 5 - 340;
+	var hightValueStr7 = "height:"+ hightValue7 + "px";
+		
+	var hightValue8 = screen.availHeight - 5 - 460;
+	var hightValueStr8 = "height:"+ hightValue8 + "px";
+		
+	var hightValue9 = screen.availHeight - 5 - 245;
+	var hightValueStr9 = "height:"+ hightValue9 + "px";
+		
+	var hightValue10 = screen.availHeight - 5 - 270;
+	var hightValueStr10 = "height:"+ hightValue10 + "px";
+	
+	var hightValue12 = screen.availHeight - 5 - 280;
+	var hightValueStr12 = "height:"+ hightValue12 + "px";
+	
+	var hightValue13 = screen.availHeight - 5 - 565;
+	var hightValueStr13 = "height:"+ hightValue13 + "px";
+	
+	var widthValue14 = screen.availWidth - 264;
+	var widthValueStr14 = "width:"+ widthValue14 + "px;height:"+hightValue1+"px;";
+	
+	var hightValue15 = screen.availHeight - 5 - 525;
+	var hightValueStr15 = "height:"+ hightValue15 + "px";
+	
+	var hightValue16 = screen.availHeight - 5 - 240;
+	var hightValueStr16 = "height:"+ hightValue16 + "px";
+	
+	var hightValue17 = screen.availHeight - 5 - 382;
+	var hightValueStr17 = "height:"+ hightValue17 + "px";
+	
+	var widthValue18 = screen.availWidth - 264;
+	var widthValueStr18 = "width:"+ widthValue18 + "px;height:"+hightValue5+"px;";
+	
+	var hightValue19 = screen.availHeight - 5 - 380;
+	var hightValueStr19 = "height:"+ hightValue19 + "px";
+
+	
+	if (typeof(eval("document.all.lessGridList"))!= "undefined"){
+		document.getElementById("lessGridList").setAttribute("style", hightValueStr);
+	}
+	if (typeof(eval("document.all.lessGridList1"))!= "undefined"){
+		document.getElementById("lessGridList1").setAttribute("style", hightValueStr1);
+	}
+	if (typeof(eval("document.all.lessGridList2"))!= "undefined"){
+		document.getElementById("lessGridList2").setAttribute("style", hightValueStr2);
+	}
+	if (typeof(eval("document.all.lessGridList3"))!= "undefined"){
+		document.getElementById("lessGridList3").setAttribute("style", hightValueStr3);
+	}
+	if (typeof(eval("document.all.lessGridList4"))!= "undefined"){
+		document.getElementById("lessGridList4").setAttribute("style", hightValueStr4);
+	}
+	if (typeof(eval("document.all.lessGridList5"))!= "undefined"){
+		document.getElementById("lessGridList5").setAttribute("style", hightValueStr5);
+	}
+	if (typeof(eval("document.all.lessGridList6"))!= "undefined"){
+		document.getElementById("lessGridList6").setAttribute("style", hightValueStr6);
+	}
+	if (typeof(eval("document.all.lessGridList7"))!= "undefined"){
+		document.getElementById("lessGridList7").setAttribute("style", hightValueStr7);
+	}
+	if (typeof(eval("document.all.blankbox"))!= "undefined"){
+		document.getElementById("blankbox").setAttribute("style", hightValueStr);
+	}
+	if (typeof(eval("document.all.lessGridList8"))!= "undefined"){
+		document.getElementById("lessGridList8").setAttribute("style", hightValueStr8);
+	}
+	if (typeof(eval("document.all.lessGridList30"))!= "undefined"){
+		document.getElementById("lessGridList30").setAttribute("style", hightValueStr); 
+	}
+	if (typeof(eval("document.all.whitebox"))!= "undefined"){
+		document.getElementById("whitebox").setAttribute("style", hightValueStr9); 
+	}
+	if (typeof(eval("document.all.whitebox1"))!= "undefined"){
+		document.getElementById("whitebox1").setAttribute("style", hightValueStr10); 
+	}
+	if (typeof(eval("document.all.lessGridList12"))!= "undefined"){
+		document.getElementById("lessGridList12").setAttribute("style", hightValueStr12);
+	}
+	if (typeof(eval("document.all.lessGridList13"))!= "undefined"){
+		document.getElementById("lessGridList13").setAttribute("style", hightValueStr13);
+	}
+	if (typeof(eval("document.all.lessGridList14"))!= "undefined"){
+		document.getElementById("lessGridList14").setAttribute("style", widthValueStr14);
+	}
+	if (typeof(eval("document.all.lessGridList15"))!= "undefined"){
+		document.getElementById("lessGridList15").setAttribute("style", hightValueStr15);
+	}
+	if (typeof(eval("document.all.lessGridList16"))!= "undefined"){
+		document.getElementById("lessGridList16").setAttribute("style", hightValueStr16);
+	}
+	if (typeof(eval("document.all.lessGridList17"))!= "undefined"){
+		document.getElementById("lessGridList17").setAttribute("style", hightValueStr17);
+	}
+	if (typeof(eval("document.all.lessGridList18"))!= "undefined"){
+		document.getElementById("lessGridList18").setAttribute("style", widthValueStr18);
+	}
+	if (typeof(eval("document.all.lessGridList19"))!= "undefined"){
+		document.getElementById("lessGridList19").setAttribute("style", hightValueStr19);
+	}
+
+	var indexFrameWidth = parent.parent.document.getElementById("indexFrame").offsetWidth;
+	var leftWidth = parent.document.getElementById("leftFramePage").offsetWidth;
+	var midWidth = parent.document.getElementById("midFramePage").offsetWidth;
+	var mainHeight = parent.document.getElementById("mainFramePage").offsetHeight;
+	var mainWidth = parent.document.getElementById("mainFramePage").offsetWidth;
+	if(typeof(eval("document.all.rDiv"))== "undefined"
+			&& $("div[id*='lessGridList']").width() < $("div[id*='lessGridList']").find("table").width()
+			|| typeof(eval("document.all.rDiv")) == "undefined" && mainWidth < $("div[id*='lessGridList']").width() ){
+		if($("div[id*='lessGridList']").width() > indexFrameWidth){
+			$($("div[id*='lessGridList']").find("table")).wrap("<div id='rDiv' style='width:0px;height:auto;'></div>")
+		}else{
+			var hei = 0;
+			if($("div[id*='lessGridList']").width() > indexFrameWidth - leftWidth - midWidth){
+				hei = (indexFrameWidth - leftWidth - midWidth) * 0.985;
+			}else{
+				hei = $("div[id*='lessGridList']").width() * 0.985;
+			}
+			$($("div[id*='lessGridList']").find("table")).wrap("<div id='rDiv' style='width:"+ hei +"px;height:auto;'></div>")
+		}
+	}
+
+	var heigth = 5;
+	var anpBoudHeight = 0;
+	$("div[id*='lessGridList']").siblings().each(function(){
+		heigth += $(this).height();
+	});
+
+	if(typeof(eval("document.all.anpBoud"))!= "undefined"){
+		anpBoudHeight = document.getElementById("anpBoud").offsetHeight;
+		if(anpBoudHeight == 0){
+			anpBoudHeight = 35;
+		}
+		$("div[id*='lessGridList']").attr("style","overflow: auto;height:"+(mainHeight - heigth - anpBoudHeight)+"px;");
+	}else{
+		$("div[id*='lessGridList']").attr("style","overflow: auto;height:"+(mainHeight - heigth)+"px;");
+	}
+}
+
+
+$(function(){
+	var ifrm = parent.document.getElementById("frame");
+	$("#rDiv").attr("style","width:0px;height:auto;");
+	var lessGridList = $("div[id*='lessGridList']").attr("id");
+	var width = document.getElementById(lessGridList).offsetWidth;
+	var table = $("div[id*='lessGridList']").find("div table");
+	if(null!=ifrm){
+		if(ifrm.cols!="230,10,*" || Number(table.width()) < Number(width)){
+			$("#rDiv").attr("style","width:" + Number(width) * 0.978	 + "px;height:auto;");
+		}
+	}
+	
+
+});
+
+function mess(flag) {
+	var lessGridList = $("div[id*='lessGridList']").attr("id");
+	if (flag == 2) {
+		$("#rDiv").attr("style","width:0px;height:auto;");
+		var width = document.getElementById(lessGridList).offsetWidth;
+		$("#rDiv").attr("style","width:" + Number(width) * 0.978 + "px;height:auto;");
+	} else {
+		var width = document.getElementById(lessGridList).offsetWidth;
+		$("#rDiv").attr("style","width:" + Number(width) * 0.978 + "px;height:auto;");
+	}
+}
+</script>
+<OBJECT ID=ocxObj CLASSID="clsid:003BD8F2-A6C3-48EF-9B72-ECFD8FC4D49F"
+	codebase="NISEC_SKSCX.ocx#version=1,0,0,1" style='display: none'></OBJECT>
+<!DOCTYPE html PUBLIC "-//W3C//DTD html 4.0 Transitional//EN" >
+<html>
+<head>
+<title>增值税管理平台</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<link href="http://localhost:8080/vms/theme/default/css/main.css" type="text/css"
+	rel="stylesheet">
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/calendar_notime.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/webctrl/My97DatePicker/WdatePicker.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/editview.js"></script>
+<script type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/jquery/jquery_1.42.js"></script>
+<script type="text/javascript" src="http://localhost:8080/vmss/page/js/window.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/XmlHttp.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/search.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/ylb.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/lhb.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vms/js/main.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vms/js/search.js"></script>
+<!-- 税控服务器 -->
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/taxSelver/currentbill.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/taxSelver/validatorTax.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/taxSelver/compareCurrentBill.js"></script>
+<script language="javascript" type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/taxSelver/billCancel.js"></script>
+<!-- 税控软件 -->
+<script language="javascript"  type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/billinterface/billInterfaceAjax.js"></script>
+<script language="javascript"  type="text/javascript"
+	src="http://localhost:8080/vmss/page/js/billinterface/bw_servlet.js" ></script> 
+<script type="text/javascript">
+	 var billInterface = new BillInterface(); 
+	 billInterface.init({}); 
+	/*
+	 * 创建税控盘基本信息报文
+	 * */
+	function createTaxDiskInfo(){
+		var billIds = document.getElementsByName("selectBillIds");
+			var fapiaoTypes = document.getElementsByName("fapiaoTypes");
+			var fapiaoType = "";
+			if(fapiaoTypes.length>0){
+				fapiaoType = fapiaoTypes[0].value;
+			}
+			var ids="";
+				for(var i=0;i<billIds.length;i++){
+					if (billIds[i].checked){
+						ids = ids === "" ? billIds[i].value : ids + "," + billIds[i].value;
+					}
+				}
+				if(ids==''){
+					alert("请选择票据记录");
+					return false;
+				}
+		billInterface.createBillissue({ids:ids,fapiaoType:fapiaoType});//通用调百旺
+		 submitAction(document.forms[0], "listIssueBill.action?paginationList.showCount="+"false");
+	}
+	
+	</script>
+
+<script type="text/javascript">
+		// [查询]按钮  [导出]按钮
+		function submitForm(actionUrl){
+			submitAction(document.forms[0], actionUrl);
+			document.forms[0].action="listIssueBill.action?paginationList.showCount="+"false";
+		}
+		//开具xml导出
+		function issueBillXml(){
+			if (!checkChkBoxesSelected("selectBillIds")) {
+				alert("请选泽票据记录");
+				return false;
+			}
+			var billIds = document.getElementsByName("selectBillIds");
+			var fapiaoTypes = document.getElementsByName("fapiaoTypes");
+			var invalidInvoiceNum = document.Form1.invalidInvoiceNum.value;
+				//alert(invalidInvoiceNum);
+				var fapiaoType = fapiaoTypes[0].value;
+				//alert("fa")
+				var ids = "";
+				var selectNum = 0;
+				for (var i = 0; i < billIds.length; i++){
+					if (billIds[i].checked){
+						ids = ids === "" ? billIds[i].value : ids + "," + billIds[i].value;
+						selectNum++;
+					}
+				}
+				//alert(ids+"##"+fapiaoType);
+				document.forms[0].action="issueBillXml.action?billIds="+ids+"&fapiaoType="+fapiaoType;
+				document.forms[0].submit();
+		}
+		
+		
+		
+
+	
+		
+		// 撤销按钮
+		function cancelBill(){
+			if(checkChkBoxesSelected("selectBillIds")){
+				var billIds = document.getElementsByName("selectBillIds");
+				var isHandiworks = document.getElementsByName("isHandiworks");
+				for (var i = 0; i < billIds.length; i++){
+					if (billIds[i].checked){
+						if ("1" == isHandiworks[i].value){
+							alert("选中票据包含自动开票记录，不允许撤销");
+							return false;
+						}
+					}
+				}
+				
+				if(!confirm("是否确定对选中票据进行撤销处理？")){
+					return false;
+				}
+				document.forms[0].action = 'revokeBillFromIssue.action';
+				document.forms[0].submit();
+				document.forms[0].action="listIssueBill.action?paginationList.showCount="+"false";
+			}else{
+				alert("请选择票据记录！");
+			}
+		}
+		var msg = '';
+		if (msg != null && msg != ''){
+			alert(msg);
+		}
+		
+		function OpenModalWindowSubmit(newURL,width,height,needReload){
+			var retData = false;
+			if(typeof(width) == 'undefined'){
+				width = screen.width * 0.9;
+			}
+			if(typeof(height) == 'undefined'){
+				height = screen.height * 0.9;
+			}
+			if(typeof(needReload) == 'undefined'){
+				needReload = false;
+			}
+			retData = showModalDialog(newURL, 
+						window, 
+						"dialogWidth:" + width
+							+ "px;dialogHeight:" + height
+							+ "px;center=1;scroll=1;help=0;status=0;");
+			if(needReload && retData){
+				window.document.forms[0].submit();
+			}
+		}
+		
+	</script>
+<style type="text/css">
+.style1 {
+	width: 242px;
+}
+</style>
+</head>
+<body onkeydown="enterkey(event)">
+	<form name="Form1" method="post" action="listIssueBill.action"
+		id="Form1">
+		<input type="hidden" name="taxParam" id="taxParam"
+			value="0" />
+		
+		<input type="hidden" name="submitFlag" id="submitFlag" value="" /> <input
+			type="hidden" name="currMonth" id="currMonth" value="201711" />
+		<input type="hidden" name="invalidInvoiceNum" id="invalidInvoiceNum"
+			value="null" />
+		<table id="tbl_main" cellpadding="0" cellspacing="0"
+			class="tablewh100">
+			<tr>
+				<td class="centercondition">
+					<div id="tbl_current_status">
+						<img src="http://localhost:8080/vms/themes/images/icons/icon13.png" /> <span
+							class="current_status_menu">当前位置：</span> <span
+							class="current_status_submenu1">销项税管理</span> <span
+							class="current_status_submenu">发票管理</span> <span
+							class="current_status_submenu">发票开具</span>
+					</div>
+					<div class="widthauto1">
+						<table id="tbl_query" cellpadding="0" cellspacing="0" width="100%"
+							border="0">
+							<tr>
+								<td align="left">申请开票日期</td>
+								<td><input class="tbl_query_time" id="applyBeginDate"
+									type="text" name="billInfo.applyBeginDate"
+									value=""
+									onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'applyEndDate\')}'})"
+									size='11' "/> - <input class="tbl_query_time" id="applyEndDate"
+									type="text" name="billInfo.applyEndDate"
+									value=""
+									onfocus="WdatePicker({minDate:'#F{$dp.$D(\'applyBeginDate\')}'})"
+									size='11' "/></td>
+								<td align="left">客户名称</td>
+								<td><input type="text" class="tbl_query_text"
+									name="billInfo.customerName"
+									value=""
+									maxlength="100" /></td>
+								<td align="left">客户纳税人识别号</td>
+								<td><input type="text" class="tbl_query_text"
+									name="billInfo.customerTaxno"
+									value=""
+									maxlength="15" onkeypress="checkkey(value);" /></td>
+								<td align="left">状态</td>
+								<td><select name="billInfo.dataStatus" style="width: 135px">
+										<option value=""
+											selected
+											>全部</option>
+										<option value="3"
+											
+											>审核通过</option>
+										<option value="4"
+											
+											>无需审核</option>
+										<option value="7"
+											
+											>开具失败</option>
+								</select></td>
+							</tr>
+							<tr>
+								<td align="left">数据来源</td>
+								<td><select name="billInfo.dsouRce" style="width: 135px">
+										<option value="">全部</option>
+										<option value="SG">手工</option>
+										<option value="HX">核心</option>
+								</select></td>
+								<td align="left">开具类型</td>
+								<td><select name="billInfo.issueType" style="width: 135px">
+										<option value=""
+											selected
+											>全部</option>
+										<option value="1"
+											
+											>单笔</option>
+										<option value="2"
+											
+											>合并</option>
+										<option value="3"
+											
+											>拆分</option>
+								</select></td>
+								<td align="left">发票类型</td>
+								<td><select name="billInfo.fapiaoType" style="width: 135px">
+										<option value=""
+											
+											>全部</option>
+										<option value="0"
+											
+											>增值税专用发票</option>
+										<option value="1"
+											selected
+											>增值税普通发票</option>
+								</select></td>
+								<td colspan="2"><input type="button"
+									class="tbl_query_button" value="查询"
+									onMouseMove="this.className='tbl_query_button_on'"
+									onMouseOut="this.className='tbl_query_button'" name="BtnView"
+									id="BtnView" onclick="submitForm('listIssueBill.action')" /></td>
+							</tr>
+						</table>
+					</div>
+					<table id="tbl_tools" width="100%" border="0">
+						<tr>
+							<td align="left"><a href="#" name="BtnView" id="BtnView"
+								onclick="createTaxDiskInfo()"><img
+									src="http://localhost:8080/vms/themes/images/icons/icon1010.png" />开具</a>
+								<!-- 
+				<a href="#" name="BtnView" id="BtnView" onclick="submitForm('exportIssueBill.action')"><img src="http://localhost:8080/vms/themes/images/icons/icon1003.png"/>导出</a>
+				 --> <a href="#" name="BtnView" id="BtnView" onclick="cancelBill()"><img
+									src="http://localhost:8080/vms/themes/images/icons/icon1002.png" />撤销</a>
+								
+							</td>
+						</tr>
+					</table>
+
+					<div id="lessGridList4"
+						style="width: 100%; height: 360px; overflow: auto;">
+						<table class="lessGrid" cellspacing="0" rules="all" border="0"
+							cellpadding="0" style="border-collapse: collapse; width: 100%;">
+							<tr class="lessGrid head">
+								<th style="text-align: center"><input
+									style="width: 13px; height: 13px;" id="CheckAll"
+									type="checkbox" onclick="cbxselectall(this,'selectBillIds')" />
+								</th>
+								<th style="text-align: center">序号</th>
+								<th style="text-align: center">申请开票日期</th>
+								<th style="text-align: center">客户名称</th>
+								<th style="text-align: center">客户纳税人识别号</th>
+								<th style="text-align: center">合计金额</th>
+								<th style="text-align: center">合计税额</th>
+								<th style="text-align: center">价税合计</th>
+								<th style="text-align: center">数据来源</th>
+								<th style="text-align: center">开具类型</th>
+								<th style="text-align: center">发票类型</th>
+								<th style="text-align: center">状态</th>
+								<th style="text-align: center">操作</th>
+							</tr>
+							
+							</tr>
+						</table>
+					</div>
+
+					<div id="anpBoud" align="Right"
+						style="overflow: auto; width: 100%;">
+						<input type="hidden" name="paginationList.showCount" value="false">
+						<table width="100%" cellspacing="0" border="0">
+							<tr>
+								<td align="right"><script type="text/javascript">
+//向指定页码翻页
+function turnPage(pageNumber){
+	document.forms[0].reset();
+	document.forms[0].action = document.forms[0].action + "?paginationList.currentPage=" + pageNumber+"&pagefalg=P";
+	document.forms[0].submit()
+}
+
+
+
+function enterkey()
+{
+   var pageSize = document.getElementById("paginationList.pageSize");
+   var key = window.event.keyCode;
+   if(key == 13){
+      //document.forms[0].action = document.forms[0].action+"?paginationList.currentPage=" + pageSize.value;
+      document.forms[0].submit();
+   }
+}
+function isNumber(s)   
+{   
+	var pageSize = document.getElementById("paginationList.pageSize");
+	var patrn=/^[0-9]*[1-9][0-9]*$/; 
+	if (!patrn.exec(pageSize.value)){ 
+		alert("请输入大于1的整数。");
+		pageSize.value="1";
+		return false
+	}
+	if (pageSize.value>100){
+	    document.getElementById("paginationList.pageSize").value = 100;
+	    alert("每页显示条数不能大于100");
+	}
+	
+	
+	return true  
+}  
+
+function createPagination(doccount,pcount,curpage){
+	var showCountStr = 'false';
+	var toLongFlag = "...";
+	var inputTxt = "每页显示条数 <input type='text' size='3'  onkeydown='enterkey()' onkeyup='isNumber(this)' id='paginationList.pageSize' name='paginationList.pageSize' value='"+pcount+"'>";
+	
+	if(doccount>0){
+  		var strhtml = "<div id=page>";
+  		var spoint = (curpage-1)*pcount+1;
+ 	 	if(doccount<=pcount){
+      			strhtml += "("+spoint+"－"+doccount+")/共"+doccount+"&nbsp;&nbsp;";
+      			strhtml += "第<font color=#ff0000>1</font>页/共1页&nbsp;&nbsp;";
+      			strhtml += inputTxt + "&nbsp;&nbsp;";
+       	}
+    	else{
+      			var epoint = spoint + pcount - 1;
+      			var curpage = epoint/pcount;
+      			var pagesum;
+      			var count = doccount%pcount;
+      			if(count==0)
+        			pagesum = doccount/pcount;
+      			else
+        			pagesum = (doccount-count)/pcount+1;
+      			if(curpage==pagesum){
+      				
+      				if("false"==showCountStr){
+      					strhtml += "("+spoint+"－"+doccount+")/共"+toLongFlag+"&nbsp;&nbsp;";
+      				}else{
+      					strhtml += "("+spoint+"－"+doccount+")/共"+doccount+"&nbsp;&nbsp;";
+      				}
+      			}        			
+      			else{
+      				if("false"==showCountStr){
+      					strhtml += "("+spoint+"－"+(pcount*curpage)+")/共"+toLongFlag+"&nbsp;&nbsp;";
+      				}else{
+      					strhtml += "("+spoint+"－"+(pcount*curpage)+")/共"+doccount+"&nbsp;&nbsp;";
+      				}
+      				
+      			}
+      			
+      			if("false"==showCountStr){
+      				strhtml += "第<font color=red>"+curpage+"</font>页/共"+toLongFlag+"页&nbsp;&nbsp;";
+  				}else{
+  					strhtml += "第<font color=red>"+curpage+"</font>页/共"+pagesum+"页&nbsp;&nbsp;";
+  				}
+        			
+      			
+      			strhtml += inputTxt + "&nbsp;&nbsp;";
+      			if(curpage==1){
+        			strhtml += "<font color=#aaaaaa>首页</font>&nbsp;&nbsp;";
+        			strhtml += "<font color=#aaaaaa>上一页</font>&nbsp;&nbsp;";
+         		}
+      			else{
+        			strhtml += "<a href=javascript:turnPage(1)>首页</a>&nbsp;&nbsp;";
+        			strhtml += "<a href=javascript:turnPage('"+(curpage-1)+"')>上一页</a>&nbsp;&nbsp;";
+          		}
+      			if(curpage==pagesum){
+        			strhtml += "<font color=#aaaaaa>下一页</font>&nbsp;&nbsp;";
+        			strhtml += "<font color=#aaaaaa>尾页</font>&nbsp;&nbsp;";
+        	 	}
+      			else{
+        			strhtml += "<a href=javascript:turnPage('"+(curpage+1)+"')>下一页</a>&nbsp;&nbsp;";
+        			strhtml += "<a href=javascript:turnPage('"+pagesum+"')>尾页</a>&nbsp;&nbsp;";
+          		}
+      			strhtml += "跳转至：<select onchange=turnPage(this.options[this.selectedIndex].value)>"
+      			
+             	
+             	if("false"==showCountStr){
+             		for(i=1;i<=100;i++){
+	        			if(curpage==i)
+	          				strhtml += "<option selected value="+i+">"+i;
+	        			else
+	          				strhtml += "<option value="+i+">"+i;
+	             	}
+  				}else{
+	  				for(i=1;i<=pagesum;i++){
+	        			if(curpage==i)
+	          				strhtml += "<option selected value="+i+">"+i;
+	        			else
+	          				strhtml += "<option value="+i+">"+i;
+	             	}
+  				}
+     	}
+     	strhtml += "</div>";
+    	document.write(strhtml);
+	}
+}
+createPagination(10000,20,1);
+</script></td>
+							</tr>
+						</table>
+					</div></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

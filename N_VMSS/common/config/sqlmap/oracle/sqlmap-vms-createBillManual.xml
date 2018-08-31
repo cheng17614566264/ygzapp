@@ -1,0 +1,886 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="vms">
+
+	<typeAlias alias="taxInfo" type="com.cjit.vms.trans.model.VmsTaxInfo" />
+	<typeAlias alias="verificationInfo"
+		type="com.cjit.vms.trans.model.config.VerificationInfo" />
+	<typeAlias alias="transInfoCreateBill"
+		type="com.cjit.vms.trans.model.createBill.TransInfo" />
+	<!-- <typeAlias alias="transInfo" type="com.cjit.vms.trans.model.createBill.TransInfo" 
+		/>  -->
+		
+	<!--以下两个是中间表别名  -->
+	<typeAlias alias="transInfotemp"
+		type="com.cjit.vms.trans.model.TransInfoTemp" />
+	<typeAlias alias="CustomerTemp"
+		type="com.cjit.vms.customer.model.CustomerTemp" />
+		
+		
+	<select id="findTaxInfo" parameterClass="java.util.Map"
+		resultClass="taxInfo">
+		select tax_id as taxId,
+		taxno as taxNo,
+		fapiao_type as
+		fapiaoType,
+		tax_rate as taxRate
+		from vms_tax_info t
+		where t.taxno =
+		#transInfo.taxNo#
+		and t.fapiao_type = #transInfo.fapiaoType#
+		and
+		t.tax_rate = #transInfo.taxRate#
+	</select>
+
+	<select id="findMaxAmt" parameterClass="java.util.Map"
+		resultClass="java.math.BigDecimal">
+		select MAX_AMT as maxAmt
+		from VMS_BILL_MAX_AMT t
+		where
+		trim(t.inst_code) = #transInfo.instCode#
+		and trim(t.FAPIAO_TYPE) =
+		#transInfo.fapiaoType#
+	</select>
+
+	<select id="findGoodsInfo" parameterClass="java.util.Map"
+		resultClass="verificationInfo">
+		select t.goods_id as goodsId,
+		t.goods_name as goodsName,
+		t.model as model,
+		t.unit as unit,
+		t.remark as remark,
+		t.goods_code as
+		goodsCode,
+		t.tax_no as taxNo,
+		t.tax_rate as taxRate,
+		t.trans_type_id as
+		transTypeId
+		from v_goods_info t
+		where t.trans_type_id =
+		#transInfo.transType#
+		and t.tax_no = #transInfo.taxNo#
+		and t.tax_rate =
+		#transInfo.taxRate#
+		and t.BILL_TYPE = #transInfo.fapiaoType#
+	</select>
+
+	<!-- <select id="findTaxnoByTrans"> </select> <insert id="saveTransProcessing" 
+		parameterClass="transInfo"> insert into vms_trans_processing (trans_id, trans_idx, 
+		goods_id, balance, trans_class) values (#transInfo.transId#, #transInfo.transIdx#, 
+		#transInfo.goodsId#, #transInfo.balance#, #transInfo.transClass#) </insert> 
+		<insert id="saveBillItemInfoList" parameterClass="billItemInfo"> insert into 
+		VMS_BILL_ITEM_INFO (AMT,BILL_ID,BILL_ITEM_ID,GOODS_NAME,GOODS_NO,GOODS_PRICE, 
+		GOODS_UNIT,SPECANDMODEL,TAX_AMT,TAX_RATE) values (#amtStr#, #billId#, #billItemId#, 
+		#goodsName#, #goodsNoStr#, #goodsPriceStr#, #goodsUnit#, #specandmodel#, 
+		#taxAmtStr#, #taxRateStr#) </insert> -->
+
+	<sql id="transInfo_where">
+		<isNotEmpty prepend="and" property="transInfo.transId">
+			trans_Id =
+			#transInfo.transId#
+		</isNotEmpty>
+		<!-- 2018-07-09 电票新增 -->
+		<isNotEmpty prepend="and" property="transInfo.transUUID">
+			trans_uuid =
+			#transInfo.transUUID#
+		</isNotEmpty>
+	</sql>
+	<select id="findTransCreateBill" parameterClass="java.util.Map"
+		resultClass="transInfoCreateBill">
+		select
+		trans_id as transId,
+		trans_date as transDate,
+		trans_type as transType,
+		customer_account as customerAccount,
+		tax_flag as taxFlag,
+		tax_rate as
+		taxRate,
+		is_reverse as isReverse,
+		bank_code as bankCode,
+		remark as
+		remark,
+		org_curr_code as orgCurrCode,
+		org_acc_no as orgAccNo,
+		amt_ccy as
+		amtCcy,
+		reverse_trans_id as reverseTransId,
+		short_and_over as
+		shortAndOver,
+		balance as balance,
+		TAX_CNY_BALANCE as taxCnyBalance,
+		orig_instcode as instcode,
+		<!--修改
+			日期：2018-08-29
+			作者：刘俊杰
+			说明：增加orig_instcode字段，存储原机构代码，将原来的instcode存储上级机构代码
+		 instcode as instcode, 
+		 end 2018-08-29
+		 -->
+		datastatus as datastatus,
+		customer_id as
+		customerId,
+		amt_cny as amtCny,
+		tax_amt_cny as taxAmtCny,
+		income_cny as
+		incomeCny,
+		org_trans_type as orgTransType,
+		org_trans_sub_type as
+		orgTransSubType,
+		reverse_trans_date as reverseTransDate,
+		reverse_trans_bus_id as reverseTransBusId,
+		trans_bus_id as transBusId,
+		trans_curr as transCurr,
+		tax_amt_ccy as taxAmtCcy,
+		income_ccy as
+		incomeCcy,
+		surtax1_amt_cny as surtax1AmtCny,
+		surtax2_amt_cny as
+		surtax2AmtCny,
+		surtax3_amt_cny as surtax3AmtCny,
+		surtax4_amt_cny as
+		surtax4AmtCny,
+		trans_fapiao_flag as transFapiaoFlag,
+		fapiao_date as
+		fapiaoDate,
+		fapiao_type as fapiaoType,
+		trans_flag as transFlag,
+		vat_rate_code as vatRateCode,
+		billing_time as billingTime,
+		associate_account_no as associateAccountNo,
+		orig_cap_workstation as
+		origCapWorkstation,
+		item_code as itemCode,
+		instname as instname,
+		DSOURCE
+		as dSources,
+		t.CHERNUM as cherNum,
+		t.REPNUM as repNum,
+		t.TTMPRCNO as
+		ttmpRcno,
+		t.FEETYP as feeTyp,
+		t.BILLFREQ as billFreq,
+		t.POLYEAR as
+		polYear,
+		t.HISSDTE as hissDte,
+		t.DSOURCE as dsouRce,
+		t.CHANNEL as
+		chanNel,
+		t.PREMTERM as premTerm,
+		t.OCCDATE as occDate,
+		t.INSTFROM as
+		instFrom,
+		t.INSTTO as instTo,
+		t.INSNAM as insNam,
+		PLANLONGDESC as
+		planLongDesc,
+		CUSTOMER_CNAME as customerName
+		from (SELECT
+		C.CUSTOMER_CNAME,t.* FROM VMS_TRANS_INFO t
+		LEFT JOIN VMS_CUSTOMER_INFO
+		C ON C.CUSTOMER_ID = t.CUSTOMER_ID
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+
+			<include refid="transInfo_where" />
+		</dynamic>
+		)t
+
+		order by transDate
+	</select>
+
+	<insert id="saveBillInfo" parameterClass="map">
+		insert into
+		vms_bill_info
+		(
+		bill_id,
+		bill_code,
+		bill_no,
+		bill_date,
+		customer_name,
+		customer_taxno,
+		customer_addressandphone,
+		customer_bankandaccount,
+		amt_sum,
+		tax_amt_sum,
+		sum_amt,
+		remark,
+		drawer,
+		reviewer,
+		payee,
+		name,
+		taxno,
+		addressandphone,
+		bankandaccount,
+		instcode,
+		cancel_initiator,
+		cancel_auditor,
+		tax_disk_no,
+		machine_no,
+		notice_no,
+		ori_bill_code,
+		ori_bill_no,
+		datastatus,
+		description,
+		is_handiwork,
+		issue_type,
+		fapiao_type,
+		operatestatus,
+		apply_date,
+		balance,
+		cancel_reason,
+		customer_id,
+		INSURE_ID,
+		REPNUM,
+		TTMPRCNO,
+		FEETYP,
+		BILLFREQ,
+		HISSDTE,
+		DSOURCE,
+		CHANNEL,
+		HISTORYFLAG,
+		PRINT_COUNT
+		)
+		values(
+		#billInfo.billId#,
+		#billInfo.billCode#,
+		#billInfo.billNo#,
+		#billInfo.billDate#,
+		#billInfo.customerName#,
+		#billInfo.customerTaxno#,
+		#billInfo.customerAddressandphone#,
+		#billInfo.customerBankandaccount#,
+		#billInfo.amtSum#,
+		#billInfo.taxAmtSum#,
+		#billInfo.sumAmt#,
+		#billInfo.remark#,
+		#billInfo.drawer#,
+		#billInfo.reviewer#,
+		#billInfo.payee#,
+		#billInfo.name#,
+		#billInfo.taxno#,
+		#billInfo.addressandphone#,
+		#billInfo.bankandaccount#,
+		#billInfo.instcode#,
+		#billInfo.cancelInitiator#,
+		#billInfo.cancelAuditor#,
+		#billInfo.taxDiskNo#,
+		#billInfo.machineNo#,
+		#billInfo.noticeNo#,
+		#billInfo.oriBillCode#,
+		#billInfo.oriBillNo#,
+		#billInfo.datastatus#,
+		#billInfo.description#,
+		#billInfo.isHandiwork#,
+		#billInfo.issueType#,
+		#billInfo.fapiaoType#,
+		#billInfo.operatestatus#,
+		#billInfo.applyDate#,
+		#billInfo.balance#,
+		#billInfo.cancelReason#,
+		#billInfo.customerId#,
+		#billInfo.insureId#,
+		#billInfo.repNum#,
+		#billInfo.ttmpRcno#,
+		#billInfo.feeTyp#,
+		#billInfo.billFreq#,
+		#billInfo.hissDte#,
+		#billInfo.dsouRce#,
+		#billInfo.chanNel#,
+		#billInfo.hisToryFlag#,
+		0
+		)
+	</insert>
+
+	<select id="selectGather" parameterClass="map" resultClass="java.lang.String">
+		select gather_name as gatherName from gather where
+		trim(inst_id)=#billInfo.instcode#
+	</select>
+
+	<insert id="saveBillGoodsInfo" parameterClass="map">
+		insert into
+		vms_bill_item_info
+		(
+		bill_id,
+		bill_item_id,
+		goods_name,
+		specandmodel,
+		goods_unit,
+		goods_no,
+		goods_price,
+		tax_flag,
+		amt,
+		tax_rate,
+		tax_amt,
+		tax_item,
+		is_maingoods,
+		row_nature,
+		dis_item_id,
+		discount_rate,
+		goods_id
+		)
+		values(
+		#billGoodsInfo.billId#,
+		#billGoodsInfo.billItemId#,
+		#billGoodsInfo.goodsName#,
+		#billGoodsInfo.specandmodel#,
+		#billGoodsInfo.goodsUnit#,
+		#billGoodsInfo.goodsNo#,
+		#billGoodsInfo.goodsPrice#,
+		#billGoodsInfo.taxFlag#,
+		#billGoodsInfo.amt#,
+		#billGoodsInfo.taxRate#,
+		#billGoodsInfo.taxAmt#,
+		#billGoodsInfo.taxItem#,
+		#billGoodsInfo.isMaingoods#,
+		#billGoodsInfo.rowNature#,
+		#billGoodsInfo.disItemId#,
+		#billGoodsInfo.discountRate#,
+		#billGoodsInfo.goodsId#
+		)
+	</insert>
+	<insert id="saveBillTrans" parameterClass="map">
+		insert into
+		vms_trans_bill
+		(
+		trans_id,
+		bill_id,
+		bill_item_id,
+		amt_cny,
+		tax_amt_cny,
+		income_cny,
+		balance
+		)
+		values(
+		#billTrans.transId#,
+		#billTrans.billId#,
+		#billTrans.billItemId#,
+		#billTrans.amtCny#,
+		#billTrans.taxAmtCny#,
+		#billTrans.incomeCny#,
+		#billTrans.balance#
+		)
+	</insert>
+
+	<update id="updateTransAmtAndStatusManual" parameterClass="map">
+		update
+		VMS_TRANS_INFO
+		set
+		datastatus = (case when BALANCE =
+		#billTrans.amtCny# then '2' else '3' end)
+		,BALANCE = (BALANCE -
+		#billTrans.amtCny#)
+		,tax_cny_balance = (tax_cny_balance -
+		#billTrans.taxAmtCny#)
+		where TRANS_ID = #billTrans.transId#
+	</update>
+	
+	
+	<!--查询中间表 交易表  -->
+	
+	<!-- <select id="batchRunTransInfo" parameterClass="map" resultClass="transInfotemp">
+		SELECT BUSINESS_ID,INST_ID,
+		QD_FLAG,CHERNUM,REPNUM,TTMPRCNO,CUSTOMER_NO,ORIGCURR,ORIGAMT,TRDT,BATCTRCDE, 
+		INVTYP,FEETYP,BILLFREQ,POLYEAR,HISSDTE,PLANLONGDESC,INSTFROM,INSTTO,OCCDATE,
+		PREMTERM,INS_COD,INS_COD,INS_NAM,AMT_CNY,TAX_AMT_CNY,INCOME_CNY,TAX_RATE,ACCTAMT,TRANSTYPE FROM vms_trans_info_temp2 where valueFlage=0;
+	</select> -->
+	
+	<select id="batchRunTransInfo" parameterClass="map" resultClass="transInfotemp">
+		SELECT TRANS_ID,
+		TRANS_DATE,
+		TRANS_TYPE,
+		TAX_FLAG,
+		TAX_RATE,
+		AMT_CCY,
+		BALANCE,
+		INSTCODE,
+		CUSTOMER_ID,
+		AMT_CNY,
+		TAX_AMT_CNY,
+		INCOME_CNY,
+		TRANS_CURR,
+		SURTAX1_AMT_CNY,
+		SURTAX2_AMT_CNY,
+		SURTAX3_AMT_CNY,
+		SURTAX4_AMT_CNY,
+		FAPIAO_TYPE,
+		VAT_RATE_CODE,
+		INSTNAME,
+		CHERNUM,
+		REPNUM,
+		TTMPRCNO,
+		FEETYP,
+		BILLFREQ,
+		POLYEAR,
+		HISSDTE,
+		OCCDATE,
+		INSTFROM,
+		INSTTO,
+		PREMTERM,
+		WITHDRAWYN,
+		PLANLONGDESC,
+		INSCOD,
+		INSNAM,
+		BUSINESSID,
+		QDFLAG,
+		HESITATE_PERIOD,
+		SYNCH_DATE,
+		ISYK,
+		CANCLE_STATE,
+		REMARK
+		FROM vms_trans_info_temp_lis L
+		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		AND L.TRANS_ID NOT IN (
+		SELECT LIS.TRANS_ID 
+		FROM vms_trans_info_temp_lis LIS 
+		INNER JOIN vms_trans_info T 
+		ON T.CHERNUM=LIS.CHERNUM 
+		AND T.INSCOD=LIS.INSCOD
+		)
+		UNION
+		SELECT TRANS_ID,
+		TRANS_DATE,
+		TRANS_TYPE,
+		TAX_FLAG,
+		TAX_RATE,
+		AMT_CCY,
+		BALANCE,
+		INSTCODE,
+		CUSTOMER_ID,
+		AMT_CNY,
+		TAX_AMT_CNY,
+		INCOME_CNY,
+		TRANS_CURR,
+		SURTAX1_AMT_CNY,
+		SURTAX2_AMT_CNY,
+		SURTAX3_AMT_CNY,
+		SURTAX4_AMT_CNY,
+		FAPIAO_TYPE,
+		VAT_RATE_CODE,
+		INSTNAME,
+		CHERNUM,
+		REPNUM,
+		TTMPRCNO,
+		FEETYP,
+		BILLFREQ,
+		POLYEAR,
+		HISSDTE,
+		OCCDATE,
+		INSTFROM,
+		INSTTO,
+		PREMTERM,
+		WITHDRAWYN,
+		PLANLONGDESC,
+		INSCOD,
+		INSNAM,
+		BUSINESSID,
+		QDFLAG,
+		HESITATE_PERIOD,
+		SYNCH_DATE,
+		ISYK,
+		CANCLE_STATE,
+		REMARK
+		FROM vms_trans_info_temp_lis L
+		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		AND L.TRANS_ID IN (
+		SELECT LIS.TRANS_ID 
+		FROM vms_trans_info_temp_lis LIS 
+		INNER JOIN vms_trans_info T 
+		ON T.CHERNUM=LIS.CHERNUM 
+		AND T.INSCOD=LIS.INSCOD
+		AND T.DATASTATUS IN ('15','16')
+		AND LIS.CANCLE_STATE=1
+		AND T.TRANS_ID IN(
+		SELECT MAX(TRANS_ID) FROM vms_trans_info GROUP BY CHERNUM,INSCOD
+		)
+		)
+	</select>
+	<select id="selectbatchRunTransInfoForchernum" parameterClass="map" resultClass="transInfotemp">
+		SELECT TRANS_ID,
+		TRANS_DATE,
+		TRANS_TYPE,
+		TAX_FLAG,
+		TAX_RATE,
+		AMT_CCY,
+		BALANCE,
+		INSTCODE,
+		CUSTOMER_ID,
+		AMT_CNY,
+		TAX_AMT_CNY,
+		INCOME_CNY,
+		TRANS_CURR,
+		SURTAX1_AMT_CNY,
+		SURTAX2_AMT_CNY,
+		SURTAX3_AMT_CNY,
+		SURTAX4_AMT_CNY,
+		FAPIAO_TYPE,
+		VAT_RATE_CODE,
+		INSTNAME,
+		CHERNUM,
+		REPNUM,
+		TTMPRCNO,
+		FEETYP,
+		BILLFREQ,
+		POLYEAR,
+		HISSDTE,
+		OCCDATE,
+		INSTFROM,
+		INSTTO,
+		PREMTERM,
+		WITHDRAWYN,
+		PLANLONGDESC,
+		INSCOD,
+		INSNAM,
+		BUSINESSID,
+		QDFLAG,
+		HESITATE_PERIOD,
+		SYNCH_DATE,
+		ISYK,
+		CANCLE_STATE,
+		REMARK
+		FROM vms_trans_info_temp_lis L
+		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		AND L.CHERNUM=#chernum#
+		AND L.TRANS_ID NOT IN (
+		SELECT LIS.TRANS_ID 
+		FROM vms_trans_info_temp_lis LIS 
+		INNER JOIN vms_trans_info T 
+		ON T.CHERNUM=LIS.CHERNUM 
+		AND T.INSCOD=LIS.INSCOD
+		)
+		UNION
+		SELECT TRANS_ID,
+		TRANS_DATE,
+		TRANS_TYPE,
+		TAX_FLAG,
+		TAX_RATE,
+		AMT_CCY,
+		BALANCE,
+		INSTCODE,
+		CUSTOMER_ID,
+		AMT_CNY,
+		TAX_AMT_CNY,
+		INCOME_CNY,
+		TRANS_CURR,
+		SURTAX1_AMT_CNY,
+		SURTAX2_AMT_CNY,
+		SURTAX3_AMT_CNY,
+		SURTAX4_AMT_CNY,
+		FAPIAO_TYPE,
+		VAT_RATE_CODE,
+		INSTNAME,
+		CHERNUM,
+		REPNUM,
+		TTMPRCNO,
+		FEETYP,
+		BILLFREQ,
+		POLYEAR,
+		HISSDTE,
+		OCCDATE,
+		INSTFROM,
+		INSTTO,
+		PREMTERM,
+		WITHDRAWYN,
+		PLANLONGDESC,
+		INSCOD,
+		INSNAM,
+		BUSINESSID,
+		QDFLAG,
+		HESITATE_PERIOD,
+		SYNCH_DATE,
+		ISYK,
+		CANCLE_STATE,
+		REMARK
+		FROM vms_trans_info_temp_lis L
+		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		AND L.TRANS_ID IN (
+		SELECT LIS.TRANS_ID 
+		FROM vms_trans_info_temp_lis LIS 
+		INNER JOIN vms_trans_info T 
+		ON T.CHERNUM=LIS.CHERNUM 
+		AND T.INSCOD=LIS.INSCOD
+		AND T.DATASTATUS IN ('15','16')
+		AND LIS.CANCLE_STATE=1
+		AND T.TRANS_ID IN(
+		SELECT MAX(TRANS_ID) FROM vms_trans_info GROUP BY CHERNUM,INSCOD
+		)
+		)
+	</select>
+	
+	
+	<!--查询中间表  客户表  -->
+	<select id="batchRunCustomerInfo" parameterClass="map" resultClass="CustomerTemp">
+		SELECT ID,
+		CUSTOMER_ID,
+		chernum,
+		CUSTOMER_CNAME,
+		CUSTOMER_TAXNO,
+		CUSTOMER_ACCOUNT,
+		CUSTOMER_CBANK,
+		CUSTOMER_PHONE,
+		CUSTOMER_EMAIL,
+		CUSTOMER_ADDRESS,
+		TAXPAYER_TYPE,
+		FAPIAO_TYPE,
+		CUSTOMER_NATIONALITY,
+		CUSTOMER_ZIP_CODE,
+		SYNCH_DATE
+		FROM vms_customer_temp_lis L
+		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		AND L.ID NOT IN(
+		SELECT LIS.ID 
+		FROM vms_customer_temp_lis LIS
+		INNER JOIN vms_customer_info C
+		ON C.CUSTOMER_ID=LIS.CUSTOMER_ID 
+		AND C.chernum=LIS.chernum)
+	</select>
+	<select id="selectbatchRunCustomerInfoForchernum" parameterClass="map" resultClass="CustomerTemp">
+		SELECT ID,
+		CUSTOMER_ID,
+		chernum,
+		CUSTOMER_CNAME,
+		CUSTOMER_TAXNO,
+		CUSTOMER_ACCOUNT,
+		CUSTOMER_CBANK,
+		CUSTOMER_PHONE,
+		CUSTOMER_EMAIL,
+		CUSTOMER_ADDRESS,
+		TAXPAYER_TYPE,
+		FAPIAO_TYPE,
+		CUSTOMER_NATIONALITY,
+		CUSTOMER_ZIP_CODE,
+		SYNCH_DATE
+		FROM vms_customer_temp_lis L
+		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		AND chernum=#chernum#
+		AND L.ID NOT IN(
+		SELECT LIS.ID 
+		FROM vms_customer_temp_lis LIS
+		INNER JOIN vms_customer_info C
+		ON C.CUSTOMER_ID=LIS.CUSTOMER_ID 
+		AND C.chernum=LIS.chernum)
+	</select>
+	
+	<!--将交易数据从中间表插入到应用表  -->
+	<insert id="insertBatchRunTransInfo" parameterClass="map">
+		insert into
+		vms_trans_info
+		(
+		TRANS_DATE,
+		TRANS_TYPE,
+		TAX_FLAG,
+		TAX_RATE,
+		AMT_CCY,
+		BALANCE,
+		INSTCODE,
+		ORIG_INSTCODE,
+		CUSTOMER_ID,
+		AMT_CNY,
+		TAX_AMT_CNY,
+		INCOME_CNY,
+		TRANS_CURR,
+		SURTAX1_AMT_CNY,
+		SURTAX2_AMT_CNY,
+		SURTAX3_AMT_CNY,
+		SURTAX4_AMT_CNY,
+		FAPIAO_TYPE,
+		VAT_RATE_CODE,
+		INSTNAME,
+		CHERNUM,
+		REPNUM,
+		TTMPRCNO,
+		FEETYP,
+		BILLFREQ,
+		POLYEAR,
+		HISSDTE,
+		OCCDATE,
+		INSTFROM,
+		INSTTO,
+		PREMTERM,
+		WITHDRAWYN,
+		PLANLONGDESC,
+		INSCOD,
+		INSNAM,
+		BUSINESSID,
+		QDFLAG,
+		HESITATE_PERIOD,
+		SYNCH_DATE,
+		ISYK,
+		REMARK,
+		DATASTATUS
+		)
+		values(
+		#TRANS_DATE#,
+		#TRANS_TYPE#,
+		#TAX_FLAG#,
+		#TAX_RATE#,
+		#AMT_CCY#,
+		#BALANCE#,
+		#INSTCODE#,
+		#ORIG_INSTCODE#,
+		#CUSTOMER_ID#,
+		#AMT_CNY#,
+		#TAX_AMT_CNY#,
+		#INCOME_CNY#,
+		#TRANS_CURR#,
+		#SURTAX1_AMT_CNY#,
+		#SURTAX2_AMT_CNY#,
+		#SURTAX3_AMT_CNY#,
+		#SURTAX4_AMT_CNY#,
+		#FAPIAO_TYPE#,
+		#VAT_RATE_CODE#,
+		#INSTNAME#,
+		#CHERNUM#,
+		#REPNUM#,
+		#TTMPRCNO#,
+		#FEETYP#,
+		#BILLFREQ#,
+		#POLYEAR#,
+		#HISSDTE#,
+		#OCCDATE#,
+		#INSTFROM#,
+		#INSTTO#,
+		#PREMTERM#,
+		#WITHDRAWYN#,
+		#PLANLONGDESC#,
+		#INSCOD#,
+		#INSNAM#,
+		#BUSINESSID#,
+		#QDFLAG#,
+		#HESITATE_PERIOD#,
+		#SYNCH_DATE#,
+		#ISYK#,
+		#REMARK#,
+		1
+		)
+	</insert>
+	
+	<!--将客户数据从中间表插入到应用表  -->
+	<insert id="insertBatchRunCustomerInfo" parameterClass="map">
+		insert into
+		vms_customer_info
+		(
+		ID,
+		CUSTOMER_ID,
+		chernum,
+		CUSTOMER_CNAME,
+		CUSTOMER_TAXNO,
+		CUSTOMER_ACCOUNT,
+		CUSTOMER_CBANK,
+		CUSTOMER_PHONE,
+		CUSTOMER_EMAIL,
+		CUSTOMER_ADDRESS,
+		TAXPAYER_TYPE,
+		FAPIAO_TYPE,
+		CUSTOMER_NATIONALITY,
+		CUSTOMER_ZIP_CODE,
+		SYNCH_DATE
+		)
+		values(
+		#ID#,
+		#CUSTOMER_ID#,
+		#chernum#,
+		#CUSTOMER_CNAME#,
+		#CUSTOMER_TAXNO#,
+		#CUSTOMER_ACCOUNT#,
+		#CUSTOMER_CBANK#,
+		#CUSTOMER_PHONE#,
+		#CUSTOMER_EMAIL#,
+		#CUSTOMER_ADDRESS#,
+		#TAXPAYER_TYPE#,
+		#FAPIAO_TYPE#,
+		#CUSTOMER_NATIONALITY#,
+		#CUSTOMER_ZIP_CODE#,
+		#SYNCH_DATE#
+		)
+	</insert>
+	
+	<!--根据为电子发票的交易中的客户id查找客户信息  客户表  -->
+	<select id="batchRunCustomerInfoByIDForElectron" parameterClass="map" resultClass="CustomerTemp">
+		SELECT ID,
+		CUSTOMER_ID,
+		chernum,
+		CUSTOMER_CNAME,
+		CUSTOMER_TAXNO,
+		CUSTOMER_ACCOUNT,
+		CUSTOMER_CBANK,
+		CUSTOMER_PHONE,
+		CUSTOMER_EMAIL,
+		CUSTOMER_ADDRESS,
+		TAXPAYER_TYPE,
+		FAPIAO_TYPE,
+		CUSTOMER_NATIONALITY,
+		CUSTOMER_ZIP_CODE,
+		SYNCH_DATE
+		FROM vms_customer_temp_lis L 
+		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		AND CUSTOMER_ID=#CUSTOMER_ID#
+	</select>
+	<select id="batchRunTransInfoOfINS" parameterClass="map" resultClass="transInfotemp">
+		SELECT TRANS_ID,
+		TRANS_DATE,
+		TRANS_TYPE,
+		TAX_FLAG,
+		TAX_RATE,
+		AMT_CCY,
+		BALANCE,
+		INSTCODE,
+		CUSTOMER_ID,
+		AMT_CNY,
+		TAX_AMT_CNY,
+		INCOME_CNY,
+		TRANS_CURR,
+		SURTAX1_AMT_CNY,
+		SURTAX2_AMT_CNY,
+		SURTAX3_AMT_CNY,
+		SURTAX4_AMT_CNY,
+		FAPIAO_TYPE,
+		VAT_RATE_CODE,
+		INSTNAME,
+		CHERNUM,
+		REPNUM,
+		TTMPRCNO,
+		FEETYP,
+		BILLFREQ,
+		POLYEAR,
+		HISSDTE,
+		OCCDATE,
+		INSTFROM,
+		INSTTO,
+		PREMTERM,
+		WITHDRAWYN,
+		PLANLONGDESC,
+		INSCOD,
+		INSNAM,
+		BUSINESSID,
+		QDFLAG,
+		HESITATE_PERIOD,
+		SYNCH_DATE,
+		ISYK,
+		CANCLE_STATE,
+		REMARK
+		FROM vms_trans_info_temp_lis L 
+		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		AND L.CHERNUM=#CHERNUM#
+	</select>
+	<!--修改中间表状态  -->
+	<update id="updateTempStatus" parameterClass="map">
+		update
+		vms_trans_info_temp2
+		set
+		valueflage = '1'
+	</update>
+	
+	
+	
+	
+	
+	
+</sqlMap>
