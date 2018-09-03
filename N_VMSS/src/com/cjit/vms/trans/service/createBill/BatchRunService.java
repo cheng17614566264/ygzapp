@@ -26,4 +26,15 @@ public interface BatchRunService {
 	//跑批方法--修改中间表状态
 	
 	public void updateTempStatus(Map map);
+	//跑批方法--删除客户表中重复的数据
+	public void deleteBatchRunCustomerInfo(Map map);
+	/**
+	 * 新增
+	 * 日期：2018-09-03
+	 * 作者：刘俊杰
+	 * 功能：跑批方法--犹豫期退保，更新vms_trans_info表中对应个险犹豫期状态
+	 * @param map
+	 */
+	public void updateTransInfoOfYouyuqi(Map map);
+	//end 2018-09-03
 }

@@ -2,6 +2,7 @@ package com.cjit.vms.trans.service.createBill.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,5 +115,25 @@ public class BatchRunServiceImpl  extends GenericServiceImpl implements BatchRun
 		map.put("endTime", endTime);
 		map.put("CHERNUM", stat);
 		return find("batchRunTransInfoOfINS",map);
+	}
+	
+	//删除客户表中重复的数据
+	@Override
+	public void deleteBatchRunCustomerInfo(Map map) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+		map.put("newCustomerId", map.get("CUSTOMER_ID")+"-"+format.format(Calendar.getInstance().getTime()));
+		this.delete("deleteBatchRunCustomerInfo", map);
+	}
+
+	/**
+	 * 新增
+	 * 日期：2018-09-03
+	 * 作者：刘俊杰
+	 * 功能：跑批方法--犹豫期退保，更新vms_trans_info表中对应个险犹豫期状态
+	 * @param map
+	 */
+	@Override
+	public void updateTransInfoOfYouyuqi(Map map) {
+		this.update("updateTransInfoOfYouyuqi", map);
 	}
 }

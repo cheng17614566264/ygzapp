@@ -18,7 +18,7 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
-import sun.awt.windows.WDataTransferer;
+/*import sun.awt.windows.WDataTransferer;*/
 
 public class textdaochuExcelUtil {
 	/**

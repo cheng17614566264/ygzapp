@@ -1482,6 +1482,7 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 				map.put("ISYK", batchRunTransInfo1.getISYK());
 				map.put("CANCLE_STATE", batchRunTransInfo1.getCANCLE_STATE());
 				map.put("REMARK", batchRunTransInfo1.getREMARK());
+				map.put("DATASTATUS", 1);
 				
 				
 				//判断是否是电票,团险,首期(契约)的数据,满足条件则执行电子发票开具
@@ -1489,6 +1490,12 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 						&& "1".equals(batchRunTransInfo1.getQDFLAG()) 
 						&& "A".equals(batchRunTransInfo1.getFEETYP())) {
 					getTransInfoForINSCOD(batchRunTransInfo1.getCHERNUM(),batchRunTransInfo1.getCUSTOMER_ID());
+				}
+				//判断是否是个险犹豫期退保,如果是,则修改vms_trans_info表中的对应个险的状态,使其不开票
+				if("0".equals(batchRunTransInfo1.getQDFLAG())
+						&& "I".equals(batchRunTransInfo1.getFEETYP())) {
+					map.put("DATASTATUS", 88);
+					batchRunService.updateTransInfoOfYouyuqi(map);
 				}
 				//将交易信息写入交易表中
 				batchRunService.insertBatchRunTransInfo(map);
@@ -1525,6 +1532,7 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	        	map.put("SYNCH_DATE", customerTemp.getSYNCH_DATE());
 	        	
 	        	try{
+	        		batchRunService.deleteBatchRunCustomerInfo(map);
 	        		batchRunService.insertBatchRunCustomerInfo(map);
 	        		}
 	        	catch(Exception e){

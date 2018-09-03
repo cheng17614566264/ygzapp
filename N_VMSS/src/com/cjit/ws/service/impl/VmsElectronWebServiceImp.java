@@ -627,7 +627,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 				sucessFlag = true;
 				//Date billdate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(returnData.get("kprq"));
 				System.out.println("date.............................................................................."+returnData.get("kprq"));
-				billIssueDiskAssitService.updateBillIssueResult(returnData.get("fpdm"), returnData.get("fphm"),billInfo.getBillId(),"开票员", returnData.get("kprq"), "", true);
+				/*billIssueDiskAssitService.updateBillIssueResult(returnData.get("fpdm"), returnData.get("fphm"),billInfo.getBillId(),"开票员", returnData.get("kprq"), "", true);*/
 			}else{//失败
 				errorMessage = returnData.get("msg");
 				billInfoService.updateBillStatus(billInfo.getBillId(), null, null, DataUtil.BILL_STATUS_3, null);
@@ -671,7 +671,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 			}
 			
 			
-			billIssueDiskAssitService.updateBillIssueResult(returnData.get("fpdm"), returnData.get("fphm"),billInfo.getBillId(),"开票员", returnData.get("kprq"), "", true);
+			/*billIssueDiskAssitService.updateBillIssueResult(returnData.get("fpdm"), returnData.get("fphm"),billInfo.getBillId(),"开票员", returnData.get("kprq"), "", true);*/
 			
 			return true;
 		}else{

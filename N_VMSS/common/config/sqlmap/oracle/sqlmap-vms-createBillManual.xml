@@ -634,12 +634,14 @@
 		SYNCH_DATE
 		FROM vms_customer_temp_lis L
 		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
-		AND L.ID NOT IN(
+		AND L.ID IN 
+		(SELECT MAX(ID) FROM vms_customer_temp_lis GROUP BY CUSTOMER_ID,chernum)
+		<!-- AND L.ID NOT IN(
 		SELECT LIS.ID 
 		FROM vms_customer_temp_lis LIS
 		INNER JOIN vms_customer_info C
 		ON C.CUSTOMER_ID=LIS.CUSTOMER_ID 
-		AND C.chernum=LIS.chernum)
+		AND C.chernum=LIS.chernum) -->
 	</select>
 	<select id="selectbatchRunCustomerInfoForchernum" parameterClass="map" resultClass="CustomerTemp">
 		SELECT ID,
@@ -659,14 +661,23 @@
 		SYNCH_DATE
 		FROM vms_customer_temp_lis L
 		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
-		AND chernum=#chernum#
-		AND L.ID NOT IN(
+		AND chernum=#chernum# 
+		AND L.ID IN 
+		(SELECT MAX(ID) FROM vms_customer_temp_lis GROUP BY CUSTOMER_ID,chernum)
+		<!-- AND L.ID NOT IN(
 		SELECT LIS.ID 
 		FROM vms_customer_temp_lis LIS
 		INNER JOIN vms_customer_info C
 		ON C.CUSTOMER_ID=LIS.CUSTOMER_ID 
-		AND C.chernum=LIS.chernum)
+		AND C.chernum=LIS.chernum) -->
 	</select>
+	
+	<update id="deleteBatchRunCustomerInfo" parameterClass="java.util.Map">
+		update vms_customer_info 
+		set CUSTOMER_ID=#newCustomerId# 
+		where CUSTOMER_ID=#CUSTOMER_ID# 
+		and chernum=#chernum#
+	</update>
 	
 	<!--将交易数据从中间表插入到应用表  -->
 	<insert id="insertBatchRunTransInfo" parameterClass="map">
@@ -714,7 +725,8 @@
 		SYNCH_DATE,
 		ISYK,
 		REMARK,
-		DATASTATUS
+		DATASTATUS,
+		DSOURCE
 		)
 		values(
 		#TRANS_DATE#,
@@ -758,7 +770,8 @@
 		#SYNCH_DATE#,
 		#ISYK#,
 		#REMARK#,
-		1
+		#DATASTATUS#,
+		'HX'
 		)
 	</insert>
 	
@@ -767,7 +780,6 @@
 		insert into
 		vms_customer_info
 		(
-		ID,
 		CUSTOMER_ID,
 		chernum,
 		CUSTOMER_CNAME,
@@ -784,7 +796,6 @@
 		SYNCH_DATE
 		)
 		values(
-		#ID#,
 		#CUSTOMER_ID#,
 		#chernum#,
 		#CUSTOMER_CNAME#,
@@ -877,6 +888,20 @@
 		set
 		valueflage = '1'
 	</update>
+	<!--新增
+		日期：2018-09-03
+		作者：刘俊杰
+		功能：跑批方法：犹豫期退保，更新vms_trans_info表中对应个险犹豫期状态
+	 -->
+	<update id="updateTransInfoOfYouyuqi" parameterClass="java.util.Map">
+		update vms_trans_info 
+		set DATASTATUS='88' 
+		where CHERNUM=#CHERNUM# 
+		and INSCOD=#INSCOD# 
+		and CUSTOMER_ID=#CUSTOMER_ID#
+	</update>
+	<!-- end 2018-09-03 -->
+	
 	
 	
 	

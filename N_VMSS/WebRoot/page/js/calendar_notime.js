@@ -241,7 +241,8 @@ var meizzTheHour=new Date().getHours();	//定义小时变量的初始值
 var meizzTheMinute=new Date().getMinutes();//定义分钟变量的初始值
 var meizzWDay=new Array(37);	//定义写日期的数组
 
-function document.onclick() //任意点击时关闭该控件	//ie6的情况可以由下面的切换焦点处理代替
+/*function document.onclick()*/ //任意点击时关闭该控件	//ie6的情况可以由下面的切换焦点处理代替
+function onclick() //任意点击时关闭该控件	//ie6的情况可以由下面的切换焦点处理代替
 { 
 	with(window.event) 
 	{
@@ -249,8 +250,8 @@ function document.onclick() //任意点击时关闭该控件	//ie6的情况可�
 		closeLayer();
 	}
 }
-
-function document.onkeyup()		//按Esc键关闭，切换焦点关闭
+/*function document.onkeyup()	*/	//按Esc键关闭，切换焦点关闭
+function onkeyup()		//按Esc键关闭，切换焦点关闭
 {
 	if (window.event.keyCode==27){
 		if(outObject)outObject.blur();
