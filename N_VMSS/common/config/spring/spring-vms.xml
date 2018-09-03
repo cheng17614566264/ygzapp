@@ -1080,6 +1080,11 @@
 		class="com.cjit.vms.input.jdbcLink.service.impl.JdbcGetGeneralLedgerServiceImpl"
 		parent="genericService" />
 		
+	<!--跑批定时器  -->
+	<bean id="intervalDao"
+		class="com.cjit.vms.interval.function.service.impl.IntervalDaoImpl"
+		parent="genericService" />
+		
 	
 	<!-- 测试功能 -->
 	<bean id="MyTestService"

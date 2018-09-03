@@ -63,6 +63,8 @@ import com.cjit.vms.taxdisk.servlet.model.ElectronicsIssue;
 import com.cjit.vms.taxdisk.servlet.model.Product;
 import com.cjit.vms.taxdisk.single.model.parseXml.ReportTaxDiskBillQueryReturnXml;
 import com.cjit.vms.taxdisk.single.service.BillIssueDiskAssitService;
+import com.cjit.vms.taxdisk.tools.AjaxReturn;
+import com.cjit.vms.trans.action.BillIssueAction;
 import com.cjit.vms.trans.action.DataDealAction;
 import com.cjit.vms.trans.action.createBill.CheckResult;
 import com.cjit.vms.trans.model.BillItemInfo;
@@ -386,10 +388,20 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 									String subject = "国富人寿电子发票";//邮件主题
 									for(Map emap: mailList) {
 										StringBuffer content = new StringBuffer();
-										content.append("<div>尊敬的客户:"+emap.get("customerName")+",您好!<br />");
-										content.append("<p style='text-indent:2em;'>您在我公司所购买的保单["+emap.get("cherNum")+"]，其发票已开具成功!<br />");
-										content.append("如需下载电子发票, 请点击:"+emap.get("PDFURL")+"开始下载</p><br />");
-										content.append("如需其他帮助, 请联系"+emap.get("addressandphone")+"<br /></div>");
+										content.append("<div>尊敬的用户"+emap.get("customerName")+",您好!<br />");
+										content.append("<p>您在我公司所购买的保单["+emap.get("cherNum")+"]，其发票已开具成功!</p><br />");
+										content.append("<table cellspacing='0px'>");
+										content.append("<tr width='150px'><td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">发票抬头:");
+										content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("customerName")+"</span></td>");
+										content.append("<td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">保单号:");
+										content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("cherNum")+"</span></td></tr>");
+										content.append("<tr width='150px'><td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">发票代码:");
+										content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("fapiaoCode")+"</span></td>");
+										content.append("<td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">发票号码:");
+										content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("fapiaoNo")+"</span></td></tr></table>");
+										content.append("<P style=\"COLOR: #8e8e8e\">如果点击无效，请复制下方网页地址到浏览器地址栏中打开</P>");
+										content.append("<P>发票PDF下载： <A style=\"FONT-SIZE: 12px; COLOR: #808080\" href=\""+emap.get("PDFURL")+"\" target=_blank rel=noopener>"+emap.get("PDFURL")+"</A></P><br />");
+										content.append("如需其他帮助, 请联系："+emap.get("addressandphone")+"<br /></div>");
 										String message = Email.sendEmail(emap.get("email").toString(), subject, content.toString());
 										System.out.println(message);
 									}
@@ -405,6 +417,25 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 									for(Map emap: mailList) {
 										String pdfresult = HttpUtil.getURLContent(emap.get("PDFURL").toString());
 										System.out.println(pdfresult);
+									}
+								}
+								
+								/**
+								 * 新增
+								 * 日期：2018-09-03
+								 * 作者：刘俊杰
+								 * 功能：开票后回传给核心
+								 */
+								if(all_sucess) {
+									ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+									BillIssueAction billIssueAction = (BillIssueAction) applicationContext.getBean("billIssueAction");
+									for(Map emap: mailList) {
+										AjaxReturn ajaxReturn = billIssueAction.invoiceIssueAccessCore(emap.get("billId").toString());
+										if(ajaxReturn.getIsNormal()) {
+											System.out.println("回传核心成功");
+										}else {
+											System.out.println(ajaxReturn.getMessage());
+										}
 									}
 								}
 								

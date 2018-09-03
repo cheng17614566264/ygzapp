@@ -898,7 +898,7 @@
 		WHERE QDFLAG='0' 
 		AND FEETYP='A'
 		AND DATASTATUS IN ('1')
-		<!-- AND STR_TO_DATE(HESITATE_PERIOD,'%Y-%m-%d') < NOW() -->
+		AND STR_TO_DATE(HESITATE_PERIOD,'%Y-%m-%d') <![CDATA[< #date# ]]>
 	</select>
 
 </sqlMap>

@@ -742,6 +742,186 @@ public class BillIssueAction extends DataDealAction {
 			coreMessage = new AjaxReturn(false, "回写核心失败");
 		}
 		returnResult(coreMessage);
+	}
+	
+	/**
+	 * 修改
+	 * 日期：2018-09-03
+	 * 作者：刘俊杰
+	 * 功能：开具电子发票信息回写核心
+	 */
+	@SuppressWarnings("unchecked")
+	public AjaxReturn invoiceIssueAccessCore(String billId) throws Exception {
+		System.out.println("开具信息回写核心开始创建 ******** cheng*******");
+		AjaxReturn coreMessage = null;
+		try {
+			// 交易表中的数据
+			List<com.cjit.vms.trans.model.createBill.TransInfo> transList = billIssueService
+					.findTransInfo(billId);//TODO
+			System.err.println("getQdFlag()：  "+transList.get(0).getQdFlag()+"     ***************666666****");
+			// 根据发票id,获取发票信息
+			billInfo = billIssueService.findBillInfoById(billId);
+			System.out.println("根据发票id,获取发票信息 ***************");
+			List<BillEntity> billEntitieList = new ArrayList<BillEntity>();
+			//// 如果收据来源为手工录入，则该数据不用回写核心    实际运行去掉
+			if (transList.size() == 0) {
+				BillEntity billEntity = new BillEntity();
+				//新增
+				billEntity.setTransDate("SG交易时间"); //TODO  cheng 
+				
+				
+				billEntity.setFeetype("SG00000000");
+				billEntity.setPlanlongdesc("SG00000000");
+				billEntity.setBalance(BigDecimal.ZERO);
+				billEntity.setRepNum("SG00000000");
+				
+				
+				billEntity.setBillCode(billInfo.getBillCode());
+				billEntity.setBillNo(billInfo.getBillNo());
+				billEntity.setBusinessId("00000");
+				billEntity.setFapiaoType(billInfo.getFapiaoType());
+				billEntity.setAmt(billInfo.getSumAmt().toString());
+				billEntity.setTaxAmt(billInfo.getTaxAmtSum().toString());
+				billEntity.setDataStatus(billInfo.getDataStatus());//交易状态
+				billEntity.setCustomerId(billInfo.getCustomerId());
+				billEntity.setCustomerName(billInfo.getCustomerName());
+				billEntity.setChernum("SG00000000");
+				billEntity.setTtmprcno("SG00000000");
+				billEntity.setOriBillCode(billInfo.getOriBillCode());
+				billEntity.setOriBillNo(billInfo.getOriBillNo());
+				
+				billEntitieList.add(billEntity);
+			} else {    
+				for (com.cjit.vms.trans.model.createBill.TransInfo transInfo : transList) {
+					// 如果收据来源为手工录入，则该数据不用回写核心
+					
+					if ("HX".equals(transInfo.getDsouRce())) {  
+						System.out.println("获取 HX 数据******** cheng111*******");
+						BillEntity billEntity = new BillEntity();
+						//采用三目运算对非必填数据判断，为空则插入“”；
+					    //  min=(a<b)?a:b;
+						
+						billEntity.setBillCode((billInfo.getBillCode() != null && !billInfo.getBillCode().equals("")) ? billInfo.getBillCode():"");
+						billEntity.setBillNo((billInfo.getBillNo() != null && !billInfo.getBillNo().equals("")) ? billInfo.getBillNo():"");  //TODO cheng 
+						billEntity.setOriBillCode((billInfo.getOriBillCode() != null && !billInfo.getOriBillCode().equals("")) ? billInfo.getOriBillCode():"");
+						billEntity.setOriBillNo((billInfo.getOriBillNo() != null && !billInfo.getOriBillNo().equals("")) ? billInfo.getOriBillNo() : "");
+					
+						
+						
+						billEntity.setFapiaoType( (billInfo.getFapiaoType() != null && !billInfo.getFapiaoType().equals("")) ? billInfo.getFapiaoType() : "");
+						// amt 和  taxamt 取 billInfo表里的 数据 TODO cheng 
+						billEntity.setAmt( (billInfo.getSumAmt().toString() != null && !billInfo.getSumAmt().toString().equals("")) ? billInfo.getSumAmt().toString() : "");
+						billEntity.setTaxAmt( (billInfo.getTaxAmtSum().toString() != null && !billInfo.getTaxAmtSum().toString().equals("")) ? billInfo.getTaxAmtSum().toString() : "");
+						billEntity.setCustomerName( (billInfo.getCustomerName() != null && !billInfo.getCustomerName().equals("")) ? billInfo.getCustomerName() : "");
+						billEntity.setCustomerId( (billInfo.getCustomerId() != null && !billInfo.getCustomerId().equals("")) ? billInfo.getCustomerId() : "");
+						//
+						//    发票开具 是为5     交易状态为必填数据 不能为空 
+						if(billInfo.getDataStatus() != null && !billInfo.getDataStatus().equals("")){
+							billEntity.setDataStatus(billInfo.getDataStatus());
+							System.err.println("*************"+billInfo.getDataStatus()+"************************cheng*****");
+						}else{
+							// 不满足条件时，提示用户的错误信息 显示在前台页面  
+							coreMessage = new AjaxReturn(false, "交易状态为空，请检查交易信息是否完整！");
+							return coreMessage;
+						}
+						
+						
+						//新增qdFlag  20180830  cheng 
+						billEntity.setGdFlag((transInfo.getQdFlag() != null && !transInfo.getQdFlag().equals("")) ? transInfo.getQdFlag() : "");
+						//新增  trans
+						billEntity.setBalance((transInfo.getBalance().toString() != null && !transInfo.getBalance().toString().equals("")) ? transInfo.getBalance() : new BigDecimal("0"));
+						billEntity.setTransDate((transInfo.getTransDate() != null && !transInfo.getTransDate().equals("")) ? transInfo.getTransDate() : "");
+						//(billInfo.getCustomerId() != null && !billInfo.getCustomerId().equals("")) ? billInfo.getCustomerId() : ""
+						billEntity.setRepNum( (transInfo.getRepNum() != null && !transInfo.getRepNum().equals("")) ? transInfo.getRepNum() : "");
+						billEntity.setFeetype((transInfo.getFeeTyp() != null && !transInfo.getFeeTyp().equals("")) ? transInfo.getFeeTyp() : "");
+						billEntity.setPlanlongdesc(transInfo.getPlanLongDesc());
+						//businessID  交易流水号为必填数据 不能为空 
+						if(transInfo.getBusinessid() != null && !transInfo.getBusinessid().equals("")){
+							billEntity.setBusinessId(transInfo.getBusinessid());
+						}else{
+							// 不满足条件时，提示用户的错误信息 显示在前台页面  
+							coreMessage = new AjaxReturn(false, "交易流水号为空，请检查交易信息是否完整！");
+							return coreMessage;
+						
+						}
+						
+						billEntity.setChernum( (transInfo.getCherNum() != null && !transInfo.getCherNum().equals("")) ? transInfo.getCherNum() : "");
+						billEntity.setTtmprcno( (transInfo.getTtmpRcno() != null && !transInfo.getTtmpRcno().equals("")) ? transInfo.getTtmpRcno() : "");
+						
+						
+						//billEntity.setCustomerName(billInfo.getCustomerName());
+						
+						billEntitieList.add(billEntity);
+					}
+				}
+			}
+			System.out.println(" billEntitieList.size()********************   "+ billEntitieList.size());
+			
+			/*List<String> serviceList = billIssueService
+					.findWebServiceUrl(WebServiceUtil.HEXIN_SERVICE_NAME);
+			if (serviceList == null || serviceList.size() == 0) {
+			    // 不满足条件时，提示用户的错误信息 显示在前台页面  
+				coreMessage = new AjaxReturn(false, "核心service路径不存在");
+				return;
+			}
+			String url = serviceList.get(0);
+			*/
+			//动态获取 webservice服务端的  URL       //TODO
+			System.err.println("调用核心start***************");
+			//                 http://10.11.2.4:8080/lis/services/WXInterfaceAdapterPortal
+			String endpoint = "http://10.11.2.4:8080/lis/services/WXInterfaceAdapterPortal";
+			Service service = new Service();
+			Call call = (Call) service.createCall();
+			call.setTargetEndpointAddress(new java.net.URL(endpoint));
+			// 方法名
+			call.setOperation("process");
+		
+			System.out.println("打印回传核心的创建的报文 ***************");
+			System.out.println(JsonUtil.billIssueXml(
+					billEntitieList, "", true));
+			
+			String ret = (String) call.invoke(new Object[] { JsonUtil.billIssueXml(
+					billEntitieList, "", true) });
+			// 解析返回的xml
+			System.out.println("回传核心的创建的报文 ******** cheng*******");
+		    HeXinCallBack back = JsonUtil.analyzeXML(ret);
+		    System.out.println("解析回传核心的创建的报文 ******** cheng*******");
+		  
+		/*	SubmitData submitData = new SubmitData();
+			submitData.setRequestJSON(JsonUtil.billIssueJson(
+					billEntitieList, "", true));
+			SubmitDataResponse submitDataResponse = stub
+					.submitData(submitData);
+			
+			HeXinCallBack back = JsonUtil.callBacks(submitDataResponse
+					.getSubmitDataReturn());*/
+			if (back == null) {
+				coreMessage = new AjaxReturn(false, "回写核心失败");
+			} 
+			else {
+	
+						if ("1".equals(back.getResulttype())) {
+							for (BillEntity billEntity : billEntitieList) {
+								billEntity.setErrorInfo(back.getErrorInfo());
+							}
+							billIssueService.insertFailInfo(billEntitieList);
+							System.out.println("AAAAAAAAA回写核心失败AAAAAAAAAAAAAA");
+							coreMessage = new AjaxReturn(false, "回写核心失败");
+						} else {
+							// 接口调用成功
+							coreMessage = new AjaxReturn(true);
+							/*for (com.cjit.vms.trans.model.createBill.TransInfo transTemp : transList) {
+								billIssueService.updateTransTemp(transTemp);
+							}*/
+						}
+
+			    }
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			coreMessage = new AjaxReturn(false, "回写核心失败");
+		}
+		return coreMessage;
 	} 
 	
 	

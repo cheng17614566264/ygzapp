@@ -79,7 +79,17 @@
 		</action>
 		
 		<action name="updateBatchRunTime" method="updateBatchRunTime" class="batchRunTimeAction">
-			<result name="success">WEB-INF/vms/findBatchRunTime.jsp</result>
+			<!--修改
+				日期：2018-09-03
+				作者：刘俊杰
+				功能：返回json数据 -->
+			<result name="success" type="json">
+				 <param name="root">result</param> 
+			</result>
+			<!--
+			end 2018-09-03 
+			<result name="success">WEB-INF/vms/findBatchRunTime.jsp</result> 
+			-->
 		</action>
 		
 		

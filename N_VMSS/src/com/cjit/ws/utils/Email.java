@@ -145,8 +145,8 @@ public class Email {
         message.setSubject(subject, "UTF-8");
 
         // 5. Content: 邮件正文（可以使用html标签）（内容有广告嫌疑，避免被邮件服务器误认为是滥发广告以至返回失败，请修改发送内容）
-        message.setContent("<!DOCTYPE>"+"<div bgcolor='#f1fcfa'   style='border:1px solid #d9f4ee; font-size:14px; line-height:22px; color:#005aa0;padding-left:1px;padding-top:5px;   padding-bottom:5px;'>"
-                + content +"<div style='width:950px;font-family:arial;'><h2 style='color:green'>388465</h2><br/>本邮件由系统自动发出，请勿回复。<br/>感谢您的使用。<br/>国富人寿有限公司</div>"
+        message.setContent("<!DOCTYPE>"+"<div bgcolor='#f1fcfa' style='border:1px solid #d9f4ee; font-size:14px; line-height:22px; color:#005aa0;padding-left:1px;padding-top:5px; padding-bottom:5px;'>"
+                + content +"<div style='width:760px;font-family:arial;'><br/>本邮件由系统自动发出，请勿回复。<br/>感谢您的使用。<br/>国富人寿股份有限公司</div>"
                +"</div>", "text/html;charset=UTF-8");
 
         // 6. 设置发件时间

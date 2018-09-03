@@ -42,6 +42,7 @@
 		<property name="billValidationService" ref="billValidationService" />
 		<property name="createBillService" ref="createBillServiceManual" />
 		<property name="vmsCommonService" ref="vmsCommonService" />
+		<property name="batchRunService" ref="batchRunService" />
 	</bean>
 
 
