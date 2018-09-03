@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.cjit.vms.BatchRun.model.BatchRunTime;
 import com.cjit.vms.BatchRun.service.BatchRunTimeService;
+import com.cjit.vms.interval.function.IntervalChange;
 import com.cjit.vms.taxdisk.service.TaxKeyInterfaceService;
 import com.cjit.vms.taxdisk.single.model.busiDisk.VmsTaxKeyInfo;
 import com.cjit.vms.trans.action.DataDealAction;
@@ -34,7 +35,10 @@ public class BatchRunTimeAction extends DataDealAction{
 	private String result;
 	
 	/**
-	 * 跑批页面展示 
+	 * 修改
+	 * 日期：2018-09-03
+	 * 作者：刘俊杰
+	 * 功能：跑批页面展示 
 	 * @return
 	 */
 	
@@ -50,11 +54,8 @@ public class BatchRunTimeAction extends DataDealAction{
 				fromFlag = null;
 			}
 			
-			
-			
-			/*batchRunTimeService.updateBatchRunTime();*/
-			
-			//System.out.println("=======");
+			//查询所有的跑批单位
+			batchRunTimelist = batchRunTimeService.findBatchRunTimeDepartList();
 			
 			return SUCCESS;
 		} catch (Exception e) {
@@ -131,7 +132,10 @@ public class BatchRunTimeAction extends DataDealAction{
 	
 	
 	/**
-	 * 跑批时间修改
+	 * 修改
+	 * 日期：2018-09-03
+	 * 作者：刘俊杰
+	 * 功能：跑批时间修改
 	 * @return
 	 */
 	
@@ -139,39 +143,62 @@ public class BatchRunTimeAction extends DataDealAction{
 		
 		/*	System.out.println(brt.getCname());*/
 			
-			if (!sessionInit(true)) {
-				request.setAttribute("msg", "用户失效");
-				return ERROR;
+		if (!sessionInit(true)) {
+			request.setAttribute("msg", "用户失效");
+			return ERROR;
+		}
+		
+		try {
+			if ("menu".equalsIgnoreCase(fromFlag)) {
+				fromFlag = null;
 			}
 			
-			try {
-				if ("menu".equalsIgnoreCase(fromFlag)) {
-					fromFlag = null;
-				}
-				
-				
-				String cname=request.getParameter("cname");
-				int hour=Integer.parseInt(request.getParameter("hour"));
-				int minute=Integer.parseInt(request.getParameter("minute"));
-				int second=Integer.parseInt(request.getParameter("second"));
-				
-				System.out.println(hour);
-				System.out.println(cname);
-				btr.setCname(cname);
-				btr.setHour(hour);
-				btr.setMinute(minute);
-				btr.setSecond(second);
-				
-				
-				batchRunTimeService.updateBatchRunTime(btr);
-					
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println(e.getMessage());
-				return "fail";
-			}
-			return SUCCESS;
+			
+			String cname=request.getParameter("cname");
+			int hour=Integer.parseInt(request.getParameter("hour"));
+			int minute=Integer.parseInt(request.getParameter("minute"));
+			int second=Integer.parseInt(request.getParameter("second"));
+			int intervalHour=Integer.parseInt(request.getParameter("intervalHour"));
+			int intervalMinute=Integer.parseInt(request.getParameter("intervalMinute"));
+			int intervalSecond=Integer.parseInt(request.getParameter("intervalSecond"));
+			
+			System.out.println("updateBatchRunTime:"+hour);
+			System.out.println("updateBatchRunTime:"+cname);
+			btr.setCname(cname);
+			btr.setHour(hour);
+			btr.setMinute(minute);
+			btr.setSecond(second);
+			btr.setIntervalHour(intervalHour);
+			btr.setIntervalMinute(intervalMinute);
+			btr.setIntervalSecond(intervalSecond);
+			
+			
+			batchRunTimeService.updateBatchRunTime(btr);
+			
+			
+			Map<String,Object> map = new HashMap<String,Object>();
+	            map.put("hour", hour);
+	            map.put("minute", minute);
+	            map.put("second", second);
+	            map.put("intervalHour", intervalHour);
+	            map.put("intervalMinute", intervalMinute);
+	            map.put("intervalSecond", intervalSecond);
+	       		map.put("cname", cname);
+	       		
+			JSONObject json = JSONObject.fromObject(map);
+			
+			result=json.toString();
+			
+			//改变定时器刷新时间
+			IntervalChange intervalChange = new IntervalChange();
+			intervalChange.intervalChange(map);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return "fail";
+		}
+		return SUCCESS;
 			
 		}
 	

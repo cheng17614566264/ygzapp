@@ -677,12 +677,29 @@
 		from batchruntime t where cname=#cname#
 	</select>
 	
-	<!--跑批时间修改  -->
+	<!--修改
+		日期：2018-09-03
+		作者：刘俊杰
+		功能：跑批时间修改 
+	 -->
 	<update id="updateBatchRunTime" parameterClass="java.util.Map">
 		update batchruntime 
-		set hour=#Time.hour#,minute=#Time.minute#,second=#Time.second#
+		set hour=#Time.hour#,minute=#Time.minute#,second=#Time.second#,
+		intervalHour=#Time.intervalHour#,intervalMinute=#Time.intervalMinute#,intervalSecond=#Time.intervalSecond#
 		where cname=#Time.cname#
 	</update>
+	
+	<!--新增
+		日期：2018-09-03
+		作者：刘俊杰
+		功能：跑批单位查询  
+	-->
+	<select id="findBatchRunTimeDepart" parameterClass="java.util.Map"
+		resultClass="BatchRunTime">
+		select id,hour,minute,second,cname,intervalHour,intervalMinute,intervalSecond
+		from batchruntime where 1=1
+	</select>
+	<!-- end 2018-09-03 -->
 	
 	<!-- 测试功能 -->
 	<select id="findTestContent" parameterClass="java.util.Map"

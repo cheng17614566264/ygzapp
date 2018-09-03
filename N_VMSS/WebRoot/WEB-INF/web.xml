@@ -66,15 +66,15 @@
 	
 	<!--
 		新增
-		日期：2018-08-30
+		日期：2018-09-03
 		作者：刘俊杰
 		说明： 核心、总账、费控跑批定时器 
 	-->
-	<!-- <listener>
+	<listener>
 		<listener-class>
 			com.cjit.vms.interval.listener.IntervalListener
 		</listener-class>
-	</listener> -->
+	</listener>
 	<!-- end 2018-08-30 -->
 
 	<listener>

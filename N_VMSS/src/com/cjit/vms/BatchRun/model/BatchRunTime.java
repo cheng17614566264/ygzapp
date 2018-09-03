@@ -4,9 +4,17 @@ public class BatchRunTime {
 	private int hour;
 	private int minute;
 	private int second;
+	/**
+	 * 新增
+	 * 日期：2018-09-03
+	 * 作者：刘俊杰
+	 * 功能：batchruntime表中增加字段，用于存储跑批任务的时间间隔
+	 */
+	private int id;
 	private int intervalHour;
 	private int intervalMinute;
 	private int intervalSecond;
+	//end 2018-09-03
 	private String cname; 
 	
 	public BatchRunTime() {
@@ -19,6 +27,13 @@ public class BatchRunTime {
 		this.second = second;
 	}
 	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public int getHour() {
 		return hour;
 	}

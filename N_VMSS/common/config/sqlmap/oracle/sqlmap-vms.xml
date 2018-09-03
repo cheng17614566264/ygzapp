@@ -93,6 +93,15 @@
 	<typeAlias alias="GeneralLedgerTemp" type="com.cjit.vms.input.model.GeneralLedgerTemp" />
 	<!-- end -->
 	
+	<!--新增
+		日期：2018-09-03
+		作者：刘俊杰
+		功能：跑批任务开始时间及间隔时间表batchruntime
+	-->
+	<!-- start -->
+	<typeAlias alias="BatchRunTime" type="com.cjit.vms.BatchRun.model.BatchRunTime" />
+	<!-- end -->
+	
 		<!--oracle版本  -->
 	<!-- 	<sql id="page_fragment">
 		<dynamic>
@@ -14987,27 +14996,27 @@ select
 	
 	<!-- 
 		新增
-		日期：2018-08-30
+		日期：2018-09-03
 		作者：刘俊杰
 		说明：定时器初始化 
 	-->
 	<!--查询跑批任务表中任务数量 -->
-	<!-- <select id="intervalFindBatchRunTimeCount" resultClass="java.lang.Long">
+	<select id="intervalFindBatchRunTimeCount" resultClass="java.lang.Long">
 		SELECT count(*) from batchruntime where 1=1
-	</select> -->
+	</select>
 	<!-- 删除表中不全的数据 -->
-	<!-- <delete id="intervalDeleteBatchRunTimeForInit" parameterClass="java.util.Map">
+	<delete id="intervalDeleteBatchRunTimeForInit" parameterClass="java.util.Map">
 		delete from batchruntime
-	</delete> -->
+	</delete>
 	<!-- 重新插入新的数据 -->
-	<!-- <insert id="intervalInsertBatchRunTimeInit" parameterClass="java.util.Map">
+	<insert id="intervalInsertBatchRunTimeInit" parameterClass="java.util.Map">
 		insert into batchruntime(hour,minute,second,intervalHour,intervalMinute,intervalSecond,cname) values(
 		0,0,0,24,0,0,'核心'),(1,0,0,24,0,0,'总账'),(2,0,0,24,0,0,'费控'),(6,0,0,24,0,0,'犹豫期')
-	</insert> -->
+	</insert>
 	<!--查询跑批任务表 -->
-	<!-- <select id="intervalFindBatchRunTimeAllList" parameterClass="java.util.Map" resultClass="BatchRunTime">
+	<select id="intervalFindBatchRunTimeAllList" parameterClass="java.util.Map" resultClass="BatchRunTime">
 		SELECT id,hour,minute,second,cname,intervalHour,intervalMinute,intervalSecond from batchruntime where 1=1
-	</select> -->
+	</select>
 	<!-- end 2018-08-30 -->
 	
 </sqlMap>
