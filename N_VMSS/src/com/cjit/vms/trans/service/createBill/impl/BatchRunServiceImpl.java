@@ -28,12 +28,7 @@ public class BatchRunServiceImpl  extends GenericServiceImpl implements BatchRun
 		endTime = endTime + " 00:00:00";
 		map.put("endTime", endTime);
 		List<TransInfoTemp> transInfo = null;
-		if(map.get("chernum")==null) {
-			transInfo=find("batchRunTransInfo",map);
-		}else {
-			transInfo=find("selectbatchRunTransInfoForchernum",map);
-		}
-		
+		transInfo=find("batchRunTransInfo",map);
 		return transInfo;
 	}
 
@@ -51,12 +46,8 @@ public class BatchRunServiceImpl  extends GenericServiceImpl implements BatchRun
 		endTime = endTime + " 00:00:00";
 		map.put("endTime", endTime);
 		List<CustomerTemp> customerInfo=null;
-		if(map.get("chernum")==null) {
-			customerInfo=find("batchRunCustomerInfo",map);
-		}else {
-			customerInfo=find("selectbatchRunCustomerInfoForchernum",map);
-		}
-		
+		customerInfo=find("batchRunCustomerInfo",map);
+	
 		System.out.println("customerInfo:"+customerInfo.size());
 		
 		return customerInfo;

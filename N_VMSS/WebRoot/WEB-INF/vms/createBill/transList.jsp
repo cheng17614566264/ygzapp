@@ -440,7 +440,13 @@
 		}
 	}
 	//数据同步按钮
-	function synchData() {
+	/* 
+	修改
+	日期：2018-09-03
+	作者：刘俊杰
+	说明：将根据保单号同步核心数据、同步所有核心数据整合到同一个按钮上
+	function synchData() { */
+	function batchRun(){
 		var startDate = $.trim($("#startDate").val());
 		var endDate = $.trim($("#endDate").val());
 		var repNum = $.trim($("#repnum").val());
@@ -448,10 +454,10 @@
 		var customerName = $.trim($("#customerName").val());
 		var batchNo=$.trim($("#batchNo").val());
 		var isYK=$("#isYK").val();
-		if (!(startDate != "" || endDate != "" || repNum != "" || cherNum != "" || customerName != ""||batchNo!="")) {
+		/* if (!(startDate != "" || endDate != "" || repNum != "" || cherNum != "" || customerName != ""||batchNo!="")) {
 			alert("请填写需要同步的数据");
 			return;
-		}
+		} */
 		$.ajax({
 			url : 'synchTransInfo.action',// 跳转到 action    
 			type : 'post',
@@ -464,24 +470,19 @@
 				isYK:isYK,
 				batchNo:batchNo
 			},
-			dataType : 'text',
+			dataType : 'json',
 			success : function(ajaxReturn) {
-				var returnJson = $.parseJSON(ajaxReturn);
-					if (returnJson.isNormal) {
-						alert("数据同步成功");
-					}else{
-						alert(returnJson.message);
-					}
+				var d = eval("("+ajaxReturn+")");
+				alert(d.message);
 			},
 			error : function(ajaxReturn) {
-				var returnJson = $.parseJSON(ajaxReturn);
-				if (returnJson.isNormal) {
-					alert("数据同步成功");
-				}else{
-					alert(returnJson.message);
-				}
+				var d = eval("("+ajaxReturn+")");
+				alert(d.message);
 			}
 		});
+		//刷新页面
+		/* document.forms[0].action = "listTrans.action";
+		document.forms[0].submit(); */
 
 	}
 	//【删除】按钮 
@@ -745,14 +746,14 @@
 	 }
    
   //跑批按钮
-   function batchRun() {
+   /* function batchRun() {
 		if (!confirm("确定马上进行中间表数据同步吗？")) {
 			return false;
 		}
 		
 		document.forms[0].action = "batchRun.action";
 		document.forms[0].submit();
-	}
+	} */
 	
 	
    
@@ -909,11 +910,17 @@
 										<s:set value="#status2 eq dataStatus?true:false"
 											id="isDataStatus2"></s:set>
 										<s:set value="balance==0?true:false" id="isEmptyBalance"></s:set>
+										<!--新增
+											日期：2018-09-03
+											作者：刘俊杰
+											功能：新增判断如果在犹豫期内,让其执行电子发票开具,在此页面中只进行展示,并不让开票
+										 -->
+										 <s:set value="@com.cjit.vms.trans.util.JSPUtil@isInHesitatePeriodForBoolean(hesitatePeriod)?true:false" id="isHesitatePeriod"></s:set>
 										<td align="center"><input
 											style="width: 13px; height: 13px;" class="selectTransIds"
 											type="checkbox" name="selectTransIds"
 											value='<s:property value="transId"/>'
-											<s:property value="#isDataStatus2&&#isEmptyBalance?'disabled':''"/> />
+											<s:property value="#isDataStatus2&&#isEmptyBalance||#isHesitatePeriod?'disabled':''"/> />
 											<s:hidden name="selectCustomers" value="%{customerId}"></s:hidden>
 											<!-- 保单号 --> <s:hidden name="selectCherNum"
 												value="%{cherNum}"></s:hidden> <s:hidden

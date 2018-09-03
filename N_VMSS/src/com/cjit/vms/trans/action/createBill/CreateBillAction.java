@@ -60,8 +60,24 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	private String ttmpRcno;// 投保单号
 	private String customerName;// 客户名称
 	private int scale = 10;
-	
-	
+	/**
+	 * 新增
+	 * 日期:2018-09-03
+	 * 作者：刘俊杰
+	 * 功能：用于ajax返回json字符串
+	 */
+	private String result;
+	public String getResult() {
+		return result;
+	}
+	public void setResult(String result) {
+		this.result = result;
+	}
+	//end 2018-09-03
+
+
+
+
 	/*实例化*/
 	BillInfo bi=new BillInfo();
 	
@@ -929,13 +945,16 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	 * 
 	 * @return
 	 */
-	public void synchTransInfo() {
+	public String synchTransInfo() {
 		if (!sessionInit(true)) {
 			request.setAttribute("msg", "用户失效");
-			return ;
+			return ERROR;
 		}
 		ApplicationForm applicationForm = new ApplicationForm();
 		// 0002:开票申请 0003:返回发票信息
+		cherNum = request.getParameter("cherNum");
+		repNum  = request.getParameter("repNum");
+		customerName = request.getParameter("customerName");
 		applicationForm.setRequestionType("0002");
 		applicationForm.setTtmprcNo(repNum);
 		applicationForm.setChernum(cherNum);
@@ -961,11 +980,8 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 			applicationForm.setBatchType("1");
 		}
 		AjaxReturn ajaxReturn = this.transUpdate(applicationForm);
-		try {
-			returnResult(ajaxReturn);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		result = JSON.toJSONString(ajaxReturn);System.out.println(result);
+		return SUCCESS;
 	}
 
 	/**

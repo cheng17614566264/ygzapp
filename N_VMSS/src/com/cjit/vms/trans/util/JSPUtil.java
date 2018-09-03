@@ -23,6 +23,26 @@ public class JSPUtil {
 		return value;
 	}
 	/**
+	 * 新增
+	 * 日期：2018-09-03
+	 * 作者：刘俊杰
+	 * 功能：判断是否在犹豫期内
+	 * @param hesitatePeriod
+	 * @return
+	 */
+	public static boolean isInHesitatePeriodForBoolean(String hesitatePeriod){
+		String time = (hesitatePeriod == null) ? null : hesitatePeriod.toString();
+		boolean value = false;
+	 	Date date = new Date();
+	 	SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+	 	if (time != null) {
+	 		if (time.compareTo(sf.format(date)) >= 0) {
+	 			value = true;
+	 		}
+	 	}
+		return value;
+	}
+	/**
 	 * 是否为预开票
 	 * @param isYK
 	 * @return

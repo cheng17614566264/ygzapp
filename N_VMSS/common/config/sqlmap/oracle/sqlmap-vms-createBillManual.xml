@@ -435,8 +435,11 @@
 		ISYK,
 		CANCLE_STATE,
 		REMARK
-		FROM vms_trans_info_temp_lis L
+		FROM vms_trans_info_temp_lis L 
 		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		<isNotEmpty prepend="and" property="chernum">
+				L.CHERNUM=#chernum#
+		</isNotEmpty>
 		AND L.TRANS_ID NOT IN (
 		SELECT LIS.TRANS_ID 
 		FROM vms_trans_info_temp_lis LIS 
@@ -500,117 +503,15 @@
 		AND T.TRANS_ID IN(
 		SELECT MAX(TRANS_ID) FROM vms_trans_info GROUP BY CHERNUM,INSCOD
 		)
-		)
-	</select>
-	<select id="selectbatchRunTransInfoForchernum" parameterClass="map" resultClass="transInfotemp">
-		SELECT TRANS_ID,
-		TRANS_DATE,
-		TRANS_TYPE,
-		TAX_FLAG,
-		TAX_RATE,
-		AMT_CCY,
-		BALANCE,
-		INSTCODE,
-		CUSTOMER_ID,
-		AMT_CNY,
-		TAX_AMT_CNY,
-		INCOME_CNY,
-		TRANS_CURR,
-		SURTAX1_AMT_CNY,
-		SURTAX2_AMT_CNY,
-		SURTAX3_AMT_CNY,
-		SURTAX4_AMT_CNY,
-		FAPIAO_TYPE,
-		VAT_RATE_CODE,
-		INSTNAME,
-		CHERNUM,
-		REPNUM,
-		TTMPRCNO,
-		FEETYP,
-		BILLFREQ,
-		POLYEAR,
-		HISSDTE,
-		OCCDATE,
-		INSTFROM,
-		INSTTO,
-		PREMTERM,
-		WITHDRAWYN,
-		PLANLONGDESC,
-		INSCOD,
-		INSNAM,
-		BUSINESSID,
-		QDFLAG,
-		HESITATE_PERIOD,
-		SYNCH_DATE,
-		ISYK,
-		CANCLE_STATE,
-		REMARK
-		FROM vms_trans_info_temp_lis L
-		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
-		AND L.CHERNUM=#chernum#
-		AND L.TRANS_ID NOT IN (
-		SELECT LIS.TRANS_ID 
+		)OR L.TRANS_ID IN(
+		SELECT LIS.TRANS_ID
 		FROM vms_trans_info_temp_lis LIS 
 		INNER JOIN vms_trans_info T 
 		ON T.CHERNUM=LIS.CHERNUM 
 		AND T.INSCOD=LIS.INSCOD
-		)
-		UNION
-		SELECT TRANS_ID,
-		TRANS_DATE,
-		TRANS_TYPE,
-		TAX_FLAG,
-		TAX_RATE,
-		AMT_CCY,
-		BALANCE,
-		INSTCODE,
-		CUSTOMER_ID,
-		AMT_CNY,
-		TAX_AMT_CNY,
-		INCOME_CNY,
-		TRANS_CURR,
-		SURTAX1_AMT_CNY,
-		SURTAX2_AMT_CNY,
-		SURTAX3_AMT_CNY,
-		SURTAX4_AMT_CNY,
-		FAPIAO_TYPE,
-		VAT_RATE_CODE,
-		INSTNAME,
-		CHERNUM,
-		REPNUM,
-		TTMPRCNO,
-		FEETYP,
-		BILLFREQ,
-		POLYEAR,
-		HISSDTE,
-		OCCDATE,
-		INSTFROM,
-		INSTTO,
-		PREMTERM,
-		WITHDRAWYN,
-		PLANLONGDESC,
-		INSCOD,
-		INSNAM,
-		BUSINESSID,
-		QDFLAG,
-		HESITATE_PERIOD,
-		SYNCH_DATE,
-		ISYK,
-		CANCLE_STATE,
-		REMARK
-		FROM vms_trans_info_temp_lis L
-		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
-		AND L.TRANS_ID IN (
-		SELECT LIS.TRANS_ID 
-		FROM vms_trans_info_temp_lis LIS 
-		INNER JOIN vms_trans_info T 
-		ON T.CHERNUM=LIS.CHERNUM 
-		AND T.INSCOD=LIS.INSCOD
-		AND T.DATASTATUS IN ('15','16')
-		AND LIS.CANCLE_STATE=1
-		AND T.TRANS_ID IN(
-		SELECT MAX(TRANS_ID) FROM vms_trans_info GROUP BY CHERNUM,INSCOD
-		)
+		AND T.DATASTATUS NOT IN ('88')
+		AND LIS.QDFLAG='0'
+		AND LIS.FEETYP='I'
 		)
 	</select>
 	
@@ -632,38 +533,19 @@
 		CUSTOMER_NATIONALITY,
 		CUSTOMER_ZIP_CODE,
 		SYNCH_DATE
-		FROM vms_customer_temp_lis L
+		FROM vms_customer_temp_lis L 
 		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
+		<isNotEmpty prepend="and" property="chernum">
+				L.chernum=#chernum#
+		</isNotEmpty>
 		AND L.ID IN 
-		(SELECT MAX(ID) FROM vms_customer_temp_lis GROUP BY CUSTOMER_ID,chernum)
-		<!-- AND L.ID NOT IN(
-		SELECT LIS.ID 
-		FROM vms_customer_temp_lis LIS
-		INNER JOIN vms_customer_info C
-		ON C.CUSTOMER_ID=LIS.CUSTOMER_ID 
-		AND C.chernum=LIS.chernum) -->
-	</select>
-	<select id="selectbatchRunCustomerInfoForchernum" parameterClass="map" resultClass="CustomerTemp">
-		SELECT ID,
-		CUSTOMER_ID,
-		chernum,
-		CUSTOMER_CNAME,
-		CUSTOMER_TAXNO,
-		CUSTOMER_ACCOUNT,
-		CUSTOMER_CBANK,
-		CUSTOMER_PHONE,
-		CUSTOMER_EMAIL,
-		CUSTOMER_ADDRESS,
-		TAXPAYER_TYPE,
-		FAPIAO_TYPE,
-		CUSTOMER_NATIONALITY,
-		CUSTOMER_ZIP_CODE,
-		SYNCH_DATE
-		FROM vms_customer_temp_lis L
-		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
-		AND chernum=#chernum# 
-		AND L.ID IN 
-		(SELECT MAX(ID) FROM vms_customer_temp_lis GROUP BY CUSTOMER_ID,chernum)
+		(SELECT MAX(ID) FROM vms_customer_temp_lis GROUP BY CUSTOMER_ID,chernum) 
+		AND L.ID NOT IN (
+		SELECT LIS.ID FROM vms_customer_info LIS 
+		WHERE LIS.CUSTOMER_ID=L.CUSTOMER_ID 
+		AND LIS.chernum=L.chernum 
+		AND LIS.SYNCH_DATE=L.SYNCH_DATE		
+		)
 		<!-- AND L.ID NOT IN(
 		SELECT LIS.ID 
 		FROM vms_customer_temp_lis LIS
@@ -780,6 +662,7 @@
 		insert into
 		vms_customer_info
 		(
+		ID,
 		CUSTOMER_ID,
 		chernum,
 		CUSTOMER_CNAME,
@@ -796,6 +679,7 @@
 		SYNCH_DATE
 		)
 		values(
+		#ID#,
 		#CUSTOMER_ID#,
 		#chernum#,
 		#CUSTOMER_CNAME#,

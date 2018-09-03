@@ -4,6 +4,17 @@
     "http://struts.apache.org/dtds/struts-2.1.dtd">
 <struts>
 	<package name="vms" extends="cfa" namespace="/">
+	
+		<!--新增
+			日期：2018-09-03
+			作者：刘俊杰
+			说明：用于ajax返回json数据
+		 -->
+		<result-types>
+    		<result-type name="json" class="org.apache.struts2.json.JSONResult"/>
+		</result-types>
+		<!-- end 2018-09-03 -->
+	
 		<action name="createBillAuto" method="createBillAuto" class="createBillAutoAction"></action>
 		<!-- 进入查询开票界面 -->
 		<action name="listTrans" method="listTrans" class="createBillAction">
@@ -3429,7 +3440,14 @@
 			</result>
 		</action>
 		<action name="synchTransInfo" method="synchTransInfo" class="createBillAction">
-			<!-- <result name="success" type="redirectAction">listTrans.action</result> -->
+			<!--新增
+				日期：2018-09-03
+				作者：刘俊杰
+				说明：使用ajax返回json数据
+		 	-->
+			<result name="success" type="json">
+				 <param name="root">result</param> 
+			</result>
 		</action>
 
 		<!-- 库存信息管理 -->
