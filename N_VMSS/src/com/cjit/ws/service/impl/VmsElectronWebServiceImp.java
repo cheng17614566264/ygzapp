@@ -348,19 +348,29 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 										Map maps = new HashMap();
 										maps = ei.printXML(st);
 										System.out.println(maps.get("fapiaoCode")+":"+maps.get("fapiaoNo")+":"+maps.get("PDFURL")+":"+maps.get("result")+":"+billInfo.getCustomerEmail());
-										maps.put("email", billInfo.getCustomerEmail());
-										maps.put("customerName", billInfo.getCustomerName());
-										maps.put("cherNum", billInfo.getCherNum());
-										maps.put("addressandphone", billInfo.getAddressandphone());
-										maps.put("billId", billInfo.getBillId());
-										maps.put("bill_DATASTATUS", "5"); //票据状态：5--已开具
-										maps.put("trans_DATASTATUS", "99"); //交易状态：99--已开具
+										//判断返回的开具状态是否为"0"--开具成功，否则将错误原因回写到数据库
+										if("0".equals(maps.get("returnCode").toString())) {
+											maps.put("email", billInfo.getCustomerEmail());
+											maps.put("customerName", billInfo.getCustomerName());
+											maps.put("cherNum", billInfo.getCherNum());
+											maps.put("addressandphone", billInfo.getAddressandphone());
+											maps.put("billId", billInfo.getBillId());
+											maps.put("bill_DATASTATUS", "5"); //票据状态：5--已开具
+											maps.put("trans_DATASTATUS", "99"); //交易状态：99--已开具
+											
+											//更新数据库中票据信息，更改交易状态
+											vmsTransInfoDao.updateBillMessage(maps);
+											vmsTransInfoDao.updateTransState(maps);
+											
+											mailList.add(maps);
+										}else {
+											//开具失败, 将错误原因回写到数据库
+											maps.put("cherNum", billInfo.getCherNum());
+											maps.put("customerId", billInfo.getCustomerId());
+											maps.put("failstate", "80"); //对应vms_trans_info表中的DATASTATES状态字段 80-电子发票开具失败
+											vmsTransInfoDao.insertCANCELREASON(maps);
+										}
 										
-										//更新数据库中票据信息，更改交易状态
-										vmsTransInfoDao.updateBillMessage(maps);
-										vmsTransInfoDao.updateTransState(maps);
-										
-										mailList.add(maps);
 									} catch (HavaErrorMessageException hxe) {
 										all_sucess =false;
 										/*status.setRollbackOnly();*/

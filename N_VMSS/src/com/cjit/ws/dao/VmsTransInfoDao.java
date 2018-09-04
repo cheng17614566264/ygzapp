@@ -28,4 +28,14 @@ public interface VmsTransInfoDao {
 	public void updateBillMessage(Map maps);
 	public void updateTransState(Map maps);
 	//end 2018-08-30
+
+	/**
+	 * 新增
+	 * 日期：2018-09-04
+	 * 作者：刘俊杰
+	 * 功能：电子发票开具失败，将错误原因回写到数据库表vms_trans_info ---- CANCELREASON
+	 * @param maps
+	 */
+	public void insertCANCELREASON(Map maps);
+	//end 2018-09-04
 }

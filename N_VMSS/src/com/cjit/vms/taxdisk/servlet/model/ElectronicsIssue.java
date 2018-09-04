@@ -937,6 +937,9 @@ public class ElectronicsIssue {
 			remap.put("checkCode", checkCode.getTextTrim());
 			remap.put("BillDate", billDate.getTextTrim());
 			remap.put("SPURL", spurl.getTextTrim());
+			
+			remap.put("returnCode", returnCode.getTextTrim());  //开具状态
+			remap.put("returnMessage", returnMessage.getTextTrim());  //开具状态对应的描述
 		} else if (interfaceCode.getTextTrim().equals(Utils.dfxj1003)) {	//解析发票结余查询
 			Document reXML = DocumentHelper.parseText(recontent);
 			Element reroot = reXML.getRootElement();
