@@ -59,4 +59,5 @@
 	<include file="config/struts/struts-vms-input.xml" />
 	<include file="config/struts/struts-ws.xml" />
 	<include file="config/struts/struts-vms-stock.xml" />
+	<include file="config/struts/struts-vms-electronics.xml" />
 </struts>

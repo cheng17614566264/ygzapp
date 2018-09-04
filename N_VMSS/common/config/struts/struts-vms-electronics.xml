@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+    "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="electronics" extends="cfa" namespace="/">
+		<!-- 手动开具 -->
+		<action name="findElectronics" method="findElectronicsList"
+			class="electronicsAction">   <!--  cheng  0904  改为spring 管理 struts2 -->
+			<result name="success">WEB-INF/vms/taxDisk/billElectronicsList.jsp
+			</result>
+		</action>
+		<action name="exportElectronics" method="exportElectronics"
+			class="electronicsAction">
+		</action>
+		<action name="transToElectronicsBill" method="transToElectronicsBill"
+			class="electronicsAction">
+		</action>
+		<!-- 开具失败原因页 -->
+		<action name="billElectronicsCancelReason" method="billElectronicsCancelReason"
+			class="electronicsAction">
+			<result name="success">WEB-INF/vms/taxDisk/billElectronicsCancelReason.jsp
+			</result>
+		</action>
+
+		<!-- 【红冲申请】页面数据查询 -->
+		<action name="listElectroniceRedBillSelect" method="listElectroniceRedBillSelect"
+			class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction">
+			<result name="success">WEB-INF/vms/taxDisk/billElectronicsRedReceipt.jsp
+			</result>
+		</action>
+		<!-- 导出 -->
+		<action name="redElectronicsReceiptBillToExcel" method="redElectronicsReceiptBillToExcel"
+			class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction">
+		</action>
+		<!-- 查看交易 -->
+		<action name="listElectronicsBillTransInfo" method="listElectronicsBillTransInfo"
+			class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction">
+			<result name="success">WEB-INF/vms/taxDisk/billElectroniceShowTransInfo.jsp
+			</result>
+		</action>
+		<!-- 蓝票红冲申请 -->
+		<action name="redEclectronicsbillRedCancel" method="redEclectronicsbillRedCancel"
+			class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction">
+		</action>
+
+		<!-- 红票关联蓝票页面 -->
+		<action name="billElectronicsInfoAndTransList" method="billElectronicsInfoAndTransList"
+			class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction">
+			<result name="success">WEB-INF/vms/taxDisk/billElectronicsInfoAndTransList.jsp
+			</result>
+		</action>
+
+		<!-- 红票关联蓝票按钮 -->
+		<action name="redBillrelatblueBill" method="redBillrelatblueBill"
+			class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction">
+		</action>
+
+		<!-- 【红冲审核】页面数据查询 -->
+		<action name="listElectronicsRedInvoiceAudit" method="listElectronicsRedInvoiceAudit"
+			class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
+			<result name="success">WEB-INF/vms/taxDisk/billElectronicsInvoiceAudit.jsp</result>
+		</action>
+	
+	<!-- 【红冲审核】页面[审核通过],[审核拒绝]事件 -->
+	<!-- <action name="redElectronicsReceiptApprove" method="redElectronicsReceiptApprove"
+		class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
+		<result name="success" type="redirect">listRedReceiptApprove.action
+		</result>
+	</action>
+	<action name="toRedElectronicsReceiptRefuse" method="toRedElectronicsReceiptRefuse"
+		class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
+		<result name="success">WEB-INF/vms/redReceipt/approveListToCancelReason.jsp
+		</result>
+	</action>
+	-->
+
+	</package>
+
+</struts>

@@ -31,6 +31,8 @@
 			classpath*:config/spring/spring-vms-stock.xml
 			classpath*:config/spring/spring-temp.xml
 			
+			classpath*:config/spring/spring-electronics.xml
+			
 			<!-- webservice配置 -->
 			classpath*:applicationContext.xml
 			

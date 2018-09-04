@@ -143,6 +143,13 @@ public class TransInfo {
 	private String transUUID; //UUID 2018-07-09 新增
 	
 	private String mergeFlag;
+	
+	/**
+	 * 新增
+	 * 日期：2018-09-04
+	 */
+	private String cancelReason;  //电子发票自动开具失败原因
+	//end 2018-09-04
 
 	
 	public String getTransUUID() {
@@ -854,6 +861,13 @@ public class TransInfo {
 	public void setQdFlag(String qdFlag) {
 		this.qdFlag = qdFlag;
 	}
+	public String getCancelReason() {
+		return cancelReason;
+	}
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
+	}
+	
 	
 	
 }

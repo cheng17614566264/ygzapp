@@ -142,6 +142,13 @@ public class BillInfo extends com.cjit.common.model.BillInfo{
 	private String proDuctName;//产品名称
 	private String hisToryFlag;//销项历史交易状态
 	
+	/**
+	 * 新增
+	 * 日期：2018-09-04
+	 */
+	private String batchNo;
+	//end 2018-09-04
+	
 	public String getDsouRceCh(){
 		return DataUtil.getDsouRce(dsouRce);
 	}
@@ -1058,5 +1065,14 @@ public class BillInfo extends com.cjit.common.model.BillInfo{
 	public void setBusinessid(String businessid) {
 		this.businessid = businessid;
 	}
+
+	public String getBatchNo() {
+		return batchNo;
+	}
+
+	public void setBatchNo(String batchNo) {
+		this.batchNo = batchNo;
+	}
+	
 	
 }

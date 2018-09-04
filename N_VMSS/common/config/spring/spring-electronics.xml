@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	<!--电票开具 -->
+	<bean id="electronicsService"
+		class="com.cjit.vms.electronics.service.impl.ElectronicsServiceImpl"
+		parent="genericService" />
+
+	<bean id="electronicsAction" class="com.cjit.vms.electronics.action.ElectronicsAction"
+		scope="prototype">
+		<property name="electronicsService" ref="electronicsService" />
+		<property name="logManagerService" ref="logManagerService"></property> <!-- 新增日志  20180904 cheng-->
+	</bean>
+
+	<!-- 电票红冲 -->
+	<bean id="redElectronicsBillService"
+		class="com.cjit.vms.electronics.service.impl.RedElectronicsBillServiceImpl"
+		parent="genericService" />
+
+	<bean id="redElectronicsBillReceiptAction"
+		class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction"
+		scope="prototype">
+		<property name="redElectronicsBillService" ref="redElectronicsBillService" />
+		<property name="electronicsService" ref="electronicsService" />
+		<property name="logManagerService" ref="logManagerService"></property> <!-- 新增日志  20180904 cheng-->
+	</bean>
+
+	<!-- 电票红冲审核 -->
+	<bean id="redElectronicsBillInvoiceAuditService"
+		class="com.cjit.vms.electronics.service.impl.RedElectronicsBillInvoiceAuditServiceImpl"
+		parent="genericService">
+	</bean>
+
+	<bean id="redElectronicsInvoiceAudit"
+		class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit"
+		scope="prototype">
+		<property name="redElectronicsBillInvoiceAuditService" ref="redElectronicsBillInvoiceAuditService" />
+		<property name="electronicsService" ref="electronicsService" />
+		<property name="redElectronicsBillService" ref="redElectronicsBillService" />
+		<property name="logManagerService" ref="logManagerService"></property> <!-- 新增日志  20180904 cheng-->
+	</bean>
+
+</beans>

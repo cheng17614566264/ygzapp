@@ -65,5 +65,6 @@
 	<sqlMap resource="config/sqlmap/oracle/sqlmap-vms-input-pulldata.xml" />
 	<sqlMap resource="config/sqlmap/oracle/sqlmap-vms-vmswebservice.xml" />
     <sqlMap resource="config/sqlmap/oracle/sqlmap-vms-stock.xml" />  
+    <sqlMap resource="config/sqlmap/oracle/sqlmap-vms-electronices.xml" />  
 
 </sqlMapConfig>

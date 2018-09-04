@@ -1,0 +1,2531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="vms">
+	<!--测试 -->
+	<typeAlias alias="InstUtil" type="com.cjit.vms.electronics.model.InstUtil" />
+
+	<!--电子发票展示 -->
+	<select id="findElectronicsList" parameterClass="java.util.Map"
+		resultClass="transInfo">
+		select * from (
+		select
+		(@rowNum:=@rowNum+1) as rowindex,
+		t.TRANS_ID as
+		transId,
+		t.TRANS_DATE as transDate,
+		t.TRANS_TYPE as transType,
+		t.CUSTOMER_ID as customerId,
+		ifnull(b.TRANS_TYPE_NAME,'-') as
+		transTypeName,
+		t.CUSTOMER_ACCOUNT as customerAccount,
+		t.TAX_FLAG as
+		taxFlag,
+		t.INCOME_CNY as amt,
+		t.TAX_RATE as taxRate,
+		t.TAX_AMT_CNY as
+		taxAmt,
+		t.AMT_CNY as reverseAmt,
+		t.IS_REVERSE as
+		isReverse,
+		t.BANK_CODE as
+		bankCode,
+		t.REMARK as remark,
+		t.ORG_CURR_CODE
+		as orgCurrCode,
+		t.ORG_ACC_NO as orgAccNo,
+		t.AMT_CCY as
+		amtCcy,
+		t.CANCELREASON as
+		cancelReason,
+		t.REVERSE_TRANS_ID as
+		reverseTransId,
+		t.SHORT_AND_OVER as
+		shortAndOver,
+		t.BALANCE as balance,
+		t.INSTCODE as
+		instCode,
+		t.INSTNAME as
+		instName,
+		t.DATASTATUS as
+		dataStatus,
+		t.ORG_Trans_Type as orgTransType,
+		t.ORG_Trans_SUB_Type as
+		orgTransSubType,
+		t.REVERSE_TRANS_DATE as
+		reverseTransDate,
+		t.TRANS_BUS_ID as transBusId,
+		t.Trans_Curr as
+		transCurr,
+		t.TAX_AMT_CCY
+		as
+		taxAmtCcy,
+		t.INCOME_CCY as incomeCcy,
+		t.Surtax1_AMT_CNY as surtax1,
+		t.Surtax2_AMT_CNY as surtax2,
+		t.Surtax3_AMT_CNY as surtax3,
+		t.Surtax4_AMT_CNY as surtax4,
+		t.Trans_FaPiao_Flag as transFapiaoFlag,
+		t.FaPiao_Date as fapiaoDate,
+		t.FaPiao_Type as fapiaoType,
+		t.Trans_Flag
+		as transFlag,
+		t.VAT_Rate_Code
+		as vatRateCode,
+		c.customer_cname as
+		customerName,
+		c.customer_taxno as
+		customerTaxno,
+		c.customer_address as
+		customerAddress,
+		c.customer_phone
+		as
+		customerTel,
+		c.taxpayer_type as
+		customerTaxPayerType,
+		c.fapiao_type
+		as
+		customerFaPiaoType,
+		c.customer_type as customerType,
+		t.CHERNUM as
+		cherNum,
+		t.REPNUM as
+		repNum,
+		t.TTMPRCNO as
+		ttmpRcno,
+		t.FEETYP as feeTyp,
+		t.BILLFREQ as
+		billFreq,
+		t.POLYEAR as
+		polYear,
+		t.HISSDTE as hissDte,
+		t.DSOURCE as
+		dsouRce,
+		t.CHANNEL as
+		chanNel,
+		t.PREMTERM as premTerm,
+		t.OCCDATE as
+		occDate,
+		t.INSTFROM as instFrom,
+		t.INSTTO as instTo,
+		t.HESITATE_PERIOD as
+		hesitatePeriod,
+		t.isYK as isYK,
+		t.batch_no as
+		batchNo,
+		t.batch_type as
+		batchType,
+		t2.wkze as wkze
+		from (SELECT * FROM
+		VMS_TRANS_INFO t
+		where 1
+		= 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="transInfo.isYK">
+				t.ISYK=#transInfo.isYK#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.instCode">
+				t.Instcode
+				=#transInfo.instCode#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.cherNum">
+				t.CHERNUM =
+				#transInfo.cherNum#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.repNum">
+				t.REPNUM like
+				'%$transInfo.repNum$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.ttmpRcno">
+				t.TTMPRCNO =
+				#transInfo.ttmpRcno#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.feeTyp">
+				t.FEETYP =
+				#transInfo.feeTyp#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.billFreq">
+				t.BILLFREQ =
+				#transInfo.billFreq#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.billBeginDate">
+				<![CDATA[ str_to_date(t.Trans_Date,'%Y-%m-%d') >= str_to_date(#transInfo.billBeginDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.billEndDate">
+				<![CDATA[ str_to_date(t.Trans_Date,'%Y-%m-%d') <= str_to_date(#transInfo.billEndDate#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.hissBeginDte">
+				<![CDATA[ str_to_date(date_format(t.HISSDTE,'%Y-%m-%d'),'%Y-%m-%d') >= str_to_date(#transInfo.hissBeginDte#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.hissEndDte">
+				<![CDATA[ str_to_date(date_format(t.HISSDTE,'%Y-%m-%d'),'%Y-%m-%d') <= str_to_date(#transInfo.hissEndDte#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+			<!--添加的日期查询条件2017/9/9 -->
+			<isNotEmpty prepend="and" property="transInfo.transBeginDate">
+				<![CDATA[ str_to_date(t.Trans_Date,'%Y-%m-%d') >= str_to_date(#transInfo.transBeginDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.transEndDate">
+				<![CDATA[ str_to_date(t.Trans_Date,'%Y-%m-%d') <= str_to_date(#transInfo.transEndDate#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+
+			<isNotEmpty prepend="and" property="transInfo.dsouRce">
+				t.DSOURCE =
+				#transInfo.dsouRce#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.chanNel">
+				t.CHANNEL =
+				#transInfo.chanNel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.batchNo">
+				t.BATCH_NO =
+				#transInfo.batchNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.batchType">
+				t.BATCH_TYPE =
+				#transInfo.batchType#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.dataStatus">
+				t.datastatus=
+				#transInfo.dataStatus#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.fapiaoType">
+				t.fapiao_Type=#transInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		and REVERSE_TRANS_ID is null
+		and
+		IS_REVERSE = 'N'
+		and Trans_FaPiao_Flag
+		in ('A', 'M')
+		and Trans_Flag =
+		'2'
+		ORDER BY t.TRANS_DATE desc,
+		t.CHERNUM,t.businessid,t.CUSTOMER_ID,t.POLYEAR,t.PREMTERM
+		)t
+		left join
+		VMS_TRANS_TYPE b
+		on t.TRANS_TYPE = b.TRANS_TYPE_ID
+		left join
+		VMS_TRANS_CKECK_VIEW T2 on t.CHERNUM=T2.CHERNUM
+		left join
+		VMS_CUSTOMER_INFO c on t.CUSTOMER_ID = c.customer_id AND t.CHERNUM =
+		c.CHERNUM
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="transInfo.customerTaxPayerType">
+				c.TAXPAYER_TYPE =
+				#transInfo.customerTaxPayerType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="transInfo.customerFaPiaoFlag">
+				c.CUSTOMER_FAPIAO_FLAG
+				= #transInfo.customerFaPiaoFlag#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="transInfo.customerFaPiaoType">
+				c.FAPIAO_TYPE =
+				#transInfo.customerFaPiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="transInfo.customerName">
+				c.CUSTOMER_CNAME LIKE
+				'%$transInfo.customerName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			) d where 1=1
+			<isNotEmpty prepend=" " property="startIndex">
+				limit 
+				<![CDATA[ #startIndex# ,#PageSize# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="findElectronicsListCount" parameterClass="java.util.Map"
+		resultClass="long">
+		select count(*) from VMS_BILL_INFO t
+		<include refid="billInfo_fragment" />
+	</select>
+
+
+	<select id="findInstCodesByUserInstId" parameterClass="java.util.Map"
+		resultClass="InstUtil">
+		SELECT inst_id as instCode,inst_name as instName FROM
+		u_base_inst WHERE inst_id LIKE '$userInstd$%'
+	</select>
+
+	<!-- 税控参数 -->
+	<select id="findvaluebyitemCname" parameterClass="java.util.Map"
+		resultClass="uBaseSysParamVmss">
+		select usp.system_id systemId,
+		usp.param_id paramId,
+		usp.item_cname itemCname,
+		usp.selected_value selectedValue,
+		usp.item_key itemKey
+		from U_BASE_VMSS_PARAM usp
+		where usp.item_cname
+		=#itemCname#
+	</select>
+	<!-- 根据trans_id 和 fapiaoType查询对应的票据 -->
+	<select id="findTransByTransIdOrFaPiaoType" parameterClass="java.util.Map"
+		resultClass="transInfoCreateBill">
+		select
+		trans_id as transId,
+		trans_date as transDate,
+		trans_type as
+		transType,
+		customer_account as customerAccount,
+		tax_flag as taxFlag,
+		tax_rate as
+		taxRate,
+		is_reverse as isReverse,
+		bank_code as bankCode,
+		remark as
+		remark,
+		org_curr_code as orgCurrCode,
+		org_acc_no as orgAccNo,
+		amt_ccy as
+		amtCcy,
+		reverse_trans_id as reverseTransId,
+		short_and_over as
+		shortAndOver,
+		balance as balance,
+		TAX_CNY_BALANCE as taxCnyBalance,
+		instcode as instcode,
+		datastatus as datastatus,
+		customer_id as
+		customerId,
+		amt_cny as amtCny,
+		tax_amt_cny as taxAmtCny,
+		income_cny as
+		incomeCny,
+		org_trans_type as orgTransType,
+		org_trans_sub_type as
+		orgTransSubType,
+		reverse_trans_date as reverseTransDate,
+		reverse_trans_bus_id as reverseTransBusId,
+		trans_bus_id as transBusId,
+		trans_curr as transCurr,
+		tax_amt_ccy as taxAmtCcy,
+		income_ccy as
+		incomeCcy,
+		surtax1_amt_cny as surtax1AmtCny,
+		surtax2_amt_cny as
+		surtax2AmtCny,
+		surtax3_amt_cny as surtax3AmtCny,
+		surtax4_amt_cny as
+		surtax4AmtCny,
+		trans_fapiao_flag as transFapiaoFlag,
+		fapiao_date as
+		fapiaoDate,
+		fapiao_type as fapiaoType,
+		trans_flag as transFlag,
+		vat_rate_code as vatRateCode,
+		billing_time as billingTime,
+		associate_account_no as associateAccountNo,
+		orig_cap_workstation as
+		origCapWorkstation,
+		item_code as itemCode,
+		instname as instname,
+		DSOURCE
+		as dSources,
+		t.CHERNUM as cherNum,
+		t.REPNUM as repNum,
+		t.TTMPRCNO as
+		ttmpRcno,
+		t.FEETYP as feeTyp,
+		t.BILLFREQ as billFreq,
+		t.POLYEAR as
+		polYear,
+		t.CANCELREASON as cancelReason,
+		t.HISSDTE as hissDte,
+		t.DSOURCE
+		as dsouRce,
+		t.CHANNEL as
+		chanNel,
+		t.PREMTERM as premTerm,
+		t.OCCDATE as
+		occDate,
+		t.INSTFROM as
+		instFrom,
+		t.INSTTO as instTo,
+		t.INSNAM as insNam,
+		PLANLONGDESC as
+		planLongDesc,
+		CUSTOMER_CNAME as customerName
+		from (SELECT
+		C.CUSTOMER_CNAME,t.* FROM VMS_TRANS_INFO t
+		LEFT JOIN VMS_CUSTOMER_INFO
+		C ON C.CUSTOMER_ID = t.CUSTOMER_ID
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.transId">
+				t.trans_Id =
+				#transInfo.transId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="transInfo.fapiaoType">
+				t.fapiao_type =
+				#transInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		)t
+		order by transDate
+	</select>
+	<!-- 查找收款人 -->
+	<select id="getElectronicsPayee" parameterClass="java.util.Map"
+		resultClass="java.lang.String">
+		SELECT A.PAYEE_NAME FROM VMS_TRANS_PAYEE A
+		WHERE
+		A.INST_ID=#instId#
+	</select>
+	<!-- 获取开票的最大额度 -->
+	<select id="selectMaxAmt" parameterClass="java.util.Map"
+		resultClass="String">
+		select v.max_amt from vms_bill_max_amt v
+		where v.inst_code
+		= #instCode# and v.fapiao_type = #fapiaoType#
+	</select>
+
+
+
+	<select id="findRedElectronicsList" parameterClass="java.util.Map"
+		resultClass="billInfo">
+		select * from (
+		select
+		(@rowNum:=@rowNum+1) as rowindex,
+		t.BILL_ID as
+		billId,
+		t.BILL_CODE as
+		billCode,
+		t.BILL_NO as
+		billNo,
+		t.BILL_DATE as
+		billDate,
+		t.CUSTOMER_NAME as
+		customerName,
+		t.CUSTOMER_TAXNO as
+		customerTaxno,
+		t.CUSTOMER_ADDRESSANDPHONE
+		as
+		customerAddressandphone,
+		t.CUSTOMER_BANKANDACCOUNT as
+		customerBankandaccount,
+		t.AMT_SUM as
+		amtSum,
+		t.TAX_AMT_SUM as taxAmtSum,
+		t.SUM_AMT as sumAmt,
+		t.REMARK as
+		remark,
+		t.DRAWER as
+		drawer,
+		t.REVIEWER as reviewer,
+		t.PAYEE as payee,
+		t.NAME as name,
+		t.TAXNO as
+		taxno,
+		t.ADDRESSANDPHONE as addressandphone,
+		t.BANKANDACCOUNT as
+		bankandaccount,
+		t.INSTCODE as instCode,
+		t.CANCEL_INITIATOR as
+		cancelInitiator,
+		t.CANCEL_AUDITOR as
+		cancelAuditor,
+		t.TAX_DISK_NO as
+		taxDiskNo,
+		t.MACHINE_NO as machineNo,
+		t.NOTICE_NO as noticeNo,
+		t.ORI_BILL_CODE
+		as oriBillCode,
+		t.ORI_BILL_NO as
+		oriBillNo,
+		t.DATASTATUS as dataStatus,
+		t.DESCRIPTION as description,
+		t.IS_HANDIWORK as isHandiwork,
+		t.ISSUE_TYPE as
+		issueType,
+		t.FAPIAO_TYPE
+		as fapiaoType,
+		t.OPERATESTATUS as operateStatus,
+		t.APPLY_DATE as
+		applyDate,
+		t.BALANCE as balance,
+		t.INSURE_ID as cherNum,
+		t.REPNUM as
+		repNum,
+		t.TTMPRCNO as ttmpRcno,
+		t.FEETYP as feeTyp,
+		t.BILLFREQ as
+		billFreq,
+		t.HISSDTE as hissDte,
+		t.DSOURCE as dsouRce,
+		t.CHANNEL as
+		chanNel,
+		t.HISTORYFLAG as hisToryFlag,
+		m.TRANS_ID as transId,
+		m.INSTCODE
+		as instFrom,
+		m.BATCH_NO as batchNo
+		from
+		VMS_BILL_INFO t
+		LEFT JOIN
+		vms_trans_bill v ON t.bill_id=v.bill_id
+		LEFT JOIN vms_trans_info
+		m ON
+		m.trans_id=v.trans_id
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.instFrom">
+				m.INSTCODE =
+				#billInfo.instFrom#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.ttmpRcno">
+				t.TTMPRCNO like
+				'%$billInfo.ttmpRcno$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.feeTyp">
+				t.FEETYP =
+				#billInfo.feeTyp#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.billFreq">
+				t.BILLFREQ =
+				#billInfo.billFreq#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.polYear">
+				t.POLYEAR =
+				#billInfo.polYear#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.instCode">
+				t.INSTCODE =
+				#billInfo.instCode#
+			</isNotEmpty>
+			<!--mysql版本 -->
+			<isNotEmpty prepend="and" property="billInfo.hissBeginDte">
+				<![CDATA[ str_to_date(t.HISSDTE,'%Y-%m-%d') >= str_to_date(#billInfo.hissBeginDte#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.billDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d') = str_to_date(#billInfo.billDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.hissEndDte">
+				<![CDATA[ str_to_date(t.HISSDTE,'%Y-%m-%d') <= str_to_date(#billInfo.hissEndDte#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.dsouRce">
+				t.DSOURCE =
+				#billInfo.dsouRce#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.chanNel">
+				t.CHANNEL =
+				#billInfo.chanNel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.premTerm">
+				t.PREMTERM =
+				#billInfo.premTerm#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billId">
+				t.bill_Id =
+				#billInfo.billId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.emsStatus">
+				e.EMS_STATUS=
+				#billInfo.emsStatus#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerTaxno">
+				t.CUSTOMER_TAXNO like
+				'%$billInfo.customerTaxno$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.fapiaoType">
+				t.FAPIAO_TYPE =
+				#billInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.issueType">
+				t.ISSUE_TYPE =
+				#billInfo.issueType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.cherNum">
+				t.INSURE_ID =
+				#billInfo.cherNum#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.dataStatus">
+				t.DATASTATUS =
+				#billInfo.dataStatus#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.isHandiwork">
+				t.IS_HANDIWORK =
+				#billInfo.isHandiwork#
+			</isNotEmpty>
+		</dynamic>
+		<!--dcg 结束 -->
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billCode">
+				t.BILL_CODE =
+				#billInfo.billCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billNo">
+				t.BILL_NO =
+				#billInfo.billNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.batchNo">
+				m.BATCH_NO =
+				#billInfo.batchNo#
+			</isNotEmpty>
+		</dynamic>
+		<!--oracle版本 -->
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billBeginDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d %H:%i:%s') >= str_to_date(#billInfo.billBeginDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billEndDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d %H:%i:%s') <= str_to_date(#billInfo.billEndDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.applyBeginDate">
+				<![CDATA[ str_to_date(t.APPLY_DATE,'%Y-%m-%d %H:%i:%s') >= str_to_date(#billInfo.applyBeginDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.applyEndDate">
+				<![CDATA[ str_to_date(t.APPLY_DATE,'%Y-%m-%d %H:%i:%s') <= str_to_date(#billInfo.applyEndDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerName">
+				t.CUSTOMER_NAME like
+				'%$billInfo.customerName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerBankandaccount">
+				t.CUSTOMER_BANKANDACCOUNT like '%$billInfo.customerBankandaccount$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.transId">
+				exists (select 1 from
+				vms_trans_bill tb where tb.bill_ID = t.bill_ID and tb.trans_ID =
+				#billInfo.transId#)
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.sumAmtBegin">
+				<![CDATA[ t.SUM_AMT >= #billInfo.sumAmtBegin# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.sumAmtEnd">
+				<![CDATA[ t.SUM_AMT <= #billInfo.sumAmtEnd# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="searchCondition">
+				$searchCondition$
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billIds">
+				t.bill_id in
+				<iterate property="billIds" open="(" close=")" conjunction=",">
+					#billIds[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="issueStatuses">
+				t.dataStatus in
+				<iterate property="issueStatuses" open="(" close=")"
+					conjunction=",">
+					#issueStatuses[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="" property="billInfo.orderBy">
+				$billInfo.orderBy$
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="endIndex"> 
+				<![CDATA[ rownum <= #endIndex#]]>
+			</isNotEmpty>
+
+			order by BILL_DATE desc
+			) d where 1=1
+			<isNotEmpty prepend="and" property="startIndex"> 
+				<![CDATA[ rowIndex > #startIndex#  ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="findRedElectronicsListCount" parameterClass="java.util.Map"
+		resultClass="long">
+		select count(*) from VMS_BILL_INFO t
+		LEFT JOIN vms_trans_bill v ON
+		t.bill_id=v.bill_id
+		LEFT JOIN vms_trans_info
+		m ON m.trans_id=v.trans_id
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.instFrom">
+				m.INSTCODE =
+				#billInfo.instFrom#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.ttmpRcno">
+				t.TTMPRCNO like
+				'%$billInfo.ttmpRcno$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.batchNo">
+				m.BATCH_NO =
+				#billInfo.batchNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.feeTyp">
+				t.FEETYP =
+				#billInfo.feeTyp#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.billFreq">
+				t.BILLFREQ =
+				#billInfo.billFreq#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.polYear">
+				t.POLYEAR =
+				#billInfo.polYear#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.instCode">
+				t.INSTCODE =
+				#billInfo.instCode#
+			</isNotEmpty>
+			<!--mysql版本 -->
+			<isNotEmpty prepend="and" property="billInfo.hissBeginDte">
+				<![CDATA[ str_to_date(t.HISSDTE,'%Y-%m-%d') >= str_to_date(#billInfo.hissBeginDte#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.billDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d') = str_to_date(#billInfo.billDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.hissEndDte">
+				<![CDATA[ str_to_date(t.HISSDTE,'%Y-%m-%d') <= str_to_date(#billInfo.hissEndDte#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.dsouRce">
+				t.DSOURCE =
+				#billInfo.dsouRce#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.chanNel">
+				t.CHANNEL =
+				#billInfo.chanNel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.premTerm">
+				t.PREMTERM =
+				#billInfo.premTerm#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billId">
+				t.bill_Id =
+				#billInfo.billId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.emsStatus">
+				e.EMS_STATUS=
+				#billInfo.emsStatus#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerTaxno">
+				t.CUSTOMER_TAXNO like
+				'%$billInfo.customerTaxno$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.fapiaoType">
+				t.FAPIAO_TYPE =
+				#billInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.issueType">
+				t.ISSUE_TYPE =
+				#billInfo.issueType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.cherNum">
+				t.INSURE_ID =
+				#billInfo.cherNum#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.dataStatus">
+				t.DATASTATUS =
+				#billInfo.dataStatus#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.isHandiwork">
+				t.IS_HANDIWORK =
+				#billInfo.isHandiwork#
+			</isNotEmpty>
+		</dynamic>
+		<!--dcg 结束 -->
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billCode">
+				t.BILL_CODE =
+				#billInfo.billCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billNo">
+				t.BILL_NO =
+				#billInfo.billNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billBeginDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d %H:%i:%s') >= str_to_date(#billInfo.billBeginDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billEndDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d %H:%i:%s') <= str_to_date(#billInfo.billEndDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.applyBeginDate">
+				<![CDATA[ str_to_date(t.APPLY_DATE,'%Y-%m-%d %H:%i:%s') >= str_to_date(#billInfo.applyBeginDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.applyEndDate">
+				<![CDATA[ str_to_date(t.APPLY_DATE,'%Y-%m-%d %H:%i:%s') <= str_to_date(#billInfo.applyEndDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerName">
+				t.CUSTOMER_NAME like
+				'%$billInfo.customerName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerBankandaccount">
+				t.CUSTOMER_BANKANDACCOUNT like '%$billInfo.customerBankandaccount$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.transId">
+				exists (select 1 from
+				vms_trans_bill tb where tb.bill_ID = t.bill_ID and tb.trans_ID =
+				#billInfo.transId#)
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.sumAmtBegin">
+				<![CDATA[ t.SUM_AMT >= #billInfo.sumAmtBegin# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.sumAmtEnd">
+				<![CDATA[ t.SUM_AMT <= #billInfo.sumAmtEnd# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="searchCondition">
+				$searchCondition$
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billIds">
+				t.bill_id in
+				<iterate property="billIds" open="(" close=")" conjunction=",">
+					#billIds[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="issueStatuses">
+				t.dataStatus in
+				<iterate property="issueStatuses" open="(" close=")"
+					conjunction=",">
+					#issueStatuses[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 电票红冲查询交易信息 -->
+	<select id="findTransByElectronicsBillId" parameterClass="java.util.Map"
+		resultClass="transInfo">
+		select ti.TRANS_ID as transId,
+		ti.TRANS_DATE as transDate,
+		c.CUSTOMER_ID as customerId,
+		c.CUSTOMER_CNAME as customerName,
+		c.CUSTOMER_TAXNO as customerTaxno,
+		ti.CUSTOMER_ACCOUNT as
+		customerAccount,
+		ti.TAX_FLAG as taxFlag,
+		ti.TRANS_TYPE as transType,
+		b.TRANS_TYPE_NAME as transTypeName,
+		ti.AMT_CNY as amt,
+		ti.TAX_AMT_CNY as
+		taxAmt,
+		ti.INCOME_CNY as income,
+		ti.TAX_RATE as taxRate,
+		ti.BANK_CODE as
+		bankCode,
+		i.inst_name as bankName,
+		ti.IS_REVERSE as isReverse,
+		ti.FAPIAO_TYPE as fapiaoType,
+		ti.TRANS_FLAG as transFlag,
+		ti.DATASTATUS
+		as dataStatus,
+		ti.TAX_FLAG as taxFlag,
+		ti.FAPIAO_TYPE as fapiaoType,
+		ti.BALANCE as balance,
+		c.taxpayer_type as customerTaxPayerType,
+		ti.trans_fapiao_flag as transFapiaoFlag,
+		ti.vat_rate_code as
+		vatRateCode,
+		ti.item_code as itemCode,
+		ti.AMT_CNY as reverseAmt,
+		tr.TAX_AMT_CNY as reverseTaxAmt,
+		tr.INCOME_CNY as reverseIncome,
+		ti.CHERNUM as cherNum,
+		ti.REPNUM as repNum,
+		ti.TTMPRCNO as ttmpRcno,
+		ti.FEETYP as feeTyp,
+		ti.BILLFREQ as billFreq,
+		ti.POLYEAR as polYear,
+		ti.HISSDTE as hissDte,
+		ti.OCCDATE as occDate,
+		ti.DSOURCE as dsouRce,
+		ti.CHANNEL as chanNel,
+		ti.PREMTERM as premTerm,
+		ti.INSTFROM as instFrom,
+		ti.INSTTO as instTo,
+		ti.INSTCODE as instCode,
+		ti.BATCH_NO as batchNo,
+		kk.WKZE as wkze,
+		ti.ALTREF
+		as altref
+		from
+		vms_trans_info ti
+		left join
+		VMS_TRANS_CKECK_VIEW kk on
+		kk.CHERNUM=ti.CHERNUM AND
+		kk.TTMPRCNO=ti.TTMPRCNO
+		left join
+		vms_customer_info c
+		on
+		ti.customer_id =
+		c.customer_id and ti.chernum =
+		c.chernum
+		left join vms_trans_bill t on
+		t.trans_id
+		= ti.trans_id
+		left
+		join
+		VMS_TRANS_TYPE b
+		on ti.TRANS_TYPE =
+		b.TRANS_TYPE_ID
+		left join
+		u_base_inst
+		i
+		on ti.bank_code = i.inst_id
+		left
+		join vms_trans_info tr
+		on
+		tr.REVERSE_TRANS_ID = ti.trans_id
+		and
+		tr.IS_REVERSE = 'Y'
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.ttmpRcno">
+				t.TTMPRCNO like
+				'%$billInfo.ttmpRcno$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.feeTyp">
+				t.FEETYP =
+				#billInfo.feeTyp#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.billFreq">
+				t.BILLFREQ =
+				#billInfo.billFreq#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.polYear">
+				t.POLYEAR =
+				#billInfo.polYear#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.hissBeginDte">
+				<![CDATA[ str_to_date(t.HISSDTE,'%Y-%m-%d') >= str_to_date(#billInfo.hissBeginDte#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.hissEndDte">
+				<![CDATA[ str_to_date(t.HISSDTE,'%Y-%m-%d') <= str_to_date(#billInfo.hissEndDte#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.dsouRce">
+				t.DSOURCE =
+				#billInfo.dsouRce#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.chanNel">
+				t.CHANNEL =
+				#billInfo.chanNel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.premTerm">
+				t.PREMTERM =
+				#billInfo.premTerm#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billId">
+				t.bill_Id =
+				#billInfo.billId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.emsStatus">
+				e.EMS_STATUS=
+				#billInfo.emsStatus#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerTaxno">
+				t.CUSTOMER_TAXNO like
+				'%$billInfo.customerTaxno$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.fapiaoType">
+				t.FAPIAO_TYPE =
+				#billInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.issueType">
+				t.ISSUE_TYPE =
+				#billInfo.issueType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.cherNum">
+				t.INSURE_ID =
+				#billInfo.cherNum#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.dataStatus">
+				t.DATASTATUS =
+				#billInfo.dataStatus#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.isHandiwork">
+				t.IS_HANDIWORK =
+				#billInfo.isHandiwork#
+			</isNotEmpty>
+		</dynamic>
+		<!--dcg 结束 -->
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billCode">
+				t.BILL_CODE =
+				#billInfo.billCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billNo">
+				t.BILL_NO =
+				#billInfo.billNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billBeginDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d %H:%i:%s') >= str_to_date(#billInfo.billBeginDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billEndDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d %H:%i:%s') <= str_to_date(#billInfo.billEndDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.applyBeginDate">
+				<![CDATA[ str_to_date(t.APPLY_DATE,'%Y-%m-%d %H:%i:%s') >= str_to_date(#billInfo.applyBeginDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.applyEndDate">
+				<![CDATA[ str_to_date(t.APPLY_DATE,'%Y-%m-%d %H:%i:%s') <= str_to_date(#billInfo.applyEndDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerName">
+				t.CUSTOMER_NAME like
+				'%$billInfo.customerName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerBankandaccount">
+				t.CUSTOMER_BANKANDACCOUNT like '%$billInfo.customerBankandaccount$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.transId">
+				exists (select 1 from
+				vms_trans_bill tb where tb.bill_ID = t.bill_ID and tb.trans_ID =
+				#billInfo.transId#)
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.sumAmtBegin">
+				<![CDATA[ t.SUM_AMT >= #billInfo.sumAmtBegin# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.sumAmtEnd">
+				<![CDATA[ t.SUM_AMT <= #billInfo.sumAmtEnd# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="searchCondition">
+				$searchCondition$
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billIds">
+				t.bill_id in
+				<iterate property="billIds" open="(" close=")" conjunction=",">
+					#billIds[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="issueStatuses">
+				t.dataStatus in
+				<iterate property="issueStatuses" open="(" close=")"
+					conjunction=",">
+					#issueStatuses[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="" property="billInfo.orderBy">
+				$billInfo.orderBy$
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="findTransByElectronicsBillIdCount" parameterClass="java.util.Map"
+		resultClass="long">
+		select count(*) from vms_trans_info ti
+		left join VMS_TRANS_CKECK_VIEW
+		kk on
+		kk.CHERNUM=ti.CHERNUM AND kk.TTMPRCNO=ti.TTMPRCNO
+		left join
+		vms_customer_info c on
+		ti.customer_id = c.customer_id AND ti.CHERNUM =
+		c.chernum
+		left join
+		vms_trans_bill t on t.trans_id
+		= ti.trans_id
+		left join
+		VMS_TRANS_TYPE b
+		on ti.TRANS_TYPE =
+		b.TRANS_TYPE_ID
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.ttmpRcno">
+				t.TTMPRCNO like
+				'%$billInfo.ttmpRcno$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.feeTyp">
+				t.FEETYP =
+				#billInfo.feeTyp#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.billFreq">
+				t.BILLFREQ =
+				#billInfo.billFreq#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.polYear">
+				t.POLYEAR =
+				#billInfo.polYear#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.hissBeginDte">
+				<![CDATA[ str_to_date(t.HISSDTE,'%Y-%m-%d') >= str_to_date(#billInfo.hissBeginDte#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.hissEndDte">
+				<![CDATA[ str_to_date(t.HISSDTE,'%Y-%m-%d') <= str_to_date(#billInfo.hissEndDte#,'%Y-%m-%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.dsouRce">
+				t.DSOURCE =
+				#billInfo.dsouRce#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.chanNel">
+				t.CHANNEL =
+				#billInfo.chanNel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="billInfo.premTerm">
+				t.PREMTERM =
+				#billInfo.premTerm#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billId">
+				t.bill_Id =
+				#billInfo.billId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.emsStatus">
+				e.EMS_STATUS=
+				#billInfo.emsStatus#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerTaxno">
+				t.CUSTOMER_TAXNO like
+				'%$billInfo.customerTaxno$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.fapiaoType">
+				t.FAPIAO_TYPE =
+				#billInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.issueType">
+				t.ISSUE_TYPE =
+				#billInfo.issueType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.cherNum">
+				t.INSURE_ID =
+				#billInfo.cherNum#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.dataStatus">
+				t.DATASTATUS =
+				#billInfo.dataStatus#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.isHandiwork">
+				t.IS_HANDIWORK =
+				#billInfo.isHandiwork#
+			</isNotEmpty>
+		</dynamic>
+		<!--dcg 结束 -->
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billCode">
+				t.BILL_CODE=
+				#billInfo.billCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billNo">
+				t.BILL_NO =
+				#billInfo.billNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billBeginDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d %H:%i:%s') >= str_to_date(#billInfo.billBeginDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billEndDate">
+				<![CDATA[ str_to_date(t.BILL_DATE,'%Y-%m-%d %H:%i:%s') <= str_to_date(#billInfo.billEndDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.applyBeginDate">
+				<![CDATA[ str_to_date(t.APPLY_DATE,'%Y-%m-%d %H:%i:%s') >= str_to_date(#billInfo.applyBeginDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.applyEndDate">
+				<![CDATA[ str_to_date(t.APPLY_DATE,'%Y-%m-%d %H:%i:%s') <= str_to_date(#billInfo.applyEndDate#,'%Y-%m-%d %H:%i:%s') ]]>
+			</isNotEmpty>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerName">
+				t.CUSTOMER_NAME like
+				'%$billInfo.customerName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerBankandaccount">
+				t.CUSTOMER_BANKANDACCOUNT like '%$billInfo.customerBankandaccount$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.transId">
+				exists (select 1 from
+				vms_trans_bill tb where tb.bill_ID = t.bill_ID and tb.trans_ID =
+				#billInfo.transId#)
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.sumAmtBegin">
+				<![CDATA[ t.SUM_AMT >= #billInfo.sumAmtBegin# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.sumAmtEnd">
+				<![CDATA[ t.SUM_AMT <= #billInfo.sumAmtEnd# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="searchCondition">
+				$searchCondition$
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billIds">
+				t.bill_id in
+				<iterate property="billIds" open="(" close=")" conjunction=",">
+					#billIds[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="issueStatuses">
+				t.dataStatus in
+				<iterate property="issueStatuses" open="(" close=")"
+					conjunction=",">
+					#issueStatuses[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+
+	<!-- 红冲申请列表 -->
+	<select id="findElectronicsRedReceipt" parameterClass="java.util.Map"
+		resultClass="com.cjit.vms.trans.model.RedReceiptApplyInfo">
+		select
+		t.BILL_ID as billId,
+		t.BILL_DATE as billDate,
+		t.BILL_CODE as
+		billCode,
+		t.BILL_NO as billNo,
+		t.CUSTOMER_NAME as customerName,
+		t.CUSTOMER_ID as customerId,
+		t.CUSTOMER_TAXNO as customerTaxno,
+		AMT_SUM
+		as amtSum,
+		TAX_AMT_SUM as
+		taxAmtSum,
+		SUM_AMT as sumAmt,
+		t.FAPIAO_TYPE as
+		fapiaoType,
+		t.APPLY_DATE
+		as applyDate ,
+		t.DRAWER as drawer,
+		t.TAX_DISK_NO
+		as taxDiskNo,
+		t.MACHINE_NO as machineNo,
+		t.IS_HANDIWORK as isHandwork,
+		t.ISSUE_TYPE as
+		issueType,
+		t.DATASTATUS as datastatus,
+		<!-- metlife begin -->
+		t.INSURE_ID as insureId,
+		t.REPNUM as repnum,
+		t.TTMPRCNO as ttmprcno,
+		t.FEETYP as feeTyp,
+		t.BILLFREQ as billFreq,
+		t.hissdte as hissdte,
+		t.DSOURCE as dSource,
+		t.CHANNEL as channel
+		<!-- metlife end -->
+		from VMS_BILL_INFO
+		t
+		left join
+		VMS_Disk_Mon_info s
+		on t.TAX_DISK_NO =
+		s.Tax_disk_No
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billBeginDate">
+			<![CDATA[str_to_date(substring(t.bill_date,1,10),'%Y/%m/%d') >= str_to_date(#applyInfo.billBeginDate#,'%Y/%m/%d') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billEndDate">
+			<![CDATA[str_to_date(substring(t.bill_date,1,10),'%Y/%m/%d') <= str_to_date(#applyInfo.billEndDate#,'%Y/%m/%d')  ]]>
+			</isNotEmpty>
+		</dynamic>
+
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billApplyBeginDate"> 
+				<![CDATA[ t.apply_date >= #applyInfo.billApplyBeginDate# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billApplyEndDate"> 
+				<![CDATA[ t.apply_date <= #applyInfo.billApplyEndDate#]]>
+			</isNotEmpty>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.transBeginDate"> 
+				<![CDATA[ cast((str_to_date(t2.TRANS_DATE,'%y-%m-%d %h:%i:%s'))as signed) >= cast((str_to_date(#applyInfo.transBeginDate#,'%y-%m-%d %h:%i:%s'))as signed) ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.transEndDate"> 
+				<![CDATA[ cast((str_to_date(t2.TRANS_DATE,'%Y-%m-%d %H:%i:%s'))as signed) <= cast((str_to_date(#applyInfo.transEndDate#,'%Y-%m-%d %H:%i:%s'))as signed) ]]>
+			</isNotEmpty>
+		</dynamic>
+
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.customerName">
+				t.CUSTOMER_NAME like
+				'%$applyInfo.customerName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.customerId">
+				t.CUSTOMER_ID like
+				'%$applyInfo.customerId$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.goodsName">
+				bi.GOODS_NAME like
+				'%$applyInfo.goodsName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billCode">
+				t.BILL_CODE =
+				#applyInfo.billCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billNo">
+				t.BILL_NO =
+				#applyInfo.billNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.fapiaoType">
+				t.FAPIAO_TYPE=#applyInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billId">
+				t.BILL_ID=#applyInfo.billId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.issueType">
+				t.ISSUE_TYPE=#applyInfo.issueType#
+			</isNotEmpty>
+		</dynamic>
+		<isNotEmpty prepend="and" property="searchCondition">
+			$searchCondition$
+		</isNotEmpty>
+		<!-- metlife begin -->
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.fapiaoType">
+				t.FAPIAO_TYPE =
+				#applyInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.insureId">
+				t.INSURE_ID =
+				#applyInfo.insureId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.repnum">
+				t.REPNUM =
+				#applyInfo.repnum#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.ttmprcno">
+				t.TTMPRCNO =
+				#applyInfo.ttmprcno#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.feeTyp">
+				t.FEETYP =
+				#applyInfo.feeTyp#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billFreq">
+				t.BILLFREQ =
+				#applyInfo.billFreq#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.hissDteBegin">
+		  	<![CDATA[substring(t.HISSDTE,0,10)>=substring(#applyInfo.hissDteBegin#,0,10)]]>
+
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.hissDteEnd"> 
+		<![CDATA[substring(t.HISSDTE,0,10)<=substring(#applyInfo.hissDteEnd#,0,10)]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.dSource">
+				t.DSOURCE =
+				#applyInfo.dSource#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.channel">
+				t.CHANNEL =
+				#applyInfo.channel#
+			</isNotEmpty>
+		</dynamic>
+		<!-- metlife end -->
+		<dynamic>
+			<isNotEmpty prepend="" property="applyInfo.orderBy">
+				$applyInfo.orderBy$
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.dSource">
+				t.DSOURCE
+				=#applyInfo.dSource#
+			</isNotEmpty>
+		</dynamic>
+		and (
+		( t.DATASTATUS = '3'
+		or ( cast((STR_TO_DATE(
+		s.NEW_REPORT_DATE_S,'%Y-%m-%d %H:%i:%s'))as date) >
+		cast((STR_TO_DATE(t.BILL_DATE,'%Y-%m-%d %H:%i:%s'))as date)
+		and (
+		cast((STR_TO_DATE(BILL_DATE, '%Y-%m-%d %H:%i:%s'))as date) between
+		DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY) and
+		LAST_DAY(SYSDATE()))
+		and t.DATASTATUS
+		in ('5','8','9','10','11','12'))
+		)
+		or
+		( t.DATASTATUS in
+		('5','8','9','10','11','12','19','99')
+		and (
+		cast((STR_TO_DATE(BILL_DATE,
+		'%Y-%m-%d %H:%i:%s'))as date) not between
+		DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY) and
+		LAST_DAY(SYSDATE())))
+		)
+		and (
+		t.FAPIAO_TYPE = 1
+		or ( t.FAPIAO_TYPE =
+		0
+		and (
+		cast((STR_TO_DATE(BILL_DATE,
+		'%Y-%m-%d %H:%i:%s'))as signed) between
+		DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())-179 DAY) and
+		DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY)
+		)
+		)
+		)
+		order by
+		t.BILL_CODE asc,
+		t.bill_no asc ,
+		t.bill_date desc
+	</select>
+	<!-- 红冲申请列表件数 -->
+	<select id="findElectronicsRedReceiptCount" parameterClass="java.util.Map"
+		resultClass="long">
+		select count(*) from (
+		select
+		t.BILL_ID as billId,
+		t.BILL_DATE as
+		billDate,
+		t.BILL_CODE as
+		billCode,
+		t.BILL_NO as billNo,
+		t.CUSTOMER_NAME as
+		customerName,
+		t.CUSTOMER_TAXNO as customerTaxno,
+		AMT_SUM as amtSum,
+		TAX_AMT_SUM as
+		taxAmtSum,
+		SUM_AMT as sumAmt,
+		t.FAPIAO_TYPE as fapiaoType,
+		t.APPLY_DATE
+		as applyDate ,
+		t.DRAWER as drawer,
+		t.TAX_DISK_NO as
+		taxDiskNo,
+		t.MACHINE_NO as machineNo,
+		t.IS_HANDIWORK as isHandwork,
+		t.ISSUE_TYPE as
+		issueType,
+		t.DATASTATUS as datastatus
+		from VMS_BILL_INFO
+		t
+		left join VMS_Disk_Mon_info s
+		on t.TAX_DISK_NO = s.Tax_disk_No
+		where 1
+		= 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				t.Instcode in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+
+
+		<!--mysql版本 -->
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billBeginDate">
+			<![CDATA[str_to_date(substring(t.bill_date,1,10),'%Y/%m/%d') >= str_to_date(#applyInfo.billBeginDate#,'%Y/%m/%d') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billEndDate">
+			<![CDATA[str_to_date(substring(t.bill_date,1,10),'%Y/%m/%d') <= str_to_date(#applyInfo.billEndDate#,'%Y/%m/%d')  ]]>
+			</isNotEmpty>
+		</dynamic>
+
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billApplyBeginDate"> 
+				<![CDATA[ t.apply_date >= #applyInfo.billApplyBeginDate# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billApplyEndDate"> 
+				<![CDATA[ t.apply_date <= #applyInfo.billApplyEndDate#]]>
+			</isNotEmpty>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.transBeginDate"> 
+				<![CDATA[ cast((str_to_date(t2.TRANS_DATE,'%y-%m-%d %h:%i:%s'))as signed) >= cast((str_to_date(#applyInfo.transBeginDate#,'%y-%m-%d %h:%i:%s'))as signed) ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.transEndDate"> 
+				<![CDATA[ cast((str_to_date(t2.TRANS_DATE,'%Y-%m-%d %H:%i:%s'))as signed) <= cast((str_to_date(#applyInfo.transEndDate#,'%Y-%m-%d %H:%i:%s'))as signed) ]]>
+			</isNotEmpty>
+		</dynamic>
+
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.customerName">
+				t.CUSTOMER_NAME like
+				'%$applyInfo.customerName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.customerId">
+				t.CUSTOMER_ID like
+				'%$applyInfo.customerId$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.goodsName">
+				bi.GOODS_NAME like
+				'%$applyInfo.goodsName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billCode">
+				t.BILL_CODE =
+				#applyInfo.billCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billNo">
+				t.BILL_NO =
+				#applyInfo.billNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.fapiaoType">
+				t.FAPIAO_TYPE=#applyInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.billId">
+				t.BILL_ID=#applyInfo.billId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="applyInfo.issueType">
+				t.ISSUE_TYPE=#applyInfo.issueType#
+			</isNotEmpty>
+		</dynamic>
+		<isNotEmpty prepend="and" property="searchCondition">
+			$searchCondition$
+		</isNotEmpty>
+		<dynamic>
+			<isNotEmpty prepend="" property="applyInfo.orderBy">
+				$applyInfo.orderBy$
+			</isNotEmpty>
+		</dynamic>
+		<!--mysql版本 -->
+		and (
+		( t.DATASTATUS = '3'
+		or ( cast((STR_TO_DATE(
+		s.NEW_REPORT_DATE_S,'%Y-%m-%d %H:%i:%s'))as date) >
+		cast((STR_TO_DATE(t.BILL_DATE,'%Y-%m-%d %H:%i:%s'))as date)
+		and (
+		cast((STR_TO_DATE(BILL_DATE, '%Y-%m-%d %H:%i:%s'))as date) between
+		DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY) and
+		LAST_DAY(SYSDATE()))
+		and t.DATASTATUS
+		in ('5','8','9','10','11','12'))
+		)
+		or
+		( t.DATASTATUS in
+		('5','8','9','10','11','12','19','99')
+		and (
+		cast((STR_TO_DATE(BILL_DATE,
+		'%Y-%m-%d %H:%i:%s'))as date) not between
+		DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY) and
+		LAST_DAY(SYSDATE())))
+		)
+		and (
+		t.FAPIAO_TYPE = 1
+		or ( t.FAPIAO_TYPE =
+		0
+		and (
+		cast((STR_TO_DATE(BILL_DATE,
+		'%Y-%m-%d %H:%i:%s'))as date) between
+		DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())-179 DAY) and
+		DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY)
+		)
+		)
+		)
+		)fff
+	</select>
+	<!-- 红冲交易 -->
+	<select id="redElectronicsReceiptTransList" parameterClass="java.util.Map"
+		resultClass="com.cjit.vms.trans.model.RedReceiptTransInfo">
+		select
+		t.BILL_ID as billId,
+		t.BILL_ITEM_ID as billItemId,
+		t.AMT_CNY as
+		amtCny,
+		t.TAX_AMT_CNY as taxAmtCny,
+		t.INCOME_CNY as incomeCny,
+		bii.TAX_RATE as taxRate,
+		ti.TRANS_ID as transId,
+		ti.TRANS_DATE as
+		transDate,
+		ti.TAX_RATE as taxRate,
+		ti.FAPIAO_TYPE as fapiaoType,
+		ti.DATASTATUS as datastatus,
+		ti.CUSTOMER_ACCOUNT as customerAccount,
+		ti.TRANS_TYPE as transType,
+		ti.INSTCODE as bankCode,
+		ti.CUSTOMER_ID as
+		customerId,
+		ti.TRANS_FLAG as transFlag,
+		ti.IS_REVERSE as isReverse,
+		ti.BALANCE as balance,
+		bi.CUSTOMER_NAME as customerName,
+		bi.CUSTOMER_TAXNO as customerTaxno,
+		bi.AMT_SUM as amtSum,
+		bi.TAX_AMT_SUM as taxAmtSum,
+		bi.SUM_AMT as sumAmt,
+		bi.IS_HANDIWORK as
+		isHandiwork,
+		tr.TRANS_ID as reverseTransId,
+		tr.AMT_CNY as reverseAmtCny,
+		tr.TAX_AMT_CNY as reverseTaxAmtCny,
+		tr.INCOME_CNY as reverseIncomeCny
+		from VMS_TRANS_BILL t
+		inner join VMS_TRANS_INFO ti on
+		t.TRANS_ID =
+		ti.TRANS_ID
+		left join VMS_TRANS_INFO tr
+		on tr.reverse_trans_id =
+		ti.trans_id
+		and tr.is_reverse ='Y'
+		inner join VMS_BILL_ITEM_INFO bii on
+		t.BILL_ID
+		=
+		bii.BILL_ID
+		and t.BILL_ITEM_ID = bii.BILL_ITEM_ID
+		inner join
+		VMS_BILL_INFO bi on
+		bi.BILL_ID = bii.BILL_ID
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="billId">
+				t.bill_Id = #billId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="oriBillCode">
+				bi.ORI_BILL_CODE =
+				#oriBillCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="oriBillNo">
+				bi.ORI_BILL_NO =
+				#oriBillNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="transId">
+				t.TRANS_ID in
+				($transId$)
+			</isNotEmpty>
+		</dynamic>
+		order by
+		t.bill_item_id
+	</select>
+
+	<select id="redElectronicsReceiptTransListCount" parameterClass="java.util.Map"
+		resultClass="long">
+		select count(*)
+		from VMS_TRANS_BILL t
+		inner JOIN VMS_TRANS_INFO ti on
+		t.TRANS_ID = TI.TRANS_ID
+		inner join
+		VMS_BILL_INFO bi on BI.bill_id =
+		t.bill_id
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="billId">
+				t.bill_Id = #billId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="transId">
+				t.TRANS_ID in
+				($transId$)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="findElectronicsBillInfoByBillId" parameterClass="java.util.Map"
+		resultClass="billInfo">
+		select BILL_ID as billId,
+		BILL_CODE as billCode,
+		BILL_NO as billNo,
+		BILL_DATE as billDate,
+		APPLY_DATE as applyDate,
+		CUSTOMER_NAME as
+		customerName,
+		CUSTOMER_TAXNO as customerTaxno,
+		CUSTOMER_ADDRESSANDPHONE
+		as customerAddressandphone,
+		CUSTOMER_BANKANDACCOUNT as
+		customerBankandaccount,
+		AMT_SUM as amtSum,
+		TAX_AMT_SUM as taxAmtSum,
+		SUM_AMT as sumAmt,
+		REMARK as remark,
+		DRAWER as drawer,
+		REVIEWER as
+		reviewer,
+		PAYEE as payee,
+		NAME as name,
+		TAXNO as taxno,
+		ADDRESSANDPHONE as
+		addressandphone,
+		BANKANDACCOUNT as bankandaccount,
+		INSTCODE as instCode,
+		CANCEL_INITIATOR as cancelInitiator,
+		CANCEL_AUDITOR as cancelAuditor,
+		t.DESCRIPTION as description,
+		DATASTATUS as dataStatus,
+		IS_HANDIWORK as
+		isHandiwork,
+		FAPIAO_TYPE as fapiaoType,
+		ISSUE_TYPE as issueType,
+		TAX_DISK_NO as taxDiskNo,
+		MACHINE_NO as machineNo,
+		NOTICE_NO as
+		noticeNo,
+		BALANCE as balance,
+		OPERATESTATUS as operateStatus,
+		CANCEL_REASON as cancelReason,
+		ori_bill_code as oriBillCode,
+		ori_bill_no as oriBillNo,
+		INSURE_ID as cherNum
+		from
+		VMS_BILL_INFO t
+
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="billInfo.billId">
+				t.bill_Id =
+				#billInfo.billId#
+			</isNotEmpty>
+
+			<isNotEmpty prepend="" property="billInfo.orderBy">
+				$billInfo.orderBy$
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<select id="findElectronicsTransBillByBillId" parameterClass="java.util.Map"
+		resultClass="TransBillInfo">
+		select t1.TRANS_ID as transId,
+		t1.BILL_ID as billId,
+		t1.BILL_ITEM_ID as billItemId,
+		t1.AMT_CNY as amtCny,
+		t1.TAX_AMT_CNY as
+		taxAmtCny,
+		t1.INCOME_CNY as incomeCny
+		from vms_trans_bill t1
+		where
+		t1.bill_id = #billId#
+	</select>
+
+	<select id="findElectronicsRedBillByOriBillId" parameterClass="java.util.Map"
+		resultClass="com.cjit.vms.trans.model.BillInfo">
+		SELECT
+		bi.BILL_ID as billId,
+		bi.BILL_CODE as billCode,
+		bi.BILL_NO as billNo,
+		bi.BILL_DATE as billDate,
+		bi.CUSTOMER_NAME as
+		customerName,
+		bi.CUSTOMER_TAXNO as customerTaxNo,
+		bi.CUSTOMER_ADDRESSANDPHONE as customerAddressAndPhone,
+		bi.CUSTOMER_BANKANDACCOUNT as customerBankAndAccount,
+		bi.AMT_SUM as
+		amtSum,
+		bi.TAX_AMT_SUM as taxAmtSum,
+		bi.SUM_AMT as sumAmt,
+		bi.REMARK as
+		remark,
+		bi.DRAWER as drawer,
+		bi.REVIEWER as reviewer,
+		bi.PAYEE as payee,
+		bi.NAME as name,
+		bi.TAXNO as taxNo,
+		bi.ADDRESSANDPHONE as
+		addressAndPhone,
+		bi.BANKANDACCOUNT as bankAndAccount,
+		bi.INSTCODE as
+		instcode,
+		bi.CANCEL_INITIATOR as cancelInitiator,
+		bi.CANCEL_AUDITOR as
+		cancelAuditor,
+		bi.TAX_DISK_NO as taxDiskNo,
+		bi.MACHINE_NO as machineNo,
+		bi.NOTICE_NO as noticeNo,
+		bi.ORI_BILL_CODE as oriBillCode,
+		bi.ORI_BILL_NO as oriBillNo,
+		bi.DATASTATUS as dataStatus,
+		bi.DESCRIPTION as description,
+		bi.IS_HANDIWORK as isHandiwork,
+		bi.ISSUE_TYPE as issueType,
+		bi.FAPIAO_TYPE as fapiaoType,
+		bi.OPERATESTATUS as operateStatus,
+		bi.APPLY_DATE as applyDate,
+		bi.BALANCE as balance
+		from VMS_BILL_INFO bi
+		where exists
+		(
+		select 1
+		from
+		VMS_BILL_INFO b
+		where bi.ORI_BILL_CODE = b.bill_code
+		and bi.ori_bill_no
+		= b.bill_no
+		and b.bill_id = #billId#
+		)
+	</select>
+
+
+	<update id="updateElectronicsBill" parameterClass="java.util.Map">
+		update
+		VMS_BILL_INFO set
+		BILL_CODE = #billInfo.billCode#,
+		BILL_NO =
+		#billInfo.billNo#,
+		BILL_DATE
+		= #billInfo.billDate#,
+		CUSTOMER_NAME =
+		#billInfo.customerName#,
+		CUSTOMER_TAXNO = #billInfo.customerTaxno#,
+		AMT_SUM = #billInfo.amtSum#,
+		TAX_AMT_SUM = #billInfo.taxAmtSum#,
+		SUM_AMT = #billInfo.sumAmt#,
+		NAME =
+		#billInfo.name#,
+		TAXNO =
+		#billInfo.taxno#,
+		ADDRESSANDPHONE =
+		#billInfo.addressandphone#,
+		BANKANDACCOUNT = #billInfo.bankandaccount#,
+		INSTCODE =
+		#billInfo.instCode#,
+		CANCEL_INITIATOR =
+		#billInfo.cancelInitiator#,
+		CANCEL_AUDITOR = #billInfo.cancelAuditor#,
+		ORI_BILL_CODE =
+		#billInfo.oriBillCode#,
+		ORI_BILL_NO =
+		#billInfo.oriBillNo#,
+		DATASTATUS =
+		#billInfo.dataStatus#,
+		OPERATESTATUS
+		= #billInfo.operateStatus#,
+		BALANCE
+		= #billInfo.balance#,
+		CANCEL_REASON
+		= #billInfo.cancelReason#,
+		NOTICE_NO
+		= #billInfo.noticeNo#
+		where
+		BILL_ID
+		= #billInfo.billId#
+	</update>
+
+
+	<insert id="saveElectronicsBill" parameterClass="java.util.Map">
+		insert into
+		VMS_BILL_INFO (
+		BILL_ID,
+		BILL_CODE,
+		BILL_NO,
+		BILL_DATE,
+		CUSTOMER_ID,
+		CUSTOMER_NAME,
+		CUSTOMER_TAXNO,
+		CUSTOMER_ADDRESSANDPHONE,
+		CUSTOMER_BANKANDACCOUNT,
+		AMT_SUM,
+		TAX_AMT_SUM,
+		SUM_AMT,
+		REMARK,
+		DRAWER,
+		REVIEWER,
+		PAYEE,
+		NAME,
+		TAXNO,
+		ADDRESSANDPHONE,
+		BANKANDACCOUNT,
+		INSTCODE,
+		CANCEL_INITIATOR,
+		CANCEL_AUDITOR,
+		TAX_DISK_NO,
+		MACHINE_NO,
+		NOTICE_NO,
+		ORI_BILL_CODE,
+		ORI_BILL_NO,
+		DATASTATUS,
+		DESCRIPTION,
+		IS_HANDIWORK,
+		ISSUE_TYPE,
+		Fapiao_Type,
+		APPLY_DATE,
+		BALANCE,
+		INSURE_ID,
+		TTMPRCNO
+		)
+		values(
+		#billInfo.billId#,
+		#billInfo.billCode#,
+		#billInfo.billNo#,
+		#billInfo.billDate#,
+		#billInfo.customerId#,
+		#billInfo.customerName#,
+		#billInfo.customerTaxno#,
+		#billInfo.customerAddressandphone#,
+		#billInfo.customerBankandaccount#,
+		#billInfo.amtSum#,
+		#billInfo.taxAmtSum#,
+		#billInfo.sumAmt#,
+		#billInfo.remark#,
+		#billInfo.drawer#,
+		#billInfo.reviewer#,
+		#billInfo.payee#,
+		#billInfo.name#,
+		#billInfo.taxno#,
+		#billInfo.addressandphone#,
+		#billInfo.bankandaccount#,
+		#billInfo.instCode#,
+		#billInfo.cancelInitiator#,
+		#billInfo.cancelAuditor#,
+		#billInfo.cancelDate#,
+		#billInfo.machineNo#,
+		#billInfo.noticeNo#,
+		#billInfo.oriBillCode#,
+		#billInfo.oriBillNo#,
+		#billInfo.dataStatus#,
+		#billInfo.description#,
+		#billInfo.isHandiwork#,
+		#billInfo.issueType#,
+		#billInfo.fapiaoType#,
+		#billInfo.applyDate#,
+		#billInfo.balance#,
+		#billInfo.insureId#,
+		#billInfo.ttmpRcno#
+		)
+	</insert>
+
+
+
+	<select id="findElectronicsBillItemInfo" parameterClass="java.util.Map"
+		resultClass="billItemInfo">
+		select
+		bi.BILL_ID as billId,
+		bi.BILL_ITEM_ID as billItemId,
+		bi.GOODS_NAME as goodsName,
+		bi.SPECANDMODEL as specandmodel,
+		bi.GOODS_UNIT as goodsUnit,
+		bi.GOODS_NO as goodsNo,
+		bi.GOODS_PRICE as
+		goodsPrice,
+		bi.TAX_FLAG as taxFlag,
+		bi.AMT as amt,
+		bi.TAX_RATE as
+		taxRate,
+		bi.TAX_AMT as taxAmt,
+		bi.TAX_ITEM as taxItem,
+		bi.IS_MAINGOODS as
+		isMainGoods,
+		bi.ROW_NATURE as rowNature,
+		case
+		when bi.DIS_ITEM_ID is null
+		then bi.bill_item_id
+		else bi.DIS_ITEM_ID
+		end as disItemId,
+		bi.DISCOUNT_RATE as discountRate
+		from VMS_BILL_ITEM_INFO bi
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="billItem.billId">
+				bi.BILL_ID =
+				#billItem.billId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billItem.billItemId">
+				bi.BILL_ITEM_ID =
+				#billItem.billItemId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billItem.disItemId">
+				bi.DIS_ITEM_ID =
+				#billItem.disItemId#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billItem.rowNature">
+				bi.ROW_NATURE =
+				#billItem.rowNature#
+			</isNotEmpty>
+		</dynamic>
+		order by disItemId, billItemId
+	</select>
+
+
+	<update id="updateElectronicsBillItem" parameterClass="java.util.Map">
+		update
+		VMS_BILL_ITEM_INFO set
+		bill_id = #billItemInfo.billId#,trans_id =
+		#billItemInfo.transId#,trans_type
+		= #billItemInfo.transType#,
+		goods_name = #billItemInfo.goodsName#,specandmodel =
+		#billItemInfo.specandmodel#,
+		goods_unit =
+		#billItemInfo.goodsUnit#,goods_no =
+		#billItemInfo.goodsNo#,goods_price
+		= #billItemInfo.goodsPrice#,
+		tax_flag = #billItemInfo.taxFlag#,amt =
+		#billItemInfo.amt#,tax_rate =
+		#billItemInfo.taxRate#,tax_amt =
+		#billItemInfo.taxAmt#,tax_item =
+		#billItemInfo.taxItem#,
+		IS_MAINGOODS =
+		#billItemInfo.isMainGoods#,ROW_NATURE =
+		#billItemInfo.rowNature#,DIS_ITEM_ID =
+		#billItemInfo.disItemId#,DISCOUNT_RATE = #billItemInfo.discountRate#
+		where bill_item_id = #billItemInfo.billItemId#
+	</update>
+
+
+	<insert id="saveElectronicsBillItem" parameterClass="java.util.Map">
+		insert
+		into
+		VMS_BILL_ITEM_INFO (
+		BILL_ID,bill_item_id,
+		goods_name,specandmodel,goods_unit,goods_no,goods_price,
+		tax_flag,amt,tax_rate,tax_amt,tax_item,
+		IS_MAINGOODS,ROW_NATURE,DIS_ITEM_ID,DISCOUNT_RATE)
+		values(
+		#billItemInfo.billId#,#billItemInfo.billItemId#,
+		#billItemInfo.goodsName#,#billItemInfo.specandmodel#,#billItemInfo.goodsUnit#,#billItemInfo.goodsNo#,#billItemInfo.goodsPrice#,
+		#billItemInfo.taxFlag#,#billItemInfo.amt#,#billItemInfo.taxRate#,#billItemInfo.taxAmt#,#billItemInfo.taxItem#,
+		#billItemInfo.isMainGoods#,#billItemInfo.rowNature#,#billItemInfo.disItemId#,#billItemInfo.discountRate#)
+	</insert>
+
+
+	<select id="findElectronicsAliveBillsInSameBusinessid"
+		parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select distinct b.bill_id as BILLID, b.bill_no as BILLNO, b.datastatus
+		as DATASTATUS, tr.businessid as BUSINESSID
+		from vms_bill_info b
+		left
+		join vms_trans_bill tb
+		on b.bill_id = tb.bill_id
+		left join
+		vms_trans_info tr
+		on tb.trans_id = tr.trans_id
+		where tr.businessid in
+		(select distinct tr.businessid
+		from vms_trans_info tr
+		left join
+		vms_trans_bill tb
+		on tr.trans_id = tb.trans_id
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="billids">
+				tb.bill_id in
+				<iterate property="billids" conjunction="," open="(" close=")">
+					#billids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		)
+		and CAST( 'b.datastatus' AS SIGNED INTEGER) &lt; 15
+	</select>
+
+	<select id="findElectronicsTransUnCreateBill" parameterClass="java.util.Map"
+		resultClass="java.lang.Long">
+		select count(1) from vms_trans_info tr where tr.businessid
+		= #businessid# and tr.balance > 0
+	</select>
+	<!--红票审核 -->
+	<select id="findRedElectronicsAuditList" parameterClass="java.util.Map"
+		resultClass="com.cjit.vms.trans.model.BillInfo">
+		select * from (
+		select
+		(@rowNum:=@rowNum+1) as rowindex,
+		a.BILL_ID as
+		billId,
+		a.BILL_CODE as billCode,
+		a.BILL_NO as
+		billNo,
+		a.BILL_CODE as
+		oriBillCode,
+		a.BILL_NO as
+		oriBillNo,
+		a.BILL_DATE as
+		billDate,
+		a.INSTCODE as
+		instCode,
+		a.CUSTOMER_NAME as customerName,
+		a.AMT_SUM as amtSum,
+		a.TAX_AMT_SUM as taxAmtSum,
+		a.SUM_AMT as sumAmt,
+		a.FAPIAO_TYPE as
+		fapiaoType,
+		a.DATASTATUS as dataStatus,
+		a.HISSDTE as
+		hissDte,
+		a.DSOURCE as
+		dSource,
+		a.INSURE_ID as cherNum,
+		a.TTMPRCNO as
+		ttmpRcno,
+		c.BATCH_NO as
+		batchNo,
+		c.INSTCODE as instFrom
+		from
+		vms_bill_info a left join
+		vms_trans_bill b on a.BILL_ID=b.BILL_ID left
+		join vms_trans_info c on
+		b.TRANS_ID= c.TRANS_ID
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				a.INSTCODE in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.instCode">
+				a.INSTCODE=#billInfo.instCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.instFrom">
+				c.INSTCODE=#billInfo.instFrom#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.batchNo">
+				c.BATCH_NO=#billInfo.batchNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.ttmpRcno">
+				a.TTMPRCNO=#billInfo.ttmpRcno#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.cherNum">
+				a.INSURE_ID=#billInfo.cherNum#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billBeginDate">
+				<![CDATA[ str_to_date(a.BILL_DATE,'%Y-%m-%d') >= str_to_date(#billInfo.billBeginDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billEndDate">
+				<![CDATA[ str_to_date(a.BILL_DATE,'%Y-%m-%d')<= str_to_date(#billInfo.billEndDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billCode">
+				a.BILL_CODE=#billInfo.billCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billNo">
+				a.BILL_NO=#billInfo.billNo#
+			</isNotEmpty>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.oriBillCode">
+				a.ORI_BILL_CODE=#billInfo.oriBillCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.oriBillCode">
+				a.ORI_BILL_NO=#billInfo.oriBillCode#
+			</isNotEmpty>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerName">
+				a.CUSTOMER_NAME like
+				'%$billInfo.customerName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.fapiaoType">
+				a.FAPIAO_TYPE
+				=#billInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.dataStatus">
+				a.DATASTATUS
+				=#billInfo.dataStatus#
+			</isNotEmpty>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend="and" property="endIndex"> 
+				<![CDATA[ rownum <= #endIndex#]]>
+			</isNotEmpty>
+			order by
+			billcode asc,
+			billno asc
+			) d where 1=1
+			<isNotEmpty prepend="and" property="startIndex"> 
+				<![CDATA[ rowIndex > #startIndex#  ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 红冲审核list -->
+	<select id="findRedElectronicsAuditListCount" parameterClass="java.util.Map"
+		resultClass="long">
+		select count(*) from vms_bill_info a left join vms_trans_bill b on
+		a.BILL_ID=b.BILL_ID left
+		join vms_trans_info c on b.TRANS_ID=
+		c.TRANS_ID
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="auth_inst_ids">
+				a.INSTCODE in
+				<iterate property="auth_inst_ids" conjunction="," open="("
+					close=")">
+					#auth_inst_ids[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.applyDate">
+				a.APPLY_DATE=#billInfo.applyDate#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.instCode">
+				a.INSTCODE=#billInfo.instCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.instFrom">
+				c.INSTCODE=#billInfo.instFrom#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.oriBillCode">
+				a.ORI_BILL_CODE=#billInfo.oriBillCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.oriBillCode">
+				a.ORI_BILL_NO=#billInfo.oriBillCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.ttmpRcno">
+				a.TTMPRCNO=#billInfo.ttmpRcno#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.cherNum">
+				a.INSURE_ID=#billInfo.cherNum#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billBeginDate">
+				<![CDATA[ str_to_date(a.BILL_DATE,'%Y-%m-%d') >= str_to_date(#billInfo.billBeginDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billEndDate">
+				<![CDATA[ str_to_date(a.BILL_DATE,'%Y-%m-%d')<= str_to_date(#billInfo.billEndDate#,'%Y-%m-%d') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billCode">
+				a.BILL_CODE=#billInfo.billCode#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.billNo">
+				a.BILL_NO=#billInfo.billNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.batchNo">
+				c.BATCH_NO=#billInfo.batchNo#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.customerName">
+				a.CUSTOMER_NAME like
+				'%$billInfo.customerName$%'
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.fapiaoType">
+				a.FAPIAO_TYPE
+				=#billInfo.fapiaoType#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="billInfo.dataStatus">
+				a.DATASTATUS
+				=#billInfo.dataStatus#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>
