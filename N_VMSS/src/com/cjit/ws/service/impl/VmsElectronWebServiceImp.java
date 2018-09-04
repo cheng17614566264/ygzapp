@@ -387,23 +387,27 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 								if(all_sucess) {
 									String subject = "国富人寿电子发票";//邮件主题
 									for(Map emap: mailList) {
-										StringBuffer content = new StringBuffer();
-										content.append("<div>尊敬的用户"+emap.get("customerName")+",您好!<br />");
-										content.append("<p>您在我公司所购买的保单["+emap.get("cherNum")+"]，其发票已开具成功!</p><br />");
-										content.append("<table cellspacing='0px'>");
-										content.append("<tr width='150px'><td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">发票抬头:");
-										content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("customerName")+"</span></td>");
-										content.append("<td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">保单号:");
-										content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("cherNum")+"</span></td></tr>");
-										content.append("<tr width='150px'><td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">发票代码:");
-										content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("fapiaoCode")+"</span></td>");
-										content.append("<td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">发票号码:");
-										content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("fapiaoNo")+"</span></td></tr></table>");
-										content.append("<P style=\"COLOR: #8e8e8e\">如果点击无效，请复制下方网页地址到浏览器地址栏中打开</P>");
-										content.append("<P>发票PDF下载： <A style=\"FONT-SIZE: 12px; COLOR: #808080\" href=\""+emap.get("PDFURL")+"\" target=_blank rel=noopener>"+emap.get("PDFURL")+"</A></P><br />");
-										content.append("如需其他帮助, 请联系："+emap.get("addressandphone")+"<br /></div>");
-										String message = Email.sendEmail(emap.get("email").toString(), subject, content.toString());
-										System.out.println(message);
+										if(emap.get("email") != null) {
+											StringBuffer content = new StringBuffer();
+											content.append("<div>尊敬的用户"+emap.get("customerName")+",您好!<br />");
+											content.append("<p>您在我公司所购买的保单["+emap.get("cherNum")+"]，其发票已开具成功!</p><br />");
+											content.append("<table cellspacing='0px'>");
+											content.append("<tr width='150px'><td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">发票抬头:");
+											content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("customerName")+"</span></td>");
+											content.append("<td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">保单号:");
+											content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("cherNum")+"</span></td></tr>");
+											content.append("<tr width='150px'><td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">发票代码:");
+											content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("fapiaoCode")+"</span></td>");
+											content.append("<td style=\"HEIGHT: 40px; COLOR: #00a5f9; PADDING-LEFT: 10px; BORDER: #00a5f9 1px solid; LINE-HEIGHT: 40px\">发票号码:");
+											content.append("<span style=\"BORDER-BOTTOM: #ccc 1px dashed; POSITION: static; Z-INDEX: 1\">"+emap.get("fapiaoNo")+"</span></td></tr></table>");
+											content.append("<P style=\"COLOR: #8e8e8e\">如果点击无效，请复制下方网页地址到浏览器地址栏中打开</P>");
+											content.append("<P>发票PDF下载： <A style=\"FONT-SIZE: 12px; COLOR: #808080\" href=\""+emap.get("PDFURL")+"\" target=_blank rel=noopener>"+emap.get("PDFURL")+"</A></P><br />");
+											content.append("如需其他帮助, 请联系："+emap.get("addressandphone")+"<br /></div>");
+											String message = Email.sendEmail(emap.get("email").toString(), subject, content.toString());
+											System.out.println(message);
+										}else {
+											System.out.println("邮箱为空");
+										}
 									}
 									
 								}
@@ -1188,8 +1192,13 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 				vmsTransInfo.setBillfreq(billfreq);
 				if(polyear!=null&&!"".equals(polyear)){
 					System.out.println(polyear);
-					System.out.println(polyear.substring(0, polyear.indexOf(".")));
-					vmsTransInfo.setPolyear(Integer.parseInt(polyear.substring(0, polyear.indexOf("."))));
+					if(polyear.contains(".")) {
+						System.out.println(polyear.substring(0, polyear.indexOf(".")));
+						vmsTransInfo.setPolyear(Integer.parseInt(polyear.substring(0, polyear.indexOf("."))));
+					}else {
+						vmsTransInfo.setPolyear(Integer.parseInt(polyear));
+					}
+					
 				}
 				vmsTransInfo.setHissdte(hissdte);
 				vmsTransInfo.setPlanlongdesc(planlongdesc);
@@ -1198,7 +1207,12 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 				vmsTransInfo.setOccdate(occdate);
 				if(premterm!=null&&!"".equals(premterm)){
 					System.out.println(premterm);
-					vmsTransInfo.setPremterm(Integer.parseInt(premterm));
+					if(polyear.contains(".")) {
+						vmsTransInfo.setPremterm(Integer.parseInt(premterm.substring(0, polyear.indexOf("."))));
+					}else {
+						vmsTransInfo.setPremterm(Integer.parseInt(premterm));
+					}
+					
 				}
 				
 				VmsCustomerInfo vmsCustomerInfo=new VmsCustomerInfo();
@@ -1254,7 +1268,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 					}else if("F".equals(taxRate)){
 						taxRateValue=0;
 					}else{
-						throw new HavaErrorMessageException("税率不合法");
+						taxRateValue=0;
 					}
 					i++;
 					transIdList.add(UUID+i);

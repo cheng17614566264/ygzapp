@@ -698,7 +698,7 @@
 	</insert>
 	
 	<!--根据为电子发票的交易中的客户id查找客户信息  客户表  -->
-	<select id="batchRunCustomerInfoByIDForElectron" parameterClass="map" resultClass="CustomerTemp">
+	<select id="batchRunCustomerInfoOfINS" parameterClass="map" resultClass="CustomerTemp">
 		SELECT ID,
 		CUSTOMER_ID,
 		chernum,
@@ -715,9 +715,34 @@
 		CUSTOMER_ZIP_CODE,
 		SYNCH_DATE
 		FROM vms_customer_temp_lis L 
-		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
-		AND CUSTOMER_ID=#CUSTOMER_ID#
+		WHERE L.chernum=#chernum# 
+		AND CUSTOMER_ID=#customerId# 
+		AND L.ID IN 
+		(SELECT MAX(ID) FROM vms_customer_temp_lis GROUP BY CUSTOMER_ID,chernum) 
 	</select>
+	<select id="batchRunCustomerInfoOfINSForHesitate" parameterClass="map" resultClass="CustomerTemp">
+		SELECT ID,
+		CUSTOMER_ID,
+		chernum,
+		CUSTOMER_CNAME,
+		CUSTOMER_TAXNO,
+		CUSTOMER_ACCOUNT,
+		CUSTOMER_CBANK,
+		CUSTOMER_PHONE,
+		CUSTOMER_EMAIL,
+		CUSTOMER_ADDRESS,
+		TAXPAYER_TYPE,
+		FAPIAO_TYPE,
+		CUSTOMER_NATIONALITY,
+		CUSTOMER_ZIP_CODE,
+		SYNCH_DATE
+		FROM vms_customer_info L 
+		WHERE L.chernum=#chernum# 
+		AND CUSTOMER_ID=#customerId# 
+		AND L.ID IN 
+		(SELECT MAX(ID) FROM vms_customer_temp_lis GROUP BY CUSTOMER_ID,chernum) 
+	</select>
+	<!-- 查询同一客户同一保单号不同险种的交易信息 -->
 	<select id="batchRunTransInfoOfINS" parameterClass="map" resultClass="transInfotemp">
 		SELECT TRANS_ID,
 		TRANS_DATE,
@@ -762,8 +787,54 @@
 		CANCLE_STATE,
 		REMARK
 		FROM vms_trans_info_temp_lis L 
-		WHERE L.SYNCH_DATE BETWEEN #startTime# AND #endTime# 
-		AND L.CHERNUM=#CHERNUM#
+		WHERE L.CUSTOMER_ID=#customerId#
+		AND L.CHERNUM=#chernum#
+	</select>
+	<select id="batchRunTransInfoOfINSForHesitate" parameterClass="map" resultClass="transInfotemp">
+		SELECT TRANS_ID,
+		TRANS_DATE,
+		TRANS_TYPE,
+		TAX_FLAG,
+		TAX_RATE,
+		AMT_CCY,
+		BALANCE,
+		INSTCODE,
+		CUSTOMER_ID,
+		AMT_CNY,
+		TAX_AMT_CNY,
+		INCOME_CNY,
+		TRANS_CURR,
+		SURTAX1_AMT_CNY,
+		SURTAX2_AMT_CNY,
+		SURTAX3_AMT_CNY,
+		SURTAX4_AMT_CNY,
+		FAPIAO_TYPE,
+		VAT_RATE_CODE,
+		INSTNAME,
+		CHERNUM,
+		REPNUM,
+		TTMPRCNO,
+		FEETYP,
+		BILLFREQ,
+		POLYEAR,
+		HISSDTE,
+		OCCDATE,
+		INSTFROM,
+		INSTTO,
+		PREMTERM,
+		WITHDRAWYN,
+		PLANLONGDESC,
+		INSCOD,
+		INSNAM,
+		BUSINESSID,
+		QDFLAG,
+		HESITATE_PERIOD,
+		SYNCH_DATE,
+		ISYK,
+		REMARK
+		FROM vms_trans_info L 
+		WHERE L.CUSTOMER_ID=#customerId#
+		AND L.CHERNUM=#chernum#
 	</select>
 	<!--修改中间表状态  -->
 	<update id="updateTempStatus" parameterClass="map">

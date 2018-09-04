@@ -11,7 +11,8 @@ public interface BatchRunService {
 	public List batchRunCustomerInfo(Map map);
 	
 	//根据为电子发票的交易中的客户id查找客户信息---客户信息
-	public List batchRunCustomerInfoByIDForElectron(String stat);
+	public List batchRunCustomerInfoOfINS(Map map);
+	public List batchRunCustomerInfoOfINSForHesitate(Map map);
 	
 	//跑批方法--交易信息插入到应用表
 	
@@ -21,7 +22,8 @@ public interface BatchRunService {
 	public void insertBatchRunCustomerInfo(Map map);
 	
 	//根据保单号获取相同的险种信息
-	public List batchRunTransInfoOfINS(String stat);
+	public List batchRunTransInfoOfINS(Map map);
+	public List batchRunTransInfoOfINSForHesitate(Map map);
 	
 	//跑批方法--修改中间表状态
 	

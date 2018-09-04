@@ -76,36 +76,22 @@ public class BatchRunServiceImpl  extends GenericServiceImpl implements BatchRun
     
     //根据为电子发票的交易中的客户id查找客户信息---客户信息
 	@Override
-	public List batchRunCustomerInfoByIDForElectron(String stat) {
-		Map map = new HashMap();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		String startTime = format.format(Calendar.getInstance().getTime());
-		startTime = startTime + " 00:00:00";
-		map.put("startTime", startTime);
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH)+1);
-		String endTime = format.format(calendar.getTime());
-		endTime = endTime + " 00:00:00";
-		map.put("endTime", endTime);
-		map.put("CUSTOMER_ID", stat);
-		return find("batchRunCustomerInfoByIDForElectron",map);
+	public List batchRunCustomerInfoOfINS(Map map) {
+		return find("batchRunCustomerInfoOfINS",map);
+	}
+	@Override
+	public List batchRunCustomerInfoOfINSForHesitate(Map map) {
+		return find("batchRunCustomerInfoOfINSForHesitate",map);
 	}
 
 	//根据保单号获取相同的险种信息
 	@Override
-	public List batchRunTransInfoOfINS(String stat) {
-		Map map = new HashMap();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		String startTime = format.format(Calendar.getInstance().getTime());
-		startTime = startTime + " 00:00:00";
-		map.put("startTime", startTime);
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH)+1);
-		String endTime = format.format(calendar.getTime());
-		endTime = endTime + " 00:00:00";
-		map.put("endTime", endTime);
-		map.put("CHERNUM", stat);
+	public List batchRunTransInfoOfINS(Map map) {
 		return find("batchRunTransInfoOfINS",map);
+	}
+	@Override
+	public List batchRunTransInfoOfINSForHesitate(Map map) {
+		return find("batchRunTransInfoOfINSForHesitate",map);
 	}
 	
 	//删除客户表中重复的数据

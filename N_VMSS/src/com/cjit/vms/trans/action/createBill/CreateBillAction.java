@@ -1505,7 +1505,8 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 				if("2".equals(batchRunTransInfo1.getFAPIAO_TYPE()) 
 						&& "1".equals(batchRunTransInfo1.getQDFLAG()) 
 						&& "A".equals(batchRunTransInfo1.getFEETYP())) {
-					getTransInfoForINSCOD(batchRunTransInfo1.getCHERNUM(),batchRunTransInfo1.getCUSTOMER_ID());
+					//封装数据
+					getTransInfoForINSCOD(batchRunTransInfo1.getCHERNUM(),batchRunTransInfo1.getCUSTOMER_ID(),true);
 				}
 				//判断是否是个险犹豫期退保,如果是,则修改vms_trans_info表中的对应个险的状态,使其不开票
 				if("0".equals(batchRunTransInfo1.getQDFLAG())
@@ -1557,7 +1558,8 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	        }
 
 	        //开电子发票
-	        batchRunTimeOfElectron();
+			batchRunTimeOfElectron();
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -1568,12 +1570,23 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	 * 日期：2018-08-30
 	 * 作者：刘俊杰
 	 * 功能：对同一保单号不同险种的交易信息进行封装，合并开票
-	 * @param chernum
-	 * @param customerId
+	 * @param chernum 保单号
+	 * @param customerId 客户号
+	 * @param tag 标识:true-团险电子发票  false-个险犹豫期发票
 	 */
-	public void getTransInfoForINSCOD(String chernum, String customerId) {
-		List<TransInfoTemp> batchRunTransInfoINSList=batchRunService.batchRunTransInfoOfINS(chernum);
-		List<CustomerTemp> batchRunCustomerInfoByID=batchRunService.batchRunCustomerInfoByIDForElectron(customerId);
+	public void getTransInfoForINSCOD(String chernum, String customerId, boolean tag) {
+		List<TransInfoTemp> batchRunTransInfoINSList = null;
+		List<CustomerTemp> batchRunCustomerInfoByID = null;
+		Map map = new HashMap();
+		map.put("chernum", chernum);
+		map.put("customerId", customerId);
+		if(tag) {  //判断是否是团险电子发票
+			batchRunTransInfoINSList=batchRunService.batchRunTransInfoOfINS(map);
+			batchRunCustomerInfoByID=batchRunService.batchRunCustomerInfoOfINS(map);
+		}else {
+			batchRunTransInfoINSList=batchRunService.batchRunTransInfoOfINSForHesitate(map);
+			batchRunCustomerInfoByID=batchRunService.batchRunCustomerInfoOfINSForHesitate(map);
+		}
 		CustomerTemp customerTemp=batchRunCustomerInfoByID.get(0);
 		Map xmlmap = new HashMap();
 		xmlmap.put("ID", customerTemp.getID());
@@ -1591,7 +1604,6 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 		xmlmap.put("CUSTOMER_NATIONALITY", customerTemp.getCUSTOMER_NATIONALITY());
 		xmlmap.put("CUSTOMER_ZIP_CODE", customerTemp.getCUSTOMER_ZIP_CODE());
 		xmlmap.put("SYNCH_DATE", customerTemp.getSYNCH_DATE());
-		/*customerId.add(batchRunTransInfo1.getCUSTOMER_ID());*/
 		batchOfElectron(xmlmap,batchRunTransInfoINSList);
 	}
 	
@@ -1629,18 +1641,27 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	 * 新增
 	 * 日期：2018-08-20
 	 * 作者：刘俊杰
-	 * 功能：调用税控接口，开具电子发票
+	 * 功能：调用税控接口，开具电子发票; 开具时间较长，防止超时，开启新线程
 	 * @throws ParseException
 	 */
-	public void batchRunTimeOfElectron() throws ParseException {
-		ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
-		VmsElectronWebServiceImp vmsElectronWebService =  (VmsElectronWebServiceImp) applicationContext.getBean("vmsElectronWebService");
-		for(int i = 0; i<list.size(); i++) {
-			List obj = (List)list.get(i);
-			List<TransInfoTemp> transInfoTemp = (List<TransInfoTemp>) obj.get(0);
-			Map xmlmap = (Map) obj.get(1);
-			vmsElectronWebService.transService(xmlmap,transInfoTemp);
-		}
+	public void batchRunTimeOfElectron(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+					VmsElectronWebServiceImp vmsElectronWebService =  (VmsElectronWebServiceImp) applicationContext.getBean("vmsElectronWebService");
+					for(int i = 0; i<list.size(); i++) {
+						List obj = (List)list.get(i);
+						List<TransInfoTemp> transInfoTemp = (List<TransInfoTemp>) obj.get(0);
+						Map xmlmap = (Map) obj.get(1);
+						vmsElectronWebService.transService(xmlmap,transInfoTemp);
+					}
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 
 	

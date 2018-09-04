@@ -214,12 +214,10 @@ public class IntervalTask {
 			CreateBillAction createBillAction =  (CreateBillAction) applicationContext.getBean("createBillAction");
 			//封装数据
 			for(TransInfoTemp temp : transinfoList) {
-				createBillAction.getTransInfoForINSCOD(temp.getCHERNUM(),temp.getCUSTOMER_ID());
+				createBillAction.getTransInfoForINSCOD(temp.getCHERNUM(),temp.getCUSTOMER_ID(),false);
 			}
 			//开具电子发票
 			createBillAction.batchRunTimeOfElectron();
-		} catch (ParseException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
