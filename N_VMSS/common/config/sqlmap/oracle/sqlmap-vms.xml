@@ -15017,6 +15017,10 @@ select
 	<select id="intervalFindBatchRunTimeAllList" parameterClass="java.util.Map" resultClass="BatchRunTime">
 		SELECT id,hour,minute,second,cname,intervalHour,intervalMinute,intervalSecond from batchruntime where 1=1
 	</select>
+	<!--查询跑批任务表其中一项任务 -->
+	<select id="intervalFindBatchRunTimeByCname" parameterClass="java.util.Map" resultClass="BatchRunTime">
+		SELECT id,hour,minute,second,cname,intervalHour,intervalMinute,intervalSecond from batchruntime where cname=#cname#
+	</select>
 	<!-- end 2018-08-30 -->
 	
 </sqlMap>

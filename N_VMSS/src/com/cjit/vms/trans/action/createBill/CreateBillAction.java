@@ -1429,24 +1429,30 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 				map.put("AMT_CCY", batchRunTransInfo1.getAMT_CCY());
 				map.put("BALANCE", batchRunTransInfo1.getBALANCE());
 				map.put("ORIG_INSTCODE", batchRunTransInfo1.getINSTCODE());
-				//机构判断
-				List authInstList = this.getAuthInstList();
-				//新增 2018-08-23 刘俊杰 判断机构权限
-				tag = false;
-				for (int j = 0; j < authInstList.size(); j++) {
-					Organization org = (Organization) authInstList.get(j);
-					if (batchRunTransInfo1.getINSTCODE().equals(org.getId())) {
-						Organization orgs = (Organization) authInstList.get(0);
-						System.out.println(orgs);
-						batchRunTransInfo1.setINSTCODE(orgs.getId());
-						tag = true;
+				//判断如果是自动跑批,则将其机构转换为开票机构,不控制其权限
+				if("auto".equals(applicationForm.getRequestionType())) {
+					
+				}else {
+				//判断如果不是自动跑批,控制其跑批权限
+					//机构判断
+					List authInstList = this.getAuthInstList();
+					//新增 2018-08-23 刘俊杰 判断机构权限
+					tag = false;
+					for (int j = 0; j < authInstList.size(); j++) {
+						Organization org = (Organization) authInstList.get(j);
+						if (batchRunTransInfo1.getINSTCODE().equals(org.getId())) {
+							Organization orgs = (Organization) authInstList.get(0);
+							System.out.println(orgs);
+							batchRunTransInfo1.setINSTCODE(orgs.getId());
+							tag = true;
+						}
 					}
+					if(!tag) {
+						customerId.add(batchRunTransInfo1.getCUSTOMER_ID());
+						continue;
+					}
+					//end 2018-08-23
 				}
-				if(!tag) {
-					customerId.add(batchRunTransInfo1.getCUSTOMER_ID());
-					continue;
-				}
-				//end 2018-08-23
 				map.put("INSTCODE", batchRunTransInfo1.getINSTCODE());
 				//税率还原
 				String TAX_RATE=batchRunTransInfo1.getTAX_RATE();

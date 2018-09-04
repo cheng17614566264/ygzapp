@@ -14,12 +14,16 @@ import org.springframework.context.ApplicationContext;
 
 import com.cjit.common.util.SpringContextUtil;
 import com.cjit.vms.customer.model.CustomerTemp;
+import com.cjit.vms.input.action.InvoiceScanAuthAction;
 import com.cjit.vms.input.jdbcLink.JdbcGetGeneralIedger;
 import com.cjit.vms.input.model.InputInfo;
 import com.cjit.vms.input.model.InputInvoiceNew;
+import com.cjit.vms.input.service.InvoiceScanAuthService;
+import com.cjit.vms.input.service.impl.InvoiceScanAuthServiceImpl;
 import com.cjit.vms.interval.function.service.IntervalDao;
 import com.cjit.vms.trans.action.createBill.CreateBillAction;
 import com.cjit.vms.trans.model.TransInfoTemp;
+import com.cjit.webService.client.entity.ApplicationForm;
 import com.cjit.ws.service.impl.VmsElectronWebServiceImp;
 
 /**
@@ -31,169 +35,92 @@ import com.cjit.ws.service.impl.VmsElectronWebServiceImp;
 public class IntervalTask {
 	
 	/**
+	 * 新增
+	 * 日期：2018-09-04
+	 * 作者：刘俊杰
 	 * @description: 定时执行跑批的方法 （核心）
 	 */
-	public void TaskOfbatchRun(IntervalDao intervalDao) {
+	public void TaskOfbatchRun() {
 		System.out.println("开始更新核心数据...");
-	/*	List<TransInfoTemp> batchRunTransInfo=intervalDao.batchRunTransInfo();
-		if(batchRunTransInfo != null) {
-			for(int i=0;i<batchRunTransInfo.size();i++){
-				TransInfoTemp batchRunTransInfo1=batchRunTransInfo.get(i);
-				Map map=new HashMap();
-				map.put("BUSINESS_ID", batchRunTransInfo1.getBUSINESS_ID());
-				map.put("INST_ID", batchRunTransInfo1.getINST_ID());
-				map.put("QD_FLAG", batchRunTransInfo1.getQD_FLAG());
-				map.put("CHERNUM", batchRunTransInfo1.getCHERNUM());
-				map.put("REPNUM", batchRunTransInfo1.getREPNUM());
-				map.put("TTMPRCNO", batchRunTransInfo1.getTTMPRCNO());
-				map.put("CUSTOMER_NO", batchRunTransInfo1.getCUSTOMER_NO());
-				map.put("ORIGCURR", batchRunTransInfo1.getORIGCURR());
-				map.put("ORIGAMT", batchRunTransInfo1.getORIGAMT());
-				map.put("ACCTAMT", batchRunTransInfo1.getACCTAMT());
-				
-				map.put("TRDT", batchRunTransInfo1.getTRDT());
-				
-				map.put("BATCTRCDE", batchRunTransInfo1.getBATCTRCDE());
-				
-				map.put("INVTYP", batchRunTransInfo1.getINVTYP());
-				
-				map.put("FEETYP", batchRunTransInfo1.getFEETYP());
-				
-				map.put("BILLFREQ", batchRunTransInfo1.getBILLFREQ());
-				
-				map.put("POLYEAR", batchRunTransInfo1.getPOLYEAR());
-				
-				map.put("HISSDTE", batchRunTransInfo1.getHISSDTE());
-				
-				map.put("PLANLONGDESC", batchRunTransInfo1.getPLANLONGDESC());
-				
-				map.put("INSTFROM", batchRunTransInfo1.getINSTFROM());
-				
-				map.put("INSTTO", batchRunTransInfo1.getINSTTO());
-				
-				map.put("OCCDATE", batchRunTransInfo1.getOCCDATE());
-				
-				map.put("PREMTERM", batchRunTransInfo1.getPREMTERM());
-								
-				map.put("TRANSTYPE", batchRunTransInfo1.getTRANSTYPE());
-				
-				map.put("INS_COD", batchRunTransInfo1.getINS_COD());
-				
-				map.put("INS_NAM", batchRunTransInfo1.getINS_NAM());
-				
-				map.put("AMT_CNY", batchRunTransInfo1.getAMT_CNY());
-				
-				map.put("TAX_AMT_CNY", batchRunTransInfo1.getTAX_AMT_CNY());
-				
-				map.put("INCOME_CNY", batchRunTransInfo1.getINCOME_CNY());
-				
-				String TAX_RATE=batchRunTransInfo1.getTAX_RATE();
-				if(TAX_RATE.equals("s")||TAX_RATE.equals("S")){
-					map.put("TAX_RATE", 0.06);
-				}else if(TAX_RATE.equals("z")||TAX_RATE.equals("Z")){
-					map.put("TAX_RATE", 0.00);
-				}else if(TAX_RATE.equals("p")||TAX_RATE.equals("P")){
-					map.put("TAX_RATE", 0.17);
-				}else if(TAX_RATE.equals("n")||TAX_RATE.equals("N")){
-					map.put("TAX_RATE", 0.03);
-				}else{
-					map.put("TAX_RATE", 0.00);
-				}
-				
-				map.put("valueflage", batchRunTransInfo1.getValueflage());
-				
-				map.put("TransferTime", batchRunTransInfo1.getTransferTime());
-				//2018-03-26新增数据来源
-				map.put("DSOURCE", "HX");
-			    //中间交易表插入到应用交易表
-				intervalDao.insertBatchRunTransInfo(map);
-				//修改中间表状态
-				intervalDao.updateTempStatus(map);
-			}
-		}
-		
-		
-		//客户信息遍历保存到map
-		List<CustomerTemp> batchRunCustomerInfo=intervalDao.batchRunCustomerInfo();
-		if(batchRunCustomerInfo != null) {
-			intervalDao.deleteBatchRunCustomerInfo(); //清空即将要写入信息的表
-	        for(int i=0;i<batchRunCustomerInfo.size();i++){
-	        	CustomerTemp customerTemp=batchRunCustomerInfo.get(i);
-	        	Map map=new HashMap();
-	        	map.put("CUSTOMER_NO", customerTemp.getCUSTOMER_NO());
-	        	map.put("CUSTOMER_NAME", customerTemp.getCUSTOMER_NAME());
-	        	map.put("CUSTOMER_TAXNO", customerTemp.getCUSTOMER_TAXNO());
-	        	map.put("CUSTOMER_ADDRESSAND", customerTemp.getCUSTOMER_ADDRESSAND());
-	        	map.put("TAXPAYER_TYPE", customerTemp.getTAXPAYER_TYPE());
-	        	map.put("CUSTOMER_PHONE", customerTemp.getCUSTOMER_PHONE());
-	        	map.put("CUSTOMER_BANKAND", customerTemp.getCUSTOMER_BANKAND());
-	        	map.put("CUSTOMER_ACCOUNT", customerTemp.getCUSTOMER_ACCOUNT());
-	        	map.put("chernum", customerTemp.getChernum());
-	        	
-	        	try{
-	        		intervalDao.insertBatchRunCustomerInfo(map);
-	        		}
-	        	catch(Exception e){
-	        		System.out.println(e.getMessage());
-	        	}
-	        	
-			}
-	        System.out.println("batchRunCustomerInfo.size():"+batchRunCustomerInfo.size());
-		}*/
+		ApplicationForm applicationForm = new ApplicationForm();
+		applicationForm.setRequestionType("auto");  //设置跑批类型为自动跑批
+		//通过spring获取CreateBillAction实例对象
+		ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+		CreateBillAction createBillAction = (CreateBillAction)applicationContext.getBean("createBillAction");
+		createBillAction.syncDataOfCore(applicationForm);
 		System.out.println("核心数据更新成功...");
 	}
 	
 	
 	/**
+	 * 新增
+	 * 日期：2018-09-04
+	 * 作者：刘俊杰
 	 *  @description: 定时执行跑批的方法 （总账）
 	 */
-	public void TaskOfGeneralIedger(IntervalDao intervalDao) {
-		/*System.out.println("开始更新总账数据...");
-		GetGeneralIedger getGeneralIedger = new GetGeneralIedger();
-		List list = getGeneralIedger.getGeneralIedger();
+	public void TaskOfGeneralIedger() {
+		System.out.println("开始更新总账数据...");
+		//通过spring获取InvoiceScanAuthAction实例对象
+		ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+		InvoiceScanAuthAction invoiceScanAuthAction = (InvoiceScanAuthAction)applicationContext.getBean("invoiceScanAuthAction");
+		//远程连接总账数据库获取数据
+		List list =invoiceScanAuthAction.getGeneralIedger();
 		System.out.println("远程从总账中获取到数据...");
+		
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)-1);
 		//获取上月日期
 		String yearMonth = new SimpleDateFormat("yyyy-MM").format(calendar.getTime());
-		
+		System.out.println("上月:"+yearMonth);
 		Map monthMap = new HashMap();
-		intervalDao.deleteGeneralLedger(monthMap);
+		monthMap.put("month", yearMonth);
+		//通过spring获取InvoiceScanAuthService实例对象
+		InvoiceScanAuthService invoiceScanAuthService = (InvoiceScanAuthServiceImpl)applicationContext.getBean("invoiceScanAuthService");
+		//删除重复数据
+		invoiceScanAuthService.deleteGeneralLedger(monthMap);
 		
 		for(int i=0;i<list.size();i++){
 			System.out.println(list.get(i));
 			Map map=(Map) list.get(i);
 			
 			System.out.println(map);
-			intervalDao.insertGeneralLedger(map);
+			invoiceScanAuthService.insertGeneralLedger(map);
 		}
 	
-		System.out.println("总账数据更新成功...");*/
+		System.out.println("总账数据更新成功...");
 		
 	}
 	/**
+	 * 新增
+	 * 日期：2018-09-04
+	 * 作者：刘俊杰
 	 * @description: 定时执行跑批的方法 （费控）
 	 */
-	public void TaskOfdataUpdate(IntervalDao intervalDao){
+	public void TaskOfdataUpdate(){
 		System.out.println("开始更新费控数据...");
-		/*List<InputInfo> inputInfo = new ArrayList<InputInfo>();
+		
+		//通过spring获取InvoiceScanAuthService实例对象
+		ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+		InvoiceScanAuthService invoiceScanAuthService = (InvoiceScanAuthServiceImpl)applicationContext.getBean("invoiceScanAuthService");
+		
+		List<InputInfo> inputInfo = new ArrayList<InputInfo>();
 		List<InputInvoiceNew> inputInvoiceNew = new ArrayList<InputInvoiceNew>();
 		
 		//从中间表中查数据（主表）
-		inputInfo = intervalDao.findDataByPrimary();
+		inputInfo = invoiceScanAuthService.findDataByPrimary();
 		//从中间表中查数据（明细表）
-		inputInvoiceNew = intervalDao.findDataByDetails();
+		inputInvoiceNew = invoiceScanAuthService.findDataByDetails();
 		
 		System.out.println("从中间表中获取到数据");
 		
 		//将数据插入到应用表中（主表）
 		if(inputInfo != null){
-			intervalDao.insertDataByPrimary(inputInfo);
+			invoiceScanAuthService.insertDataByPrimary(inputInfo);
 		}
 		//将数据插入到应用表中（明细表）
 		if(inputInvoiceNew != null){
-			intervalDao.insertDataByDetails(inputInvoiceNew);
-		}*/
+			invoiceScanAuthService.insertDataByDetails(inputInvoiceNew);
+		}
 		System.out.println("费控数据更新成功...");
 	}
 

@@ -481,8 +481,8 @@
 			}
 		});
 		//刷新页面
-		/* document.forms[0].action = "listTrans.action";
-		document.forms[0].submit(); */
+		document.forms[0].action = "listTrans.action";
+		document.forms[0].submit();
 
 	}
 	//【删除】按钮 

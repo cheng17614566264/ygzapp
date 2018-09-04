@@ -123,7 +123,7 @@ public class IntervalUtil {
 				
 				
 				IntervalTask intervalTask = new IntervalTask();
-				intervalTask.TaskOfbatchRun(IntervalUtil.getIntervalDao());
+				intervalTask.TaskOfbatchRun();
 				
 			}
 		}, sendtime,sendInterval);
@@ -166,7 +166,7 @@ public class IntervalUtil {
 				System.out.println("执行任务---总账" + new Date().getSeconds());
 				
 				IntervalTask intervalTask = new IntervalTask();
-				intervalTask.TaskOfGeneralIedger(IntervalUtil.getIntervalDao());;
+				intervalTask.TaskOfGeneralIedger();
 				
 				
 			}
@@ -206,7 +206,7 @@ public class IntervalUtil {
 				System.out.println("执行任务---费控" + new Date().getSeconds());
 				
 				IntervalTask intervalTask = new IntervalTask();
-				intervalTask.TaskOfdataUpdate(IntervalUtil.getIntervalDao());
+				intervalTask.TaskOfdataUpdate();
 				
 				
 			}

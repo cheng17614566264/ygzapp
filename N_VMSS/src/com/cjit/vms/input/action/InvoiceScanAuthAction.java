@@ -827,7 +827,7 @@ public class InvoiceScanAuthAction extends DataDealAction {
 		}
 		
 	}
-	private List getGeneralIedger() {
+	public List getGeneralIedger() {
 		//获取上月日期
 		Calendar calendar=Calendar.getInstance();
 		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)-1);
