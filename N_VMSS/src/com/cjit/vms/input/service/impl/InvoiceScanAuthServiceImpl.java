@@ -3,6 +3,7 @@ package com.cjit.vms.input.service.impl;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import com.cjit.common.service.impl.GenericServiceImpl;
 import com.cjit.common.util.PaginationList;
 import com.cjit.gjsz.system.model.Organization;
+import com.cjit.vms.BatchRun.model.BatchRunTime;
 import com.cjit.vms.input.model.BillDetailEntity;
 import com.cjit.vms.input.model.InputInfo;
 import com.cjit.vms.input.model.InputInvoiceInfo;
@@ -461,19 +463,65 @@ public class InvoiceScanAuthServiceImpl extends GenericServiceImpl implements In
 	//从中间表中查出数据（主表）
 	@Override
 	public List<InputInfo> findDataByPrimary() {
-		return this.find("findDataByPrimary", null);
+		/**
+		 * 新增
+		 * 日期：2018-09-04
+		 * 作者：刘俊杰
+		 * 功能：查询费控自动跑批时间，根据设置的跑批时间间隔，获取数据
+		 */
+		Map map = new HashMap();
+		map.put("cname", "费控");
+		List<BatchRunTime> batchRunTimeList = this.find("intervalFindBatchRunTimeByCname",map);
+		for(BatchRunTime blist : batchRunTimeList) {
+			double interval = blist.getIntervalHour()*60*60 + blist.getIntervalMinute()*60 + blist.getIntervalSecond();  //获取跑批时间间隔的秒数
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar calendar = Calendar.getInstance();  //获取当前日历对象
+			Integer day = (int) Math.ceil(interval / (24*60*60));  //将跑批时间间隔转换为天,向上取整
+			calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)-day); //设置日历对应的天数为前day天
+			String startTime = format.format(calendar.getTime());  //格式化日期获取对应的字符串
+			startTime = startTime + " 00:00:00";  //设置开始查询时间为零点,防止重设时间后有遗漏
+			map.put("startTime", startTime);
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH)+day+1); //设置结束查询时间为第二天的零点
+			String endTime = format.format(calendar.getTime());
+			endTime = endTime + " 00:00:00";
+			map.put("endTime", endTime);
+		}
+			return this.find("findDataByPrimary", map);
 	}
 	//从中间表中查出数据（明细表）
 	@Override
 	public List<InputInvoiceNew> findDataByDetails() {
-		return this.find("findDataByDetails", null);
+		/**
+		 * 新增
+		 * 日期：2018-09-04
+		 * 作者：刘俊杰
+		 * 功能：查询费控自动跑批时间，根据设置的跑批时间间隔，获取数据
+		 */
+		Map map = new HashMap();
+		map.put("cname", "费控");
+		List<BatchRunTime> batchRunTimeList = this.find("intervalFindBatchRunTimeByCname",map);
+		for(BatchRunTime blist : batchRunTimeList) {
+			double interval = blist.getIntervalHour()*60*60 + blist.getIntervalMinute()*60 + blist.getIntervalSecond();  //获取跑批时间间隔的秒数
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar calendar = Calendar.getInstance();  //获取当前日历对象
+			Integer day = (int) Math.ceil(interval / (24*60*60));  //将跑批时间间隔转换为天,向上取整
+			calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)-day); //设置日历对应的天数为前day天
+			String startTime = format.format(calendar.getTime());  //格式化日期获取对应的字符串
+			startTime = startTime + " 00:00:00";  //设置开始查询时间为零点,防止重设时间后有遗漏
+			map.put("startTime", startTime);
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH)+day+1); //设置结束查询时间为第二天的零点
+			String endTime = format.format(calendar.getTime());
+			endTime = endTime + " 00:00:00";
+			map.put("endTime", endTime);
+		}
+		return this.find("findDataByDetails", map);
 	}
 	
 	//将数据插入到应用表（主表）
 	@Override
 	public void insertDataByPrimary(List<InputInfo> data) {
 		Map<String,InputInfo> map = new HashMap<String,InputInfo>();
-		this.delete("deleteDataByPrimary", map);
+		/*this.delete("deleteDataByPrimary", map);  2018-09-04刘俊杰修改：已查询到的数据为满足条件的数据,直接插入即可*/
 		for(int i = 0;i < data.size();i++){
 			InputInfo inputInfo = data.get(i);
 			System.out.println(inputInfo+"--------------------");
@@ -485,7 +533,7 @@ public class InvoiceScanAuthServiceImpl extends GenericServiceImpl implements In
 	@Override
 	public void insertDataByDetails(List<InputInvoiceNew> data) {
 		Map<String,InputInvoiceNew> map = new HashMap<String,InputInvoiceNew>();
-		this.delete("deleteDataByDetails", map);
+		/*this.delete("deleteDataByDetails", map);  2018-09-04刘俊杰修改：已查询到的数据为满足条件的数据,直接插入即可*/
 		for(int i = 0;i < data.size();i++){
 			InputInvoiceNew inputInvoiceNew = data.get(i);
 			System.out.println(inputInvoiceNew+"--------------------");

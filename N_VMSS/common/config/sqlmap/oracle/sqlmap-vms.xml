@@ -14826,6 +14826,29 @@ select
 	
 	<!-- 从主表中间表中查出数据 -->
 	<select id="findDataByPrimary" resultClass="inputInfo">
+		<!-- SELECT 
+		A.TRANS_ID as userId,
+		A.INVOICE_ID as billId,
+		A.INVOICE_NO as billCode,
+		A.TRANS_CURR as curreny,
+		A.TRANS_DATE as billDate,
+		A.TAXNO as taxNo,
+		A.NAME as name,
+		A.BANK_NO as bankNo,
+		A.BANK_NAME as bankName,
+		A.CUSTOMER_TEL as customerTel,
+		A.CUSTOMER_ADD as customerAdd,
+		A.BILL_TYPE as billType,
+		A.DATA_STATUS as billStatu,
+		A.AUTHENTICATION_DATE as dealNo,
+		新增
+			日期：2018-08-24
+			作者：刘俊杰
+			说明：增加字段BANK_CODE，用于存储机构代码
+		
+		A.BANK_CODE as BANK_CODE
+		end 2018-08-24
+		FROM VMS_INPUT_INVOICE_INFO_TEMP A -->
 		SELECT 
 		A.TRANS_ID as userId,
 		A.INVOICE_ID as billId,
@@ -14849,6 +14872,14 @@ select
 		A.BANK_CODE as BANK_CODE
 		<!-- end 2018-08-24 -->
 		FROM VMS_INPUT_INVOICE_INFO_TEMP A
+		WHERE A.UPDATE_TIME BETWEEN #startTime# AND #endTime# 
+		AND A.ID NOT IN (
+		SELECT AA.ID FROM VMS_INPUT_INVOICE_INFO_TEMP AA 
+		INNER JOIN vms_input_invoice_new N 
+		ON AA.INVOICE_ID=N.BILL_ID 
+		AND AA.INVOICE_NO=N.BILL_CODE 
+		AND AA.Trans_ID=N.TRANS_ID
+		)
 	</select>
 	<!-- 删除主表应用表中数据 -->
 	<delete id="deleteDataByPrimary">
@@ -14905,22 +14936,30 @@ select
 	<!-- 从明细表中间表中查数据 -->
 	<select id="findDataByDetails" resultClass="inputInvoiceNew">
 		SELECT 
-		A.INVOICE_ID as billCode,
-		A.INVOICE_NO as billNo,
-		A.SHARE_INST as instName,
-		A.AMT as amt,
-		A.TAX_AMT as taxAmt,
-		A.TAX_RATE as taxRate,
-		A.EXPENSE as amtTaxSum,
-		A.PURPOSE as porpuse,
-		A.IS_TAX_CREDIT as isCredit,
-		A.TRANSFER_MONEY as transferAmt,
-		A.ROLL_OUT_STATUS as transferStatus,
-		A.TRANS_REASON as remark,
-		A.ROLL_OUT_MONTH as rollOutMonth,
-		A.AVAILABLE as available,
-		A.TRANS_ID as glInterfaceId
+		A.INVOICE_ID AS billCode,
+		A.INVOICE_NO AS billNo,
+		A.SHARE_INST AS instName,
+		A.AMT AS amt,
+		A.TAX_AMT AS taxAmt,
+		A.TAX_RATE AS taxRate,
+		A.EXPENSE AS amtTaxSum,
+		A.PURPOSE AS porpuse,
+		A.IS_TAX_CREDIT AS isCredit,
+		A.TRANSFER_MONEY AS transferAmt,
+		A.ROLL_OUT_STATUS AS transferStatus,
+		A.TRANS_REASON AS remark,
+		A.ROLL_OUT_MONTH AS rollOutMonth,
+		A.AVAILABLE AS available,
+		A.TRANS_ID AS glInterfaceId
 		FROM VMS_INPUT_INVOICE_NEW_ITEM_T A
+		WHERE A.UPDATE_TIME BETWEEN #startTime# AND #endTime# 
+		AND A.SerialNo NOT IN (
+		SELECT AA.SerialNo FROM VMS_INPUT_INVOICE_NEW_ITEM_T AA 
+		INNER JOIN vms_input_invoice_new_item N 
+		ON AA.INVOICE_ID=N.BILL_ID 
+		AND AA.INVOICE_NO=N.BILL_CODE 
+		AND AA.Trans_ID=N.TRANS_ID
+		)
 	</select>
 	<!-- 删除明细表应用表中数据 -->
 	<delete id="deleteDataByDetails">
