@@ -399,7 +399,7 @@
 									<!-- 发票类型 -->
 									<td align="center" id="fptype"><s:property
 											value="@com.cjit.vms.trans.util.DataUtil@getFapiaoTypeCH(fapiaoType)" />
-										<s:property value='fapiaoType' /> <input id="fp"
+									<input id="fp"
 										value="<s:property value='fapiaoType' />-<s:property value='billId'/>"
 										hidden /></td>
 									<!-- 状态-->

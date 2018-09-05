@@ -845,7 +845,7 @@ public class DataUtil {
 		} else if ("1".equals(fapiaoType)) {
 			return "增值税普通发票";
 		}else if ("2".equals(fapiaoType)) {
-			return "通行费发票";
+			return "增值税电子发票";
 		}
 		return "";
 	}
@@ -862,6 +862,8 @@ public class DataUtil {
 			return "增值税专用发票";
 		} else if ("1".equals(fapiaoType)) {
 			return "增值税普通发票";
+		} else if ("2".equals(fapiaoType)) {
+			return "增值税电子发票";
 		}
 		return "";
 	}
