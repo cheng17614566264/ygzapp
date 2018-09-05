@@ -3,3 +3,5 @@
 /log4j.xml
 /struts.properties
 /struts.xml
+/dialect/
+/META-INF/

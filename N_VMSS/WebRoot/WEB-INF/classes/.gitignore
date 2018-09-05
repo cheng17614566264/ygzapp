@@ -9,3 +9,5 @@
 /struts.properties
 /struts.xml
 /webservice.properties
+/applicationContext.xml
+/Email.properties
