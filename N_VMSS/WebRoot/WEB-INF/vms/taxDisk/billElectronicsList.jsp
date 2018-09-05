@@ -513,7 +513,7 @@
 								.getHissDte()%></td>
 
 									<td align="center"><a href="javascript:void(0);"
-										onClick="OpenModalWindowSubmit('billElectronicsCancelReason.action?transId=<%=bill.getTransId()%>&fapiaoType=<%=bill.getFapiaoType()%>',600,400,true)">
+										onClick="OpenModalWindowSubmit('billElectronicsCancelReason.action?transId=<%=bill.getTransId()%>&fapiaoType=<%=bill.getFapiaoType()%>',500,300,true)">
 											<img
 											src="<c:out value="${bopTheme}"/>/themes/images/icons/info.png"
 											title="查看失败原因" style="border-width: 0px;" />

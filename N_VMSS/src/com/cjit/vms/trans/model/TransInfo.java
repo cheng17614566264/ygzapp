@@ -180,6 +180,20 @@ public class TransInfo {
 	private String batchNo;
 	private String batchType;
 	private BigDecimal wkze;//保单累计未开票价税合计合计
+	
+	/**
+	 * 新增
+	 * 日期：2018-09-04
+	 */
+	private String cancelReason;  //电子发票自动开具失败原因
+	//end 2018-09-04
+	
+	public String getCancelReason() {
+		return cancelReason;
+	}
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
+	}
 	public String getChanNelCh(){
 		return DataUtil.getChanNel(chanNel);
 	}

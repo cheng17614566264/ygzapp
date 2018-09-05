@@ -24,6 +24,7 @@ import com.cjit.common.util.NumberUtils;
 import com.cjit.common.util.StringUtil;
 import com.cjit.gjsz.system.model.Organization;
 import com.cjit.gjsz.system.model.User;
+import com.cjit.vms.electronics.model.ElectroniscStatusUtil;
 import com.cjit.vms.electronics.service.ElectronicsService;
 import com.cjit.vms.taxdisk.tools.AjaxReturn;
 import com.cjit.vms.trans.action.DataDealAction;
@@ -65,7 +66,16 @@ public class ElectronicsAction extends DataDealAction {
 			if ("menu".equals(fromFlag)) {
 				transInfo = new com.cjit.vms.trans.model.TransInfo();
 				// 区分电子发票
+				//TODO 遗留问题:核心推送的数据，团险发票类型为2，但个险的发票类型不确定
 				transInfo.setFapiaoType("2");
+				/**
+				 * 新增
+				 * 日期：2018-09-05
+				 * 作者：刘俊杰
+				 * 说明：电票手动开具页面，默认显示自动开具失败的信息
+				 */
+				transInfo.setDataStatus(ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_201);
+				//end 2018-09-05
 				this.transInfo.setBillBeginDate(null);
 				this.transInfo.setBillEndDate(null);
 				this.request.getSession().setAttribute("curPage",
@@ -349,7 +359,7 @@ public class ElectronicsAction extends DataDealAction {
 		Label cell16 = new Label(i++, column, bill.getHissDte(),
 				JXLTool.getContentFormat());
 
-		Label cell17 = new Label(i++, column, bill.getRemark(),
+		Label cell17 = new Label(i++, column, bill.getCancelReason(),
 				JXLTool.getContentFormat());
 		ws.addCell(cell1);
 		ws.addCell(cell2);

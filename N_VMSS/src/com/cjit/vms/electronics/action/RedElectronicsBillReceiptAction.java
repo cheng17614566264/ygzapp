@@ -77,7 +77,7 @@ public class RedElectronicsBillReceiptAction extends DataDealAction {
 				this.request.getSession().setAttribute("pageSize",
 						new Integer(20));
 				// 区分电子发票
-				billInfo.setFapiaoType("1");
+				billInfo.setFapiaoType("2");
 				// 默认第一次进入状态为未开具红票
 				billInfo.setDataStatus("3");
 				fromFlag = null;
@@ -87,7 +87,7 @@ public class RedElectronicsBillReceiptAction extends DataDealAction {
 				System.out.println("第二次进入...");
 				billInfo = new BillInfo();
 				// 区分电子发票
-				billInfo.setFapiaoType("1");
+				billInfo.setFapiaoType("2");
 				this.billInfo.setCustomerName(this.request.getParameter(
 						"billInfo.customerName").trim());
 				System.out.println(this.request

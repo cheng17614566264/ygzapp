@@ -11,6 +11,7 @@ import com.cjit.common.util.DateUtils;
 import com.cjit.common.util.NumberUtils;
 import com.cjit.common.util.StringUtil;
 import com.cjit.gjsz.datadeal.model.SelectTag;
+import com.cjit.vms.electronics.model.ElectroniscStatusUtil;
 
 public class DataUtil {
 
@@ -536,7 +537,19 @@ public class DataUtil {
 				return TRANS_STATUS_9_CH;
 			} else if (TRANS_STATUS_99.equals(datastatus)) {
 				return TRANS_STATUS_99_CH;
-			}
+			} else if(ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_201.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_201_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_202.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_202_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_203.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_203_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_204.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_204_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_205.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_205_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_206.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_206_CH;
+			} 
 		} else if ("BILL".equalsIgnoreCase(bussFlag)) {
 			if (BILL_STATUS_1.equals(datastatus)) {
 				return BILL_STATUS_1_CH;
