@@ -57,6 +57,7 @@ import com.cjit.common.util.DateUtils;
 import com.cjit.common.util.NumberUtils;
 import com.cjit.common.util.SpringContextUtil;
 import com.cjit.gjsz.system.model.User;
+import com.cjit.vms.electronics.model.ElectroniscStatusUtil;
 import com.cjit.vms.system.service.ParamConfigVmssService;
 import com.cjit.vms.taxdisk.ciitc.service.EInvoice;
 import com.cjit.vms.taxdisk.servlet.model.ElectronicsIssue;
@@ -348,8 +349,8 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 										Map maps = new HashMap();
 										maps = ei.printXML(st);
 										System.out.println(maps.get("fapiaoCode")+":"+maps.get("fapiaoNo")+":"+maps.get("PDFURL")+":"+maps.get("result")+":"+billInfo.getCustomerEmail());
-										//判断返回的开具状态是否为"0"--开具成功，否则将错误原因回写到数据库
-										if("0".equals(maps.get("returnCode").toString())) {
+										//判断返回的开具状态是否为"0000"--开具成功，否则将错误原因回写到数据库
+										if("0000".equals(maps.get("returnCode").toString())) {
 											maps.put("email", billInfo.getCustomerEmail());
 											maps.put("customerName", billInfo.getCustomerName());
 											maps.put("cherNum", billInfo.getCherNum());
@@ -364,25 +365,58 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 											
 											mailList.add(maps);
 										}else {
-											//开具失败, 将错误原因回写到数据库
+											/**
+											 * 新增
+											 * 日期:2018-09-04
+											 * 作者：刘俊杰
+											 * 说明：开具失败，将错误原因回写到数据库
+											 */
 											maps.put("cherNum", billInfo.getCherNum());
 											maps.put("customerId", billInfo.getCustomerId());
-											maps.put("failstate", "80"); //对应vms_trans_info表中的DATASTATES状态字段 80-电子发票开具失败
+											maps.put("failstate", ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_201); //对应vms_trans_info表中的DATASTATES状态字段 201-电子发票开具失败
 											vmsTransInfoDao.insertCANCELREASON(maps);
+											all_sucess =false;
 										}
 										
 									} catch (HavaErrorMessageException hxe) {
 										all_sucess =false;
 										/*status.setRollbackOnly();*/
-										 hxe.printStackTrace();
-												creadBlueXmlBody(BUSSINFO,"1", hxe.getMessage(),  "", "", amtSum.toString(),amtTaxSum.toString(), "");
+										hxe.printStackTrace();
+										//creadBlueXmlBody(BUSSINFO,"1", hxe.getMessage(),  "", "", amtSum.toString(),amtTaxSum.toString(), "");
+										
+										/**
+										 * 新增
+										 * 日期:2018-09-05
+										 * 作者：刘俊杰
+										 * 说明：开具失败，将错误原因回写到数据库
+										 */
+										Map errorMap = new HashMap();
+										errorMap.put("cherNum", billInfo.getCherNum());
+										errorMap.put("customerId", billInfo.getCustomerId());
+										errorMap.put("failstate", ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_201); //对应vms_trans_info表中的DATASTATES状态字段 80-电子发票开具失败
+										errorMap.put("returnMessage", hxe.getMessage());
+										vmsTransInfoDao.insertCANCELREASON(errorMap);
+										
 										break;
 									}
 									catch (Exception e) {
 										all_sucess=false;
-									/*status.setRollbackOnly();*/
-									e.printStackTrace();
-										creadBlueXmlBody(BUSSINFO, "1", "电子发票开票失败", "", "", amtSum.toString(), amtTaxSum.toString(), "");
+										/*status.setRollbackOnly();*/
+										e.printStackTrace();
+										//creadBlueXmlBody(BUSSINFO, "1", "电子发票开票失败", "", "", amtSum.toString(), amtTaxSum.toString(), "");
+										/**
+										 * 新增
+										 * 日期:2018-09-05
+										 * 作者：刘俊杰
+										 * 说明：开具失败，将错误原因回写到数据库
+										 */
+										Map errorMap = new HashMap();
+										errorMap.put("cherNum", billInfo.getCherNum());
+										errorMap.put("customerId", billInfo.getCustomerId());
+										errorMap.put("failstate", ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_201); //对应vms_trans_info表中的DATASTATES状态字段 80-电子发票开具失败
+										errorMap.put("returnMessage", "电子发票开具异常,请手工开具或联系相关人员");
+										vmsTransInfoDao.insertCANCELREASON(errorMap);
+										
 										break;
 									}
 								

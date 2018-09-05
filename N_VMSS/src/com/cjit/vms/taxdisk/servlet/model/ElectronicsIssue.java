@@ -243,7 +243,7 @@ public class ElectronicsIssue {
 	/**
 	 * 电票开具税控返回代码
 	 * */
-	public static final String deal_with_success = "0";
+	public static final String deal_with_success = "0000";
 	public static final String request_timeout = "9991";
 	public static final String request_exception = "9992";
 	public static final String request_runtime_exception = "9995";
