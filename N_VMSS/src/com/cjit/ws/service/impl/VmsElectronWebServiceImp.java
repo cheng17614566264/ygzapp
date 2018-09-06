@@ -481,7 +481,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 								 * 作者：刘俊杰
 								 * 功能：开票后回传给核心
 								 */
-								if(all_sucess) {
+								/*if(all_sucess) {
 									ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
 									BillIssueAction billIssueAction = (BillIssueAction) applicationContext.getBean("billIssueAction");
 									for(Map emap: mailList) {
@@ -493,7 +493,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 											result = "开票成功--开票信息回传核心失败,核心系统异常";
 										}
 									}
-								}
+								}*/
 								
 								
 								

@@ -422,7 +422,11 @@ public class ElectronicsAction extends DataDealAction {
 						TransInfoTemp temp = transinfoList.get(0);
 						createBillAction.getTransInfoForINSCOD(temp.getCHERNUM(),temp.getCUSTOMER_ID(),false);
 						//开具电子发票
-						String resultOfMake = createBillAction.batchRunTimeOfElectron();
+						createBillAction.batchRunTimeOfElectron();
+						do {
+							Thread.sleep(1000);
+						}while(createBillAction.getResult() == null);
+						String resultOfMake = createBillAction.getResult();
 						sbMessage.append(transIds[i]+resultOfMake);  //开具结果
 					}
 					
@@ -490,16 +494,16 @@ public class ElectronicsAction extends DataDealAction {
 				ajax.setMessage(sbMessage.toString());
 			}
 
-			logManagerService.writeLog(request, this.getCurrentUser(),
+			/*logManagerService.writeLog(request, this.getCurrentUser(),
 					"00802:0003", "开票申请", "开票",
 					"对交易ID为(" + transIdss.substring(0, transIdss.length() - 1)
-							+ ")的交易开票 成功" + transSuccess + "笔", "1");
+							+ ")的交易开票 成功" + transSuccess + "笔", "1");*/
 			returnResult(ajax);
 		} catch (Exception e) {
-			logManagerService.writeLog(request, this.getCurrentUser(),
+			/*logManagerService.writeLog(request, this.getCurrentUser(),
 					"00802:0003", "开票申请", "开票",
 					"对交易ID为(" + transIdss.substring(0, transIdss.length() - 1)
-							+ ")的交易开票", "0");
+							+ ")的交易开票", "0");*/
 			log.error("TransInfoAction-transToEachBill", e);
 			e.printStackTrace();
 			throw e;
@@ -528,7 +532,8 @@ public class ElectronicsAction extends DataDealAction {
 						map.put("transId", transId);
 						map.put("dataStatus", ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_302);
 						electronicsService.updateElectronicsTransRedStatusOfNotMake(map);
-						//生存红色票据
+						//生成红色票据
+						sbMessage.append("修改成功");
 					}
 				}
 			}

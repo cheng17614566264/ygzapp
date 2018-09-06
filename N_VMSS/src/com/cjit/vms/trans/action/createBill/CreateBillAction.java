@@ -1650,7 +1650,7 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	 * 功能：调用税控接口，开具电子发票; 开具时间较长，防止超时，开启新线程
 	 * @throws ParseException
 	 */
-	public String batchRunTimeOfElectron(){
+	public void batchRunTimeOfElectron(){
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -1668,8 +1668,7 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 				}
 			}
 		}).start();
-		return result;
 	}
-
+	
 	
 }

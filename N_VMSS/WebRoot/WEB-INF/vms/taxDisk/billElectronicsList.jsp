@@ -95,8 +95,9 @@
 		if (checkChkBoxesSelected("selectBillIds")) {
 			cks = true;
 			object = document.getElementsByClassName("selectTransIds");
-			for (ckecks in object) {
-				if (object[ckecks].checked) {
+			var i=0;
+			for (i=0; i<object.length; i++) {
+				if (object[i].checked) {
 					if (parseFloat($("#vehicles").val()) < 0) {
 						cks = false;
 						alert("负数交易，无法进行开具！");
@@ -107,9 +108,10 @@
 			if (cks == true) {
 				var transIds = "";
 				var fapiaoType = object[0].getAttribute("fapiaoType");
-				for (cke in object) {
-					if (object[cke].checked) {
-						transIds = object[cke].getAttribute("rm") + "/"
+				var j=0;
+				for (j=0; j<object.length; j++) {
+					if (object[j].checked) {
+						transIds = object[j].getAttribute("rm") + "/"
 								+ transIds;
 					}
 				}
@@ -122,16 +124,19 @@
 						"fapiaoType" : fapiaoType,
 						"transIds" : transIds
 					},
-					dataType : "JSON",
+					dataType : "text",
 					success : function(ajaxReturn) {
 						var ajaxReturns = $.parseJSON(ajaxReturn);
 						alert(ajaxReturns.message);
+						//刷新页面
+						submitAction( document.forms[0], "findElectronics.action?fromFlag=menu&paginationList.showCount=FALSE");
 					},
 					error : function() {
 						alert("false");
+						//刷新页面
+						submitAction( document.forms[0], "findElectronics.action?fromFlag=menu&paginationList.showCount=FALSE");
 					}
 				});
-
 			}
 		} else {
 			alert("请至少选中一个信息来进行开具操作");
@@ -175,9 +180,11 @@
 			//说明：更新状态为ELECTRONICS_REDBILL_STATUS_302, 生成红冲票据
 			object = document.getElementsByClassName("selectTransIds");
 			var fapiaoType = object[0].getAttribute("fapiaoType");
-			for (cke in object) {
-				if (object[cke].checked) {
-					transIds = object[cke].getAttribute("rm") + "/"
+			var transIds = "";
+			var i = 0;
+			for (i=0; i<object.length; i++) {
+				if (object[i].checked) {
+					transIds = object[i].getAttribute("rm") + "/"
 							+ transIds;
 				}
 			}
@@ -189,16 +196,19 @@
 					"fapiaoType" : fapiaoType,
 					"transIds" : transIds
 				},
-				dataType : "JSON",
+				dataType : "text",
 				success : function(ajaxReturn) {
 					var ajaxReturns = $.parseJSON(ajaxReturn);
 					alert(ajaxReturns.message);
+					//刷新页面
+					submitAction( document.forms[0], "findElectronics.action?fromFlag=menu&paginationList.showCount=FALSE");
 				},
 				error : function() {
 					alert("false");
+					//刷新页面
+					submitAction( document.forms[0], "findElectronics.action?fromFlag=menu&paginationList.showCount=FALSE");
 				}
 			});
-			
 		} else {
 			alert("请至少选中一个信息来进行冲操作");
 		}

@@ -474,15 +474,19 @@
 			success : function(ajaxReturn) {
 				var d = eval("("+ajaxReturn+")");
 				alert(d.message);
+				//刷新页面
+				document.forms[0].action = "listTrans.action";
+				document.forms[0].submit();
 			},
 			error : function(ajaxReturn) {
 				var d = eval("("+ajaxReturn+")");
 				alert(d.message);
+				//刷新页面
+				document.forms[0].action = "listTrans.action";
+				document.forms[0].submit();
 			}
 		});
-		//刷新页面
-		document.forms[0].action = "listTrans.action";
-		document.forms[0].submit();
+		
 
 	}
 	//【删除】按钮 
