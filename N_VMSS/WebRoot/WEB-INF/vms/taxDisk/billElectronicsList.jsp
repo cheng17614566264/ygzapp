@@ -67,8 +67,8 @@
 	src="<%=webapp%>/page/js/billinterface/<%=(String) request.getAttribute("jspParam")%>.js"></script>
 
 <script type="text/javascript">
-	var billInterface = new BillInterface();
-	billInterface.init({});
+	/* var billInterface = new BillInterface();
+	billInterface.init({}); */
 	// [查询]按钮  
 	function submitForm(actionUrl) {
 		submitAction(document.forms[0], actionUrl);
@@ -113,7 +113,7 @@
 								+ transIds;
 					}
 				}
-				//生成票据信息
+				//生成票据信息,执行电子发票开具
 				$.ajax({
 					url : "transToElectronicsBill.action",
 					type : "POST",
@@ -125,8 +125,6 @@
 					dataType : "JSON",
 					success : function(ajaxReturn) {
 						var ajaxReturns = $.parseJSON(ajaxReturn);
-						/* 执行开具*/
-
 						alert(ajaxReturns.message);
 					},
 					error : function() {
@@ -166,14 +164,41 @@
 				*/
 				/* 生成红色票据保存 */ 
 
-				
-				
-				
 				/* 执行红冲*/
-				submitAction(
+				/* submitAction(
 						document.forms[0],
-						"listElectroniceRedBillSelect.action?fromFlag=menu&paginationList.showCount=FALSE");
+						"listElectroniceRedToBill.action?fromFlag=menu&paginationList.showCount=FALSE"); */
 			/* } */
+			
+			//新增
+			//日期：2018-09-06
+			//说明：更新状态为ELECTRONICS_REDBILL_STATUS_302, 生成红冲票据
+			object = document.getElementsByClassName("selectTransIds");
+			var fapiaoType = object[0].getAttribute("fapiaoType");
+			for (cke in object) {
+				if (object[cke].checked) {
+					transIds = object[cke].getAttribute("rm") + "/"
+							+ transIds;
+				}
+			}
+			$.ajax({
+				url : "listElectroniceRedToBill.action",
+				type : "POST",
+				async : true,
+				data : {
+					"fapiaoType" : fapiaoType,
+					"transIds" : transIds
+				},
+				dataType : "JSON",
+				success : function(ajaxReturn) {
+					var ajaxReturns = $.parseJSON(ajaxReturn);
+					alert(ajaxReturns.message);
+				},
+				error : function() {
+					alert("false");
+				}
+			});
+			
 		} else {
 			alert("请至少选中一个信息来进行冲操作");
 		}
@@ -303,8 +328,8 @@
 						<img src="<%=bopTheme%>/themes/images/icons/icon13.png" /> <span
 							class="current_status_menu">当前位置：</span> <span
 							class="current_status_submenu1">销项税管理</span> <span
-							class="current_status_submenu">发票管理</span> <span
-							class="current_status_submenu">电子发票开具</span>
+							class="current_status_submenu">电票管理</span> <span
+							class="current_status_submenu">电子发票手动开具</span>
 					</div>
 					<div class="widthauto1">
 						<table id="tbl_query" cellpadding="0" cellspacing="0" width="100%"

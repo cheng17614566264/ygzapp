@@ -3,6 +3,7 @@ package com.cjit.vms.electronics.service;
 import java.util.List;
 import java.util.Map;
 
+import com.cjit.vms.trans.model.TransInfoTemp;
 import com.cjit.vms.trans.model.createBill.BillInfo;
 import com.cjit.vms.trans.model.createBill.BillTransInfo;
 import com.cjit.common.util.PaginationList;
@@ -126,6 +127,27 @@ public interface ElectronicsService {
 	 */
 	public BillContext addTransToContext(BillsTaxNoContext billsTaxNoContext,
 			TransInfo transInfo);
+
+	/**
+	 * 新增
+	 * 日期：2018-09-06
+	 * 作者：刘俊杰
+	 * 说明：从交易表中查出此交易对应的所有交易信息(包含不同险种)
+	 * @param map
+	 * @return
+	 */
+	public List<TransInfoTemp> selectTransInfoOfElectronicsReuse(Map map);
+	//end 2018-09-06
+
+	/**
+	 * 新增
+	 * 日期：2018-09-06
+	 * 作者：刘俊杰
+	 * 说明：改变状态为ELECTRONICS_REDBILL_STATUS_302-未开具红票,流向电票红冲页面
+	 * @param map
+	 */
+	public void updateElectronicsTransRedStatusOfNotMake(Map map);
+	//end 2018-09-06
 
 
 }

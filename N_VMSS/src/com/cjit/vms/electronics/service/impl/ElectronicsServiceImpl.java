@@ -18,6 +18,7 @@ import com.cjit.gjsz.system.model.Organization;
 import com.cjit.vms.electronics.service.ElectronicsService;
 import com.cjit.vms.system.model.UBaseSysParamVmss;
 import com.cjit.vms.trans.action.createBill.CheckResult;
+import com.cjit.vms.trans.model.TransInfoTemp;
 import com.cjit.vms.trans.model.createBill.BillGoodsInfo;
 import com.cjit.vms.trans.model.createBill.BillInfo;
 import com.cjit.vms.trans.model.createBill.BillTransInfo;
@@ -554,6 +555,30 @@ public class ElectronicsServiceImpl extends GenericServiceImpl implements
 			map.put("billTrans", billTransInfo);
 			save("updateTransAmtAndStatusManual", map);
 		}
+	}
+
+	/**
+	 * 新增
+	 * 日期：2018-09-06
+	 * 作者：刘俊杰
+	 * 说明：从交易表中查出此交易对应的所有交易信息(包含不同险种)
+	 * @param map
+	 * @return
+	 */
+	@Override
+	public List<TransInfoTemp> selectTransInfoOfElectronicsReuse(Map map) {
+		return this.find("selectTransInfoOfElectronicsReuse", map);
+	}
+	/**
+	 * 新增
+	 * 日期：2018-09-06
+	 * 作者：刘俊杰
+	 * 说明：改变状态为ELECTRONICS_REDBILL_STATUS_302-未开具红票,流向电票红冲页面
+	 * @param map
+	 */
+	@Override
+	public void updateElectronicsTransRedStatusOfNotMake(Map map) {
+		this.save("updateElectronicsTransRedStatusOfNotMake", map);
 	}
 
 }

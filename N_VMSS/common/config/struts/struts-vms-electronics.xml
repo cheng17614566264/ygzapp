@@ -4,15 +4,18 @@
     "http://struts.apache.org/dtds/struts-2.1.dtd">
 <struts>
 	<package name="electronics" extends="cfa" namespace="/">
-		<!-- 手动开具 -->
+		<!-- 【手动开具】页面 -->
+		<!-- 页面数据查询 -->
 		<action name="findElectronics" method="findElectronicsList"
 			class="electronicsAction">   <!--  cheng  0904  改为spring 管理 struts2 -->
 			<result name="success">WEB-INF/vms/taxDisk/billElectronicsList.jsp
 			</result>
 		</action>
+		<!-- 导出EXCEL -->
 		<action name="exportElectronics" method="exportElectronics"
 			class="electronicsAction">
 		</action>
+		<!-- 手动电子发票开具 -->
 		<action name="transToElectronicsBill" method="transToElectronicsBill"
 			class="electronicsAction">
 		</action>
@@ -22,8 +25,13 @@
 			<result name="success">WEB-INF/vms/taxDisk/billElectronicsCancelReason.jsp
 			</result>
 		</action>
+		<!-- 电票红冲-改变状态,生成红色票据,流向电票红冲页面 -->
+		<action name="listElectroniceRedToBill" method="listElectroniceRedToBill"
+			class="electronicsAction">
+		</action>
 
-		<!-- 【红冲申请】页面数据查询 -->
+		<!-- 【电票红冲】页面 -->
+		<!-- 页面数据查询 -->
 		<action name="listElectroniceRedBillSelect" method="listElectroniceRedBillSelect"
 			class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction">
 			<result name="success">WEB-INF/vms/taxDisk/billElectronicsRedReceipt.jsp
@@ -56,7 +64,8 @@
 			class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction">
 		</action>
 
-		<!-- 【红冲审核】页面数据查询 -->
+		<!-- 【红冲审核】页面 -->
+		<!-- 页面数据查询 -->
 		<action name="listElectronicsRedInvoiceAudit" method="listElectronicsRedInvoiceAudit"
 			class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
 			<result name="success">WEB-INF/vms/taxDisk/billElectronicsInvoiceAudit.jsp</result>

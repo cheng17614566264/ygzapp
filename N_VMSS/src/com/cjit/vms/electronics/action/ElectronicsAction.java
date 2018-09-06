@@ -29,6 +29,8 @@ import com.cjit.vms.electronics.service.ElectronicsService;
 import com.cjit.vms.taxdisk.tools.AjaxReturn;
 import com.cjit.vms.trans.action.DataDealAction;
 import com.cjit.vms.trans.action.createBill.CheckResult;
+import com.cjit.vms.trans.action.createBill.CreateBillAction;
+import com.cjit.vms.trans.model.TransInfoTemp;
 import com.cjit.vms.trans.model.createBill.BillInfo;
 import com.cjit.vms.trans.model.createBill.TransInfo;
 import com.cjit.vms.trans.service.createBill.BillValidationService;
@@ -44,7 +46,14 @@ public class ElectronicsAction extends DataDealAction {
 	private List transInfoList;
 	private BillValidationService billValidationService;
 	private ElectronicsService electronicsService;
-
+	/**
+	 * 新增
+	 * 日期：2018-09-06
+	 * 作者：刘俊杰
+	 * 说明：新增电子发票开具流程
+	 */
+	private CreateBillAction createBillAction;
+	//end 2018-09-06
 	/**
 	 * 电子发票展示
 	 * 
@@ -381,8 +390,7 @@ public class ElectronicsAction extends DataDealAction {
 	}
 
 	/**
-	 * 生成票据信息
-	 * 
+	 * 手动电子发票开具
 	 * @return
 	 * @throws Exception
 	 */
@@ -399,7 +407,26 @@ public class ElectronicsAction extends DataDealAction {
 
 			if (transIds != null && transIds.length > 0) {
 				for (int i = 0; i < transIds.length; i++) {
-					TransInfo searPar = new TransInfo();
+					
+					/**
+					 * 新增
+					 * 日期：2018-09-06
+					 * 作者：刘俊杰
+					 * 说明：执行电子发票开具
+					 */
+					//从vms_trans_info表中查询出此交易的交易信息
+					Map map = new HashMap();
+					if(transIds[i] != "") {
+						map.put("transId", transIds[i]);
+						List<TransInfoTemp> transinfoList = electronicsService.selectTransInfoOfElectronicsReuse(map);
+						TransInfoTemp temp = transinfoList.get(0);
+						createBillAction.getTransInfoForINSCOD(temp.getCHERNUM(),temp.getCUSTOMER_ID(),false);
+						//开具电子发票
+						String resultOfMake = createBillAction.batchRunTimeOfElectron();
+						sbMessage.append(transIds[i]+resultOfMake);  //开具结果
+					}
+					
+					/*TransInfo searPar = new TransInfo();
 					searPar.setTransId(transIds[i]);
 					searPar.setFapiaoType(fapiaoType);
 					searPar = electronicsService
@@ -431,9 +458,9 @@ public class ElectronicsAction extends DataDealAction {
 					searPar.setRemark(sb.toString());
 					transIdss += transIds[i];
 					transSuccess++;
-					list.add(searPar);
+					list.add(searPar);*/
 				}
-				// 校验
+				/*// 校验
 				CheckResult result = (CheckResult) billValidationService
 						.shortCircuitValidation(list);
 				System.out.println(result.getCheckFlag());
@@ -457,7 +484,7 @@ public class ElectronicsAction extends DataDealAction {
 
 					ajax.setMessage("初始化票据信息成功！");
 
-				}
+				}*/
 			}
 			if (sbMessage != null && sbMessage.toString().length() > 0) {
 				ajax.setMessage(sbMessage.toString());
@@ -479,6 +506,41 @@ public class ElectronicsAction extends DataDealAction {
 		}
 
 	}
+	
+	/**
+	 * 新增
+	 * 日期：2018-09-06
+	 * 作者：刘俊杰
+	 * 功能：电票红冲-改变状态,生成红色票据,流向电票红冲页面
+	 */
+	public void listElectroniceRedToBill() {
+		AjaxReturn ajax = new AjaxReturn();
+		StringBuffer sbMessage = new StringBuffer();
+		Map map = new HashMap();
+		try {
+			String fapiaoType = request.getParameter("fapiaoType");
+			String[] transIds = request.getParameter("transIds").split("/");
+			if (transIds != null && transIds.length > 0) {
+				for (int i = 0; i < transIds.length; i++) {
+					String transId = transIds[i];
+					if(transId != "") {
+						//改变状态为ELECTRONICS_REDBILL_STATUS_302-未开具红票
+						map.put("transId", transId);
+						map.put("dataStatus", ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_302);
+						electronicsService.updateElectronicsTransRedStatusOfNotMake(map);
+						//生存红色票据
+					}
+				}
+			}
+			if (sbMessage != null && sbMessage.toString().length() > 0) {
+				ajax.setMessage(sbMessage.toString());
+			}
+			returnResult(ajax);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 
 	private void returnResult(AjaxReturn ajaxReturn) throws Exception {
 		response.setHeader("Content-Type", "text/xml;charset=UTF-8");
@@ -531,5 +593,14 @@ public class ElectronicsAction extends DataDealAction {
 	public static String getTransinfo() {
 		return TransInfo;
 	}
+
+	public CreateBillAction getCreateBillAction() {
+		return createBillAction;
+	}
+
+	public void setCreateBillAction(CreateBillAction createBillAction) {
+		this.createBillAction = createBillAction;
+	}
+	
 
 }

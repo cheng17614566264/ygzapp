@@ -15,6 +15,13 @@
 		scope="prototype">
 		<property name="electronicsService" ref="electronicsService" />
 		<property name="logManagerService" ref="logManagerService"></property> <!-- 新增日志  20180904 cheng-->
+		<!--新增
+			日期：2018-09-06
+			作者：刘俊杰
+			说明：新增电子发票开具流程
+		 -->
+		 <property name="createBillAction" ref="createBillAction" />
+		 <!-- end 2018-09-06 -->
 	</bean>
 
 	<!-- 电票红冲 -->

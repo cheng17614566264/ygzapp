@@ -4,6 +4,12 @@
 <sqlMap namespace="vms">
 	<!--测试 -->
 	<typeAlias alias="InstUtil" type="com.cjit.vms.electronics.model.InstUtil" />
+	<!--新增
+		日期：2018-09-06
+		作者：刘俊杰
+	-->
+	<typeAlias alias="TransInfoTemp" type="com.cjit.vms.trans.model.TransInfoTemp" />
+	<!-- end 2018-08-30 -->
 
 	<!--电子发票展示 -->
 	<select id="findElectronicsList" parameterClass="java.util.Map"
@@ -2528,4 +2534,25 @@
 			</isNotEmpty>
 		</dynamic>
 	</select>
+	<!--新增
+		日期：2018-09-06
+		作者：刘俊杰
+		说明：从交易表中查出此交易对应的所有交易信息
+	 -->
+	<select id="selectTransInfoOfElectronicsReuse" parameterClass="java.util.Map" resultClass="TransInfoTemp">
+		SELECT CHERNUM,
+		CUSTOMER_ID
+		FROM vms_trans_info
+		WHERE TRANS_ID=#transId#
+	</select>
+	<!--新增
+		日期：2018-09-06
+		作者：刘俊杰
+		说明：从交易表中查出此交易对应的所有交易信息
+	 -->
+	 <update id="updateElectronicsTransRedStatusOfNotMake" parameterClass="java.util.Map">
+	 	UPDATE vms_trans_info
+		SET DATASTATUS=#dataStatus# 
+		WHERE TRANS_ID=#transId#
+	 </update>
 </sqlMap>
