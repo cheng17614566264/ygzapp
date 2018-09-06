@@ -109,11 +109,17 @@
 				var transIds = "";
 				var fapiaoType = object[0].getAttribute("fapiaoType");
 				var j=0;
-				for (j=0; j<object.length; j++) {
+				/* for (j=0; j<object.length; j++) {
 					if (object[j].checked) {
 						transIds = object[j].getAttribute("rm") + "/"
 								+ transIds;
 					}
+				} */
+				for (i = 0; i < object.length; i++) { 
+					   if (object[i].checked){ 
+					   transIds = object[i].getAttribute("rm") + "/" 
+					   + transIds;  
+					   }
 				}
 				//生成票据信息,执行电子发票开具
 				$.ajax({

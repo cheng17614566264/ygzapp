@@ -114,5 +114,19 @@ public interface RedElectronicsBillService {
 	 * @param isUpdate
 	 */
 	public void saveBillItemInfo(BillItemInfo billItemInfo, boolean isUpdate);
+	/** 
+   * 查询票据  
+   *  
+   * @param billItemInfo 
+   * @param isUpdate 
+   */ 
+   public List<BillInfo> findBillInfo(String[] billidArray); 
+      /** 
+   * 更新票的状态  
+   *  
+   * @param billItemInfo 
+   * @param isUpdate 
+   */ 
+   public void updateRedBill(BillInfo billInfo); 
 
 }

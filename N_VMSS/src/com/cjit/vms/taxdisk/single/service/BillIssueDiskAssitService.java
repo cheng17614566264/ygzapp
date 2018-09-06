@@ -58,6 +58,9 @@ public interface BillIssueDiskAssitService  {
 	//2018-03-09国富更改
 	public AjaxReturn updateBillIssueResult(String billCode, String billNo,
 			 String billId,String userId,String billDate,String resturnmsg,boolean flag,String flag1);
+	//原来的  
+	public AjaxReturn updateBillIssueResult(String billCode, String billNo,  
+	String billId,String userId,String billDate,String resturnmsg,boolean flag);
 	/**
 	 * @param Id 票据id vms_trans_bill表 vms_bill_info 表
 	 * @return 交易的集合  vms_trans_info 表   查 开票类型、交易id 票据id 

@@ -1926,7 +1926,7 @@
 		c on a.trans_id = c.trans_id
 		left join vms_customer_info d on
 		c.CUSTOMER_ID=d.CUSTOMER_ID
-		where b.DATASTATUS='26'   <!-- cheng xiu 从21 改为22   20180830改为26-->
+		where b.DATASTATUS=#dataStatus# <!-- 0903修为动态获取 -->
 		<isNotEmpty prepend="and" property="redReceiptApplyInfo.ttmprcno">
 			c.TTMPRCNO=#redReceiptApplyInfo.ttmprcno#
 		</isNotEmpty>
@@ -2000,7 +2000,7 @@
 		left join vms_trans_info c on a.trans_id =
 		c.trans_id
 		left join vms_customer_info d on c.CUSTOMER_ID=d.CUSTOMER_ID
-		where b.DATASTATUS='21'
+		where b.DATASTATUS= #dataStatus# <!-- 修改为动态获取 0905 -->
 		<isNotEmpty prepend="and" property="redReceiptApplyInfo.ttmprcno">
 			c.TTMPRCNO=#redReceiptApplyInfo.ttmprcno#
 		</isNotEmpty>

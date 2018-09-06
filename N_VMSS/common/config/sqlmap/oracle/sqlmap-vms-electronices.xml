@@ -584,9 +584,11 @@
 			</isNotEmpty>
 		</dynamic>
 		<dynamic>
-			<isNotEmpty prepend="and" property="billInfo.cherNum">
-				t.INSURE_ID =
-				#billInfo.cherNum#
+			<isNotEmpty prepend="and" property="dataStatus"> 
+			   t.DATASTATUS in <!-- cheng修 0906 状态值是多个 改为in --> 
+			   <iterate property="dataStatus" open="(" close=")" conjunction=","> 
+			   #dataStatus[]# 
+			   </iterate> 
 			</isNotEmpty>
 		</dynamic>
 		<dynamic>
@@ -815,9 +817,11 @@
 			</isNotEmpty>
 		</dynamic>
 		<dynamic>
-			<isNotEmpty prepend="and" property="billInfo.dataStatus">
-				t.DATASTATUS =
-				#billInfo.dataStatus#
+			<isNotEmpty prepend="and" property="dataStatus"> 
+			   t.DATASTATUS in <!-- cheng修 0906 状态值是多个 改为in --> 
+			   <iterate property="dataStatus" open="(" close=")" conjunction=","> 
+			   #dataStatus[]# 
+			   </iterate> 
 			</isNotEmpty>
 		</dynamic>
 		<dynamic>
@@ -2555,4 +2559,71 @@
 		SET DATASTATUS=#dataStatus# 
 		WHERE TRANS_ID=#transId#
 	 </update>
+	 
+	<!-- 查询 票据 cheng 0906--> 
+   <select id="findElectronicesBillInfo" parameterClass="java.util.Map" 
+   resultClass="billInfo"> 
+   select BILL_ID as billId, 
+   BILL_CODE as billCode, 
+   BILL_NO as billNo, 
+   BILL_DATE as billDate, 
+   APPLY_DATE as applyDate, 
+   CUSTOMER_NAME as 
+   customerName, 
+   CUSTOMER_ID AS 
+   customerId, 
+   CUSTOMER_TAXNO as customerTaxno, 
+   CUSTOMER_ADDRESSANDPHONE 
+   as customerAddressandphone, 
+   CUSTOMER_BANKANDACCOUNT as 
+   customerBankandaccount, 
+   AMT_SUM as amtSum, 
+   TAX_AMT_SUM as taxAmtSum, 
+   SUM_AMT as sumAmt, 
+   REMARK as remark, 
+   DRAWER as drawer, 
+   REVIEWER as 
+   reviewer, 
+   PAYEE as payee, 
+   NAME as name, 
+   TAXNO as taxno, 
+   ADDRESSANDPHONE as 
+   addressandphone, 
+   BANKANDACCOUNT as bankandaccount, 
+   INSTCODE as instCode, 
+   CANCEL_INITIATOR as cancelInitiator, 
+   CANCEL_AUDITOR as cancelAuditor, 
+   t.DESCRIPTION as description, 
+   DATASTATUS as dataStatus, 
+   IS_HANDIWORK as 
+   isHandiwork, 
+   FAPIAO_TYPE as fapiaoType, 
+   ISSUE_TYPE as issueType, 
+   TAX_DISK_NO as taxDiskNo, 
+   MACHINE_NO as machineNo, 
+   NOTICE_NO as 
+   noticeNo, 
+   BALANCE as balance, 
+   OPERATESTATUS as operateStatus, 
+   CANCEL_REASON as cancelReason, 
+   ori_bill_code as oriBillCode, 
+   ori_bill_no as oriBillNo, 
+   INSURE_ID as cherNum 
+   from 
+   VMS_BILL_INFO t 
+      <dynamic prepend="where"> 
+    
+   <isNotEmpty prepend="and" property="billidArray"> 
+   tb.bill_id in 
+   <iterate property="billidArray" conjunction="," open="(" close=")"> 
+   #billidArray[]# 
+   </iterate> 
+   </isNotEmpty> 
+    
+      <isNotEmpty prepend="" property="billInfo.orderBy"> 
+   $billInfo.orderBy$ 
+   </isNotEmpty> 
+   </dynamic> 
+       
+   </select> 
 </sqlMap>

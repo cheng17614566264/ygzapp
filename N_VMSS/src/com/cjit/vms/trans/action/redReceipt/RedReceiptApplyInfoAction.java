@@ -138,7 +138,7 @@ public class RedReceiptApplyInfoAction extends DataDealAction {
 		redReceiptApplyInfo.setHissDteEnd(request.getParameter("vtiHissDteEnd"));
 
 		redReceiptApplyInfo.setLstAuthInstId(lstAuthInstId);
-		redReceiptApplyInfoService.findRedReceiptList(redReceiptApplyInfo, paginationList);
+		redReceiptApplyInfoService.findRedReceiptList(redReceiptApplyInfo, paginationList,DataUtil.BILL_STATUS_26);
 		this.request.setAttribute("paginationList", paginationList);
 		taxParam = paramConfigVmssService.findvaluebyName("税控参数");
 		if (taxParam.equals(TaxSelvetUtil.tax_Server_ch)) {
@@ -173,7 +173,7 @@ public class RedReceiptApplyInfoAction extends DataDealAction {
 		billFreqlList = this.vmsCommonService.findCodeDictionary("PAYMENT_FREQUENCY");
 		feeTypList = this.vmsCommonService.findCodeDictionary("CHARGES_TYPE");
 		dsouRceList = this.vmsCommonService.findCodeDictionary("DATA_SOURCE");
-		redReceiptApplyInfo.setDatastatus(DataUtil.BILL_STATUS_5);
+		redReceiptApplyInfoService.findRedReceiptList(redReceiptApplyInfo, paginationList,DataUtil.BILL_STATUS_22);
 		if (StringUtil.isEmpty(flag)) {
 			redReceiptApplyInfo.setFapiaoType("0");
 		}

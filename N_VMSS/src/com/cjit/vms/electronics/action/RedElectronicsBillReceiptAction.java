@@ -79,7 +79,7 @@ public class RedElectronicsBillReceiptAction extends DataDealAction {
 				// 区分电子发票
 				billInfo.setFapiaoType("2");
 				// 默认第一次进入状态为未开具红票
-				billInfo.setDataStatus("3");
+				billInfo.setDataStatus("302");
 				fromFlag = null;
 				System.out.println("第一次进入...");
 
@@ -150,9 +150,14 @@ public class RedElectronicsBillReceiptAction extends DataDealAction {
 			User currentUser = this.getCurrentUser();
 			billInfo.setUserId(currentUser.getId());
 
-			if (StringUtil.isEmpty(billInfo.getDataStatus())) { // true
+			//cheng 0906 如果是第二次进入 则将datastatus设置为 默认值 '302' 电票 
+			   // 如果为查询则设为空 
+			    
+			if (!"chaxun".equals(fromFlag) && StringUtil.isEmpty(billInfo.getDataStatus())){
 				// 设置查询状态
-				billInfo.setDataStatus("3,4,7");
+				billInfo.setDataStatus("302"); //第二次进入查本页面可以展示的全部状态 待增加 TODO cheng 0906 
+				   // 区分电子发票 
+				   billInfo.setFapiaoType("2"); // cheng 修 0906 改发票类型为 "2" 电票 
 			}
 			List lstAuthInstId = new ArrayList();
 			this.getAuthInstList(lstAuthInstId);
@@ -255,6 +260,16 @@ public class RedElectronicsBillReceiptAction extends DataDealAction {
 				}
 			} else {
 				try {
+					List<BillInfo> billList = null; 
+					   billList = redElectronicsBillService.findBillInfo(billidArray); 
+					   if (billList == null) { 
+					   request.setAttribute("message", "数据错误"); 
+					   return; 
+					   } 
+					   for(int i = 0 ; i < billList.size() ; i++) { 
+					   billList.get(i).setDataStatus("303"); //电票红冲后 
+					   redElectronicsBillService.updateRedBill(billList.get(i)); 
+					   } 
 					this.message = java.net.URLEncoder.encode(
 							validateResult.toString(), "UTF-8");
 				} catch (UnsupportedEncodingException e) {
@@ -265,6 +280,30 @@ public class RedElectronicsBillReceiptAction extends DataDealAction {
 
 		returnResult(new AjaxReturn(true, "红冲申请成功！"));
 	}
+	
+	/** 
+	   * 发票红冲 
+	   * cheng 0906 引入发票红冲 
+	   * @return 
+	   */ 
+	   public String redReceiptReleaseTrans() { 
+	      String result = request.getParameter("result"); 
+	   String billId = request.getParameter("billId"); 
+	   String transId; 
+	   BillInfo bill = null; 
+	   bill = billInfoService.findBillInfo1(billId); 
+	   if (bill == null) { 
+	   request.setAttribute("message", "数据错误"); 
+	   return ERROR; 
+	   } 
+	   String notic = request.getParameter("notic"); 
+	   bill.setNoticeNo(notic); 
+	   bill.setDataStatus(DataUtil.BILL_STATUS_18); 
+	   billInfoService.saveBillInfo1(bill, true); 
+	   bill.setDataStatus(DataUtil.BILL_STATUS_26); 
+	   billInfoService.updateRedBill(bill); 
+	   return SUCCESS; 
+	   } 
 
 	private void createRedBill(String billId) {
 		// 查询待开具的bill

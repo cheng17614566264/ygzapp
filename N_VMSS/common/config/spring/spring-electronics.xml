@@ -15,6 +15,7 @@
 		scope="prototype">
 		<property name="electronicsService" ref="electronicsService" />
 		<property name="logManagerService" ref="logManagerService"></property> <!-- 新增日志  20180904 cheng-->
+		<property name="billValidationService" ref="billValidationService"></property> <!-- 新增日志 20180905 校验-->
 		<!--新增
 			日期：2018-09-06
 			作者：刘俊杰

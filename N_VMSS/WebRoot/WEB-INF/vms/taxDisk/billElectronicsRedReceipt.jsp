@@ -38,7 +38,8 @@
 <script type="text/javascript">
 	// [查询]按钮
 	function search() {
-		submitAction(document.forms[0], "listElectroniceRedBillSelect.action");
+		submitAction(document.forms[0], 
+		   'listElectroniceRedBillSelect.action?fromFlag=chaxun'); 
 	}
 	//导出
 	function exportExcel() {
@@ -133,7 +134,7 @@
 <script type="text/javascript">
 	/* 类型为蓝字票的展示*/
 	$(document).ready(function() {
-		if ($("#data_Status").val() == "3") {
+		if ($("#data_Status").val() == "302") {
 			$("#hideButton").show();
 		} else {
 			$("#hideButton").hide();
@@ -245,23 +246,23 @@
 								<td style="text-align: left; width: 14%;"><select
 									name="billInfo.dataStatus" style="width: 135px"
 									id="data_Status">
-										<option value="3"
-											<s:if test='billInfo.dataStatus=="3"'>selected</s:if>
+										<option value="302"
+											<s:if test='billInfo.dataStatus=="302"'>selected</s:if>
 											<s:else></s:else>>未开具红票</option>
-										<option value="2"
-											<s:if test='billInfo.dataStatus=="2"'>selected</s:if>
+										<option value="301"
+											<s:if test='billInfo.dataStatus=="301"'>selected</s:if>
 											<s:else></s:else>>已开具蓝票</option>
-										<option value="4"
-											<s:if test='billInfo.dataStatus=="4"'>selected</s:if>
+										<option value="303"
+											<s:if test='billInfo.dataStatus=="303"'>selected</s:if>
 											<s:else></s:else>>审核中</option>
-										<option value="8"
-											<s:if test='billInfo.dataStatus=="8"'>selected</s:if>
+										<option value="304"
+											<s:if test='billInfo.dataStatus=="304"'>selected</s:if>
 											<s:else></s:else>>审核退回</option>
-										<option value="9"
-											<s:if test='billInfo.dataStatus=="9"'>selected</s:if>
+										<option value="305"
+											<s:if test='billInfo.dataStatus=="305"'>selected</s:if>
 											<s:else></s:else>>合并红冲开票中</option>
-										<option value="10"
-											<s:if test='billInfo.dataStatus=="10"'>selected</s:if>
+										<option value="306"
+											<s:if test='billInfo.dataStatus=="306"'>selected</s:if>
 											<s:else></s:else>>单笔红冲开票中</option>
 										<option value=""
 											<s:if test='billInfo.dataStatus==""'>selected</s:if>
@@ -399,13 +400,20 @@
 									<!-- 发票类型 -->
 									<td align="center" id="fptype"><s:property
 											value="@com.cjit.vms.trans.util.DataUtil@getFapiaoTypeCH(fapiaoType)" />
-									<input id="fp"
+									<!-- <input id="fp" -->
+									<s:property value='fapiaoType' /> <input id="fp"
 										value="<s:property value='fapiaoType' />-<s:property value='billId'/>"
 										hidden /></td>
 									<!-- 状态-->
 									<td align="center"><s:property
 											value="@com.cjit.vms.trans.util.DataUtil@getDataStatusCH(dataStatus,'BILL')" />
-										<s:property value='dataStatus' /></td>
+										<s:if test='dataStatus=="302"'>未开具红票</s:if> <s:elseif 
+										   test='dataStatus=="304"'>审核退回</s:elseif> <s:elseif 
+										   test='dataStatus=="303"'>审核中</s:elseif> <s:elseif 
+										   test='dataStatus=="305"'>合并红冲开票中</s:elseif> <s:elseif 
+										   test='dataStatus=="306"'>单笔红冲开票中</s:elseif> <s:elseif 
+										   test='dataStatus=="301"'>已开具蓝票</s:elseif> <s:else>未知状态</s:else> 
+									</td> 
 									<!--操作-->
 									<td align="center"><a
 										href="listElectronicsBillTransInfo.action?fromFlag=first&billId=<s:property value='billId'/>">

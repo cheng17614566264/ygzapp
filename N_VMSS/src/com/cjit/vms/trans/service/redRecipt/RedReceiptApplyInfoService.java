@@ -48,4 +48,5 @@ public interface RedReceiptApplyInfoService {
 	public List findBillItemInfoList1(BillItemInfo billItemInfo);
 	public void updateRedBill(BillInfo billInfo);
 	public List findRedBillByOriBillId(String billId);
+	public List findRedReceiptList(RedReceiptApplyInfo redReceiptApplyInfo,PaginationList paginationList,String dataStatus);
 }

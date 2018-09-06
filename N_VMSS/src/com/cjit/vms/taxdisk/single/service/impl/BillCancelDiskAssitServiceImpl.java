@@ -164,7 +164,8 @@ public class BillCancelDiskAssitServiceImpl extends GenericServiceImpl implement
 						//已开票税额   税额-未开票税额
 						BigDecimal ykTaxAmt=info.getTaxAmtCny().subtract(info.getTaxCnyBalance());
 						TransInfo transInfo = new TransInfo();
-						transInfo.setDataStatus(DataUtil.TRANS_STATUS_3);
+						//cheng 20180905 修改 由3变为15 已作废，将不能重新再开具此交易，重新从核心获取变更后的该交易。 
+						   transInfo.setDataStatus(DataUtil.TRANS_STATUS_15); 
 						transInfo.setTransId(info.getTransId());
 						// 如果当前交易的已开票金额小于票据金额，则将该交易的未开票金额设为总金额。票据剩余金额回填下一条交易，直到金额回填完为止
 						if (ykAmt.compareTo(sumAmt) == -1) {

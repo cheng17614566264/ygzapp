@@ -39,6 +39,9 @@ public class RedElectronicsBillServiceImpl extends GenericServiceImpl implements
 			billInfo.setDataStatus(null);
 			map.put("issueStatuses", dataStatus.split(","));
 		}
+		if(!dataStatus.equals("")){  
+			map.put("dataStatus", dataStatus.split(","));//cheng0906 新增 用于sql遍历 状态  
+		}
 		map.put("billInfo", billInfo);
 		return find("findRedElectronicsList", map, paginationList);
 	}
@@ -209,6 +212,21 @@ public class RedElectronicsBillServiceImpl extends GenericServiceImpl implements
 			this.save("saveElectronicsBillItem", param);
 		}
 	}
+	
+	@Override  
+	public List<BillInfo> findBillInfo(String[] billidArray){  
+		BillInfo billInfo = new BillInfo();  
+		Map map = new HashMap();  
+		map.put("billidArray", billidArray);  
+		List list = find("findElectronicesBillInfo", map);  
+		 return list;  
+	}  
+	@Override  
+	public void updateRedBill(BillInfo billInfo) {  
+		Map param = new HashMap();  
+		param.put("billInfo", billInfo);  
+		this.save("updateRedBill", param);  
+	 }
 	
 	
 	

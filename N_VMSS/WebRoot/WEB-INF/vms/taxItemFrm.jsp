@@ -215,7 +215,8 @@ function chkTaxRateInfo(taxno, fapiaoType, taxRate, taxId, updFlg){
 									<input type="hidden" id="fapiaoType" name="fapiaoType"
 										value="<s:property value="fapiaoType" />" />
 									<s:if test='fapiaoType=="0"'>专</s:if>
-									<s:else>普</s:else>
+									<s:if test='fapiaoType=="1"'>普</s:if> 
+   									<s:else>电</s:else>
 								</s:if> <s:else>
 									<select id="fapiaoType" name="fapiaoType">
 										<option value="" <s:if test='fapiaoType==""'>selected</s:if>
@@ -224,6 +225,8 @@ function chkTaxRateInfo(taxno, fapiaoType, taxRate, taxId, updFlg){
 											<s:else></s:else>>专</option>
 										<option value="1" <s:if test='fapiaoType=="1"'>selected</s:if>
 											<s:else></s:else>>普</option>
+										<option value="2" <s:if test='fapiaoType=="1"'>selected</s:if> 
+   											<s:else></s:else>>电</option>
 									</select>
 								</s:else> <span class="spanstar">*</span></td>
 						</tr>

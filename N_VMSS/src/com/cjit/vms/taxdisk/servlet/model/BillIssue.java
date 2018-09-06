@@ -376,7 +376,7 @@ public class BillIssue extends BaseModel {
 	public void AddElement(Element elements) {
 		addChildElementText(elements, bill_terminal_flag, billTerminalFlag);
 		addChildElementText(elements, fapiao_type_ch, fapiaoType);
-		addChildElementText(elements, fapiao_request_number_ch, "1234567890");
+		addChildElementText(elements, fapiao_request_number_ch, "");
 		addChildElementText(elements, issue_bill_tppe_ch, issueBillTppe);
 		addChildElementText(elements, special_falg_ch, specialFalg);
 		addChildElementText(elements, sale_taxno_ch, taxno);

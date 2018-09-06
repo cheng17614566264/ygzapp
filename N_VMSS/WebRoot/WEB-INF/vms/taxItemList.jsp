@@ -208,7 +208,7 @@ d)	红色部分为循环域
 									<!--								</select>--> <!--								</s:if>--></td>
 								<td align="right">税类</td>
 								<td><s:select id="fapiaoType" name="fapiaoType"
-										list="#{'':'所有','0':'增值税专用发票','1':'增值税普通发票'}" listKey="key"
+										list="#{'':'所有','0':'增值税专用发票','1':'增值税普通发票','2':'增值税电子发票'}" listKey="key"
 										listValue="value" value='fapiaoType' /></td>
 								<!-- 	
 							<td align="right">税目编号</td>
@@ -289,7 +289,8 @@ d)	红色部分为循环域
 									<td align="center"><s:property value='#stuts.count' /></td>
 									<td align="center"><s:property value="taxno" /></td>
 									<td align="center"><s:if test='fapiaoType=="0"'>增值税专用发票</s:if>
-										<s:elseif test='fapiaoType=="1"'>增值税普通发票</s:elseif> <s:else></s:else>
+										<s:elseif test='fapiaoType=="1"'>增值税普通发票</s:elseif> 
+   										<s:elseif test='fapiaoType=="2"'>增值税电子发票</s:elseif> <s:else></s:else> 
 									</td>
 									<td align="center"><s:property value="taxId" /></td>
 									<td align="center"><s:if test="taxRate==0">
