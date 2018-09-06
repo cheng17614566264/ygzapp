@@ -268,11 +268,11 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 			@Override
 			public Object doInTransaction(TransactionStatus status) {*/
 				Document doc=null;
+				String result=null;//返回的请求结果
 				String sucessResult=null;
 				try {				
 					Element HeaderResp=null;
 					
-					String result=null;//返回的请求结果
 					String invtypValue=null;
 					String RequestType=null;
 				
@@ -376,6 +376,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 											maps.put("failstate", ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_201); //对应vms_trans_info表中的DATASTATES状态字段 201-电子发票开具失败
 											vmsTransInfoDao.insertCANCELREASON(maps);
 											all_sucess =false;
+											result = maps.get("returnMessage").toString();
 										}
 										
 									} catch (HavaErrorMessageException hxe) {
@@ -396,6 +397,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 										errorMap.put("failstate", ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_201); //对应vms_trans_info表中的DATASTATES状态字段 80-电子发票开具失败
 										errorMap.put("returnMessage", hxe.getMessage());
 										vmsTransInfoDao.insertCANCELREASON(errorMap);
+										result = hxe.getMessage();
 										
 										break;
 									}
@@ -416,10 +418,14 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 										errorMap.put("failstate", ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_201); //对应vms_trans_info表中的DATASTATES状态字段 80-电子发票开具失败
 										errorMap.put("returnMessage", "电子发票开具异常,请手工开具或联系相关人员");
 										vmsTransInfoDao.insertCANCELREASON(errorMap);
+										result = "电子发票开具异常,请手工开具或联系相关人员";
 										
 										break;
 									}
 								
+								}
+								if(all_sucess) {
+									result = "开票成功";
 								}
 								/**
 								 * 新增
@@ -451,6 +457,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 											System.out.println(message);
 										}else {
 											System.out.println("邮箱为空");
+											result = "开票成功--邮箱为空,邮件发送失败";
 										}
 									}
 									
@@ -483,6 +490,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 											System.out.println("回传核心成功");
 										}else {
 											System.out.println(ajaxReturn.getMessage());
+											result = "开票成功--开票信息回传核心失败,核心系统异常";
 										}
 									}
 								}
@@ -517,8 +525,8 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 						/*status.setRollbackOnly();*/
 						System.out.println("解析报文出错");
 						/*String renturnerrorxml= blueErrorReturnXnl(RequestType, uuid, "", "", "",HEMe.getMessage());*/
-						String renturnerrorxml= null;
-						return renturnerrorxml;
+						result = "开票失败--解析报文出错,请联系相关人员";
+						return result;
 					}
 						
 						catch (Exception e) {
@@ -527,7 +535,8 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 						/*String renturnerrorxml= blueErrorReturnXnl(RequestType, uuid, "", "", "","解析报文出错");*/
 						String renturnerrorxml= null;
 						//new RuntimeException(renturnerrorxml);
-						return renturnerrorxml;
+						result = "开票失败--系统异常,请联系相关人员";
+						return result;
 					}
 			/*}
 			/**
@@ -650,14 +659,12 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 				}catch(Exception e){
 					e.printStackTrace();
 					System.out.println("========================================1解析报文头错误");
-					return e.getMessage();
+					
+					result = "开票失败--系统异常,请联系相关人员";
+					return result;
 				}
 				
-				/***
-				 * 返回成功的报文
-				 
-				return doc.asXML();*/
-				return "";
+				return result;
 			/*}
 
 		
@@ -1045,320 +1052,324 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 		
 		System.out.println("6666666666666666666666-------封装报文1");
 		
-			//System.out.println(document.asXML()+"-----");
-			/*Element Package=document.getRootElement();
-			Element Header=Package.element("HEADER");			
-			Element RequestTypeElement=Header.element("REQUESTTYPE");
-			Element UUIDElement=Header.element("UUID");
-			Element SendTimeElement=Header.element("SENDTIME");
-			Element ResponseCode=Header.element("RESPONSECODE");
-			Element Response = Package.element("RESPONSE");
-			UUID=UUIDElement.getText();*/
+		//System.out.println(document.asXML()+"-----");
+		/*Element Package=document.getRootElement();
+		Element Header=Package.element("HEADER");			
+		Element RequestTypeElement=Header.element("REQUESTTYPE");
+		Element UUIDElement=Header.element("UUID");
+		Element SendTimeElement=Header.element("SENDTIME");
+		Element ResponseCode=Header.element("RESPONSECODE");
+		Element Response = Package.element("RESPONSE");
+		UUID=UUIDElement.getText();*/
 
-			/*RequestType=RequestTypeElement.getText();
+		/*RequestType=RequestTypeElement.getText();
+	
+		SendTime=SendTimeElement.getText();*/
 		
-			SendTime=SendTimeElement.getText();*/
+		/*ApplicationContext ac=new ClassPathXmlApplicationContext(new String[]{"com/cjit/ws/service/config/applicationcontext.xml"});
+		
+		
+		vmsTransTypeDao=(VmsTransTypeDao) ac.getBean("VmsTransTypeBean");
+		vmsCustomerInfoDao=(VmsCustomerInfoDao) ac.getBean("VmsCustomerInfoBean");
+		vmsTransInfoDao=(VmsTransInfoDao) ac.getBean("VmsTransInfoBean");
+		*/
+		/*Element bussListElement=Response.element("BUSSLIST");
+		List<Element> bussInfoList=bussListElement.elements();*/
+		/**
+		 * 
+		 * 0001解析交易信息
+		 * */
 			
-			/*ApplicationContext ac=new ClassPathXmlApplicationContext(new String[]{"com/cjit/ws/service/config/applicationcontext.xml"});
-			
-			
-			vmsTransTypeDao=(VmsTransTypeDao) ac.getBean("VmsTransTypeBean");
-			vmsCustomerInfoDao=(VmsCustomerInfoDao) ac.getBean("VmsCustomerInfoBean");
-			vmsTransInfoDao=(VmsTransInfoDao) ac.getBean("VmsTransInfoBean");
-			*/
-			/*Element bussListElement=Response.element("BUSSLIST");
-			List<Element> bussInfoList=bussListElement.elements();*/
-			/**
-			 * 
-			 * 0001解析交易信息
-			 * */
-			for(TransInfoTemp bussInfo:batchRunTransInfoINSList){
-				
-				xmlmap.put("TRANS_ID", bussInfo.getTRANS_ID());
-				xmlmap.put("TRANS_DATE",bussInfo.getTRANS_DATE());
-				xmlmap.put("TRANS_TYPE",bussInfo.getTRANS_TYPE());
-				xmlmap.put("TAX_FLAG", bussInfo.getTAX_FLAG());
-				xmlmap.put("TAX_RATE", bussInfo.getTAX_RATE());
-				xmlmap.put("AMT_CCY", bussInfo.getAMT_CCY());
-				xmlmap.put("BALANCE", bussInfo.getBALANCE());
-				xmlmap.put("INSTCODE", bussInfo.getINSTCODE());
-				xmlmap.put("CUSTOMER_ID", bussInfo.getCUSTOMER_ID());
-				xmlmap.put("AMT_CNY", bussInfo.getAMT_CNY());
-				xmlmap.put("TAX_AMT_CNY", bussInfo.getTAX_AMT_CNY());
-				xmlmap.put("INCOME_CNY", bussInfo.getINCOME_CNY());
-				xmlmap.put("TRANS_CURR", bussInfo.getTRANS_CURR());
-				xmlmap.put("SURTAX1_AMT_CNY", bussInfo.getSURTAX1_AMT_CNY());
-				xmlmap.put("SURTAX2_AMT_CNY", bussInfo.getSURTAX2_AMT_CNY());
-				xmlmap.put("SURTAX3_AMT_CNY", bussInfo.getSURTAX3_AMT_CNY());
-				xmlmap.put("SURTAX4_AMT_CNY", bussInfo.getSURTAX4_AMT_CNY());
-				xmlmap.put("FAPIAO_TYPE", bussInfo.getFAPIAO_TYPE());
-				xmlmap.put("VAT_RATE_CODE", bussInfo.getVAT_RATE_CODE());
-				xmlmap.put("INSTNAME", bussInfo.getINSTNAME());
-				xmlmap.put("CHERNUM", bussInfo.getCHERNUM());
-				xmlmap.put("REPNUM", bussInfo.getREPNUM());
-				xmlmap.put("TTMPRCNO", bussInfo.getTTMPRCNO());
-				xmlmap.put("FEETYP", bussInfo.getFEETYP());
-				xmlmap.put("BILLFREQ", bussInfo.getBILLFREQ());
-				xmlmap.put("POLYEAR", bussInfo.getPOLYEAR());
-				xmlmap.put("HISSDTE", bussInfo.getHISSDTE());
-				xmlmap.put("OCCDATE", bussInfo.getOCCDATE());
-				xmlmap.put("INSTFROM", bussInfo.getINSTFROM());
-				xmlmap.put("INSTTO", bussInfo.getINSTTO());
-				xmlmap.put("PREMTERM", bussInfo.getPREMTERM());
-				xmlmap.put("WITHDRAWYN", bussInfo.getWITHDRAWYN());
-				xmlmap.put("PLANLONGDESC", bussInfo.getPLANLONGDESC());
-				xmlmap.put("INSCOD", bussInfo.getINSCOD());
-				xmlmap.put("INSNAM", bussInfo.getINSNAM());
-				xmlmap.put("BUSINESSID", bussInfo.getBUSINESSID());
-				xmlmap.put("QDFLAG", bussInfo.getQDFLAG());
-				xmlmap.put("HESITATE_PERIOD", bussInfo.getHESITATE_PERIOD());
-				xmlmap.put("SYNCH_DATE", bussInfo.getSYNCH_DATE());
-				xmlmap.put("ISYK", bussInfo.getISYK());
-				xmlmap.put("CANCLE_STATE", bussInfo.getCANCLE_STATE());
-				xmlmap.put("REMARK", bussInfo.getREMARK());
-				
-				System.out.println("77777777777777777777777777-------封装报文2");
-				
-				/*String businessId=bussInfoElement.elementText("BUSINESS_ID");
-				String instId=bussInfoElement.elementText("INST_ID");
-				String qdFlag=bussInfoElement.elementText("QD_FLAG");
-				String chernum=bussInfoElement.elementText("CHERNUM");
-				String repnum=bussInfoElement.elementText("REPNUM");
-				String ttmprcno=bussInfoElement.elementText("TTMPRCNO");
-				//新增 客户编号
-				String customerNo=bussInfoElement.elementText("CUSTOMER_NO");
-				String customerName=bussInfoElement.elementText("CUSTOMER_NAME");
-				String customerTaxno=bussInfoElement.elementText("CUSTOMER_TAXNO");
-				String customerAddressand=bussInfoElement.elementText("CUSTOMER_ADDRESSAND");
-				String taxpayerType=bussInfoElement.elementText("TAXPAYER_TYPE");
-				String customerPhone=bussInfoElement.elementText("CUSTOMER_PHONE");
-				String customerBankand=bussInfoElement.elementText("CUSTOMER_BANKAND");
-				String customerAccount=bussInfoElement.elementText("CUSTOMER_ACCOUNT");
-				String origcurr=bussInfoElement.elementText("ORIGCURR");
-				String origamt=bussInfoElement.elementText("ORIGAMT");
-				String acctamt=bussInfoElement.elementText("ACCTAMT");
-				String trdt=bussInfoElement.elementText("TRDT");
-				List<String> errors=new ArrayList<String>();
-				String invtyp=bussInfoElement.elementText("INVTYP");
-				String bustyp=bussInfoElement.elementText("BUSTYP");
-				String billfreq=bussInfoElement.elementText("BILLFREQ");
-				String polyear=bussInfoElement.elementText("POLYEAR");
-				String hissdte=bussInfoElement.elementText("HISSDTE");
-				String planlongdesc=bussInfoElement.elementText("PLANLONGDESC");
-				String instfrom=bussInfoElement.elementText("INSTFROM");
-				String instto=bussInfoElement.elementText("INSTTO");
-				String occdate=bussInfoElement.elementText("OCCDATE");
-				String premterm=bussInfoElement.elementText("PREMTERM");
-				String customerEmail=bussInfoElement.elementText("CUSTOMER_EMAIL"); */
-				String businessId=(String) xmlmap.get("BUSINESSID");
-				String instId=(String) xmlmap.get("INSTCODE");
-				String qdFlag=(String) xmlmap.get("QDFLAG");
-				String chernum=(String) xmlmap.get("CHERNUM");
-				String repnum=(String) xmlmap.get("REPNUM");
-				String ttmprcno=(String) xmlmap.get("TTMPRCNO");
-				String customerNo=(String) xmlmap.get("CUSTOMER_ID");
-				String customerName=(String) xmlmap.get("CUSTOMER_CNAME");
-				String customerTaxno=(String) xmlmap.get("CUSTOMER_TAXNO");
-				String customerAddressand=(String) xmlmap.get("CUSTOMER_ADDRESS");
-				String taxpayerType=(String) xmlmap.get("TAXPAYER_TYPE");
-				String customerPhone=(String) xmlmap.get("CUSTOMER_PHONE");
-				String customerBankand=(String) xmlmap.get("CUSTOMER_CBANK");
-				String customerAccount=(String) xmlmap.get("CUSTOMER_ACCOUNT");
-				String origcurr=(String) xmlmap.get("TRANS_CURR");
-				String origamt=xmlmap.get("AMT_CCY").toString();
-				String acctamt=xmlmap.get("AMT_CNY").toString();
-				String trdt=(String) xmlmap.get("TRANS_DATE");
-				List<String> errors=new ArrayList<String>();
-				
-				String invtyp=(String) xmlmap.get("FAPIAO_TYPE");
-				String bustyp=(String) xmlmap.get("FEETYP");
-				String billfreq=(String) xmlmap.get("BILLFREQ");
-				String polyear=xmlmap.get("POLYEAR").toString();
-				String hissdte=(String) xmlmap.get("HISSDTE");
-				String planlongdesc=(String) xmlmap.get("PLANLONGDESC");
-				String instfrom=(String) xmlmap.get("INSTFROM");
-				String instto=(String) xmlmap.get("INSTTO");
-				String occdate=(String) xmlmap.get("OCCDATE");
-				String premterm=xmlmap.get("PREMTERM").toString();
-				//客户邮箱
-				String customerEmail=(String) xmlmap.get("CUSTOMER_EMAIL");
+		TransInfoTemp bussInfo = batchRunTransInfoINSList.get(0);
+		
+		xmlmap.put("TRANS_ID", bussInfo.getTRANS_ID());
+		xmlmap.put("TRANS_DATE",bussInfo.getTRANS_DATE());
+		xmlmap.put("TRANS_TYPE",bussInfo.getTRANS_TYPE());
+		xmlmap.put("TAX_FLAG", bussInfo.getTAX_FLAG());
+		xmlmap.put("TAX_RATE", bussInfo.getTAX_RATE());
+		xmlmap.put("AMT_CCY", bussInfo.getAMT_CCY());
+		xmlmap.put("BALANCE", bussInfo.getBALANCE());
+		xmlmap.put("INSTCODE", bussInfo.getINSTCODE());
+		xmlmap.put("CUSTOMER_ID", bussInfo.getCUSTOMER_ID());
+		xmlmap.put("AMT_CNY", bussInfo.getAMT_CNY());
+		xmlmap.put("TAX_AMT_CNY", bussInfo.getTAX_AMT_CNY());
+		xmlmap.put("INCOME_CNY", bussInfo.getINCOME_CNY());
+		xmlmap.put("TRANS_CURR", bussInfo.getTRANS_CURR());
+		xmlmap.put("SURTAX1_AMT_CNY", bussInfo.getSURTAX1_AMT_CNY());
+		xmlmap.put("SURTAX2_AMT_CNY", bussInfo.getSURTAX2_AMT_CNY());
+		xmlmap.put("SURTAX3_AMT_CNY", bussInfo.getSURTAX3_AMT_CNY());
+		xmlmap.put("SURTAX4_AMT_CNY", bussInfo.getSURTAX4_AMT_CNY());
+		xmlmap.put("FAPIAO_TYPE", bussInfo.getFAPIAO_TYPE());
+		xmlmap.put("VAT_RATE_CODE", bussInfo.getVAT_RATE_CODE());
+		xmlmap.put("INSTNAME", bussInfo.getINSTNAME());
+		xmlmap.put("CHERNUM", bussInfo.getCHERNUM());
+		xmlmap.put("REPNUM", bussInfo.getREPNUM());
+		xmlmap.put("TTMPRCNO", bussInfo.getTTMPRCNO());
+		xmlmap.put("FEETYP", bussInfo.getFEETYP());
+		xmlmap.put("BILLFREQ", bussInfo.getBILLFREQ());
+		xmlmap.put("POLYEAR", bussInfo.getPOLYEAR());
+		xmlmap.put("HISSDTE", bussInfo.getHISSDTE());
+		xmlmap.put("OCCDATE", bussInfo.getOCCDATE());
+		xmlmap.put("INSTFROM", bussInfo.getINSTFROM());
+		xmlmap.put("INSTTO", bussInfo.getINSTTO());
+		xmlmap.put("PREMTERM", bussInfo.getPREMTERM());
+		xmlmap.put("WITHDRAWYN", bussInfo.getWITHDRAWYN());
+		xmlmap.put("PLANLONGDESC", bussInfo.getPLANLONGDESC());
+		xmlmap.put("INSCOD", bussInfo.getINSCOD());
+		xmlmap.put("INSNAM", bussInfo.getINSNAM());
+		xmlmap.put("BUSINESSID", bussInfo.getBUSINESSID());
+		xmlmap.put("QDFLAG", bussInfo.getQDFLAG());
+		xmlmap.put("HESITATE_PERIOD", bussInfo.getHESITATE_PERIOD());
+		xmlmap.put("SYNCH_DATE", bussInfo.getSYNCH_DATE());
+		xmlmap.put("ISYK", bussInfo.getISYK());
+		xmlmap.put("CANCLE_STATE", bussInfo.getCANCLE_STATE());
+		xmlmap.put("REMARK", bussInfo.getREMARK());
+		
+		System.out.println("77777777777777777777777777-------封装报文2");
+		
+		/*String businessId=bussInfoElement.elementText("BUSINESS_ID");
+		String instId=bussInfoElement.elementText("INST_ID");
+		String qdFlag=bussInfoElement.elementText("QD_FLAG");
+		String chernum=bussInfoElement.elementText("CHERNUM");
+		String repnum=bussInfoElement.elementText("REPNUM");
+		String ttmprcno=bussInfoElement.elementText("TTMPRCNO");
+		//新增 客户编号
+		String customerNo=bussInfoElement.elementText("CUSTOMER_NO");
+		String customerName=bussInfoElement.elementText("CUSTOMER_NAME");
+		String customerTaxno=bussInfoElement.elementText("CUSTOMER_TAXNO");
+		String customerAddressand=bussInfoElement.elementText("CUSTOMER_ADDRESSAND");
+		String taxpayerType=bussInfoElement.elementText("TAXPAYER_TYPE");
+		String customerPhone=bussInfoElement.elementText("CUSTOMER_PHONE");
+		String customerBankand=bussInfoElement.elementText("CUSTOMER_BANKAND");
+		String customerAccount=bussInfoElement.elementText("CUSTOMER_ACCOUNT");
+		String origcurr=bussInfoElement.elementText("ORIGCURR");
+		String origamt=bussInfoElement.elementText("ORIGAMT");
+		String acctamt=bussInfoElement.elementText("ACCTAMT");
+		String trdt=bussInfoElement.elementText("TRDT");
+		List<String> errors=new ArrayList<String>();
+		String invtyp=bussInfoElement.elementText("INVTYP");
+		String bustyp=bussInfoElement.elementText("BUSTYP");
+		String billfreq=bussInfoElement.elementText("BILLFREQ");
+		String polyear=bussInfoElement.elementText("POLYEAR");
+		String hissdte=bussInfoElement.elementText("HISSDTE");
+		String planlongdesc=bussInfoElement.elementText("PLANLONGDESC");
+		String instfrom=bussInfoElement.elementText("INSTFROM");
+		String instto=bussInfoElement.elementText("INSTTO");
+		String occdate=bussInfoElement.elementText("OCCDATE");
+		String premterm=bussInfoElement.elementText("PREMTERM");
+		String customerEmail=bussInfoElement.elementText("CUSTOMER_EMAIL"); */
+		String businessId=(String) xmlmap.get("BUSINESSID");
+		String instId=(String) xmlmap.get("INSTCODE");
+		String qdFlag=(String) xmlmap.get("QDFLAG");
+		String chernum=(String) xmlmap.get("CHERNUM");
+		String repnum=(String) xmlmap.get("REPNUM");
+		String ttmprcno=(String) xmlmap.get("TTMPRCNO");
+		String customerNo=(String) xmlmap.get("CUSTOMER_ID");
+		String customerName=(String) xmlmap.get("CUSTOMER_CNAME");
+		String customerTaxno=(String) xmlmap.get("CUSTOMER_TAXNO");
+		String customerAddressand=(String) xmlmap.get("CUSTOMER_ADDRESS");
+		String taxpayerType=(String) xmlmap.get("TAXPAYER_TYPE");
+		String customerPhone=(String) xmlmap.get("CUSTOMER_PHONE");
+		String customerBankand=(String) xmlmap.get("CUSTOMER_CBANK");
+		String customerAccount=(String) xmlmap.get("CUSTOMER_ACCOUNT");
+		String origcurr=(String) xmlmap.get("TRANS_CURR");
+		String origamt=xmlmap.get("AMT_CCY").toString();
+		String acctamt=xmlmap.get("AMT_CNY").toString();
+		String trdt=(String) xmlmap.get("TRANS_DATE");
+		List<String> errors=new ArrayList<String>();
+		
+		String invtyp=(String) xmlmap.get("FAPIAO_TYPE");
+		String bustyp=(String) xmlmap.get("FEETYP");
+		String billfreq=(String) xmlmap.get("BILLFREQ");
+		String polyear=xmlmap.get("POLYEAR").toString();
+		String hissdte=(String) xmlmap.get("HISSDTE");
+		String planlongdesc=(String) xmlmap.get("PLANLONGDESC");
+		String instfrom=(String) xmlmap.get("INSTFROM");
+		String instto=(String) xmlmap.get("INSTTO");
+		String occdate=(String) xmlmap.get("OCCDATE");
+		String premterm=xmlmap.get("PREMTERM").toString();
+		//客户邮箱
+		String customerEmail=(String) xmlmap.get("CUSTOMER_EMAIL");
 
-				invtypValue=invtyp;
-				
-				/*if("1".equals(qdFlag)&&(customerName==null||"".equals(customerName)||customerTaxno==null||"".equals(customerTaxno)
-						||customerAddressand==null||"".equals(customerAddressand)||customerPhone==null||"".equals(customerPhone)
-						||customerBankand==null||"".equals(customerBankand)||customerAccount==null||"".equals(customerAccount))){
+		invtypValue=invtyp;
+		
+		/*if("1".equals(qdFlag)&&(customerName==null||"".equals(customerName)||customerTaxno==null||"".equals(customerTaxno)
+				||customerAddressand==null||"".equals(customerAddressand)||customerPhone==null||"".equals(customerPhone)
+				||customerBankand==null||"".equals(customerBankand)||customerAccount==null||"".equals(customerAccount))){
+	
+			BillInfo billInfo = new BillInfo();
+			System.out.println("==============================================团险客户信息不完整");
+			throw new  HavaErrorMessageException("团险客户信息不完整");
 			
-					BillInfo billInfo = new BillInfo();
-					System.out.println("==============================================团险客户信息不完整");
-					throw new  HavaErrorMessageException("团险客户信息不完整");
-					
-				}*/
-			/*if("0".equals(invtyp)&&(customerName==null||"".equals(customerName)||(customerTaxno.length()!=15&&customerTaxno.length()!=18)
-						||customerAddressand==null||"".equals(customerAddressand)||customerPhone==null||"".equals(customerPhone)
-						||customerBankand==null||"".equals(customerBankand)||customerAccount==null||"".equals(customerAccount))){
-						
-				BillInfo billInfo = new BillInfo();
-				result=returnXmlInformation(doc, "专票客户信息不完整", UUID, billInfo, "1","");
-				throw new RuntimeException(result);
-				}*/
+		}*/
+	/*if("0".equals(invtyp)&&(customerName==null||"".equals(customerName)||(customerTaxno.length()!=15&&customerTaxno.length()!=18)
+				||customerAddressand==null||"".equals(customerAddressand)||customerPhone==null||"".equals(customerPhone)
+				||customerBankand==null||"".equals(customerBankand)||customerAccount==null||"".equals(customerAccount))){
 				
-				
-				/*Map map = new HashMap();				
-				map.put("instId",instId);				
-				instId = vmsTransInfoDao.find(map);*/
-				
-				//2018-06-14新增，校验当前机构是否配置过机构映射
-				/*String parentId = vmsTransInfoDao.findMechanism(instId,invtyp); //机构代码和发票类型
-				if(parentId != null && !"".equals(parentId)){
-					instId = parentId;
-				}*/
-		        
-				System.out.println("8888888888888888-------封装报文3");
-				
-				VmsTransInfo vmsTransInfo=new VmsTransInfo();
-				
-				vmsTransInfo.setTransUUID(UUID);
-				vmsTransInfo.setBusinessId(businessId);
-				vmsTransInfo.setInstId(instId);
-				vmsTransInfo.setQdFlag(qdFlag);
-				vmsTransInfo.setChernum(chernum);
-				vmsTransInfo.setRepnum(repnum);
-				vmsTransInfo.setTtmprcno(ttmprcno);
-				vmsTransInfo.setOrigcurr(origcurr);
-				vmsTransInfo.setOrigamt(Double.parseDouble(origamt));
-				vmsTransInfo.setAcctamt(Double.parseDouble(acctamt));
-				vmsTransInfo.setTrdt(trdt);
-				vmsTransInfo.setInvtyp(invtyp);
-				vmsTransInfo.setCustomerid(customerNo);
-				vmsTransInfo.setCustomerAccount(customerAccount);
-				vmsTransInfo.setBustyp(bustyp);
-				vmsTransInfo.setBillfreq(billfreq);
-				if(polyear!=null&&!"".equals(polyear)){
-					System.out.println(polyear);
-					if(polyear.contains(".")) {
-						System.out.println(polyear.substring(0, polyear.indexOf(".")));
-						vmsTransInfo.setPolyear(Integer.parseInt(polyear.substring(0, polyear.indexOf("."))));
-					}else {
-						vmsTransInfo.setPolyear(Integer.parseInt(polyear));
-					}
-					
-				}
-				vmsTransInfo.setHissdte(hissdte);
-				vmsTransInfo.setPlanlongdesc(planlongdesc);
-				vmsTransInfo.setInstfrom(instfrom);
-				vmsTransInfo.setInstto(instto);
-				vmsTransInfo.setOccdate(occdate);
-				if(premterm!=null&&!"".equals(premterm)){
-					System.out.println(premterm);
-					if(polyear.contains(".")) {
-						vmsTransInfo.setPremterm(Integer.parseInt(premterm.substring(0, polyear.indexOf("."))));
-					}else {
-						vmsTransInfo.setPremterm(Integer.parseInt(premterm));
-					}
-					
-				}
-				
-				VmsCustomerInfo vmsCustomerInfo=new VmsCustomerInfo();
-				vmsCustomerInfo.setCustomerNo(customerNo);
-				vmsCustomerInfo.setCustomerName(customerName);
-				vmsCustomerInfo.setCustomerTaxno(customerTaxno);
-				vmsCustomerInfo.setCustomerAddressand(customerAddressand);
-				vmsCustomerInfo.setTaxpayerType(taxpayerType);
-				vmsCustomerInfo.setCustomerPhone(customerPhone);
-				vmsCustomerInfo.setCustomerBankand(customerBankand);
-				vmsCustomerInfo.setCustomerAccount(customerAccount);
-				vmsCustomerInfo.setInvtyp(invtyp);
-				vmsCustomerInfo.setBusinessId(businessId);
-				vmsCustomerInfo.setCustomerEmail(customerEmail);
-				vmsCustomerInfo.setChernum(chernum);
-				
-				
-				/*Element covListElement=bussInfoElement.element("COVLIST");
-				List<Element> covInfoList=covListElement.elements("COVINFO");*/
-				
-				/*if(batchRunTransInfoINSList==null||batchRunTransInfoINSList.size()<1){
-					throw new HavaErrorMessageException("险种报文信息解析为空");
-				}*/
-				int i = 1;
-//				List<CovInfo> covList=new ArrayList<CovInfo>();
-				/*
-				 * transIdList 存放生成交易的id存放的id
-				 * */
-				List<String> transIdList = new ArrayList<String>();
-				for(TransInfoTemp covInfoElement:batchRunTransInfoINSList){
-					String transType = covInfoElement.getTRANS_TYPE();
-					String insCod=covInfoElement.getINSCOD();
-					String insNam=covInfoElement.getINSNAM();
-					String feetyp=covInfoElement.getFEETYP();
-					String amtCny=covInfoElement.getAMT_CNY().toString();
-					String taxAmtCny=covInfoElement.getTAX_AMT_CNY().toString();
-					String incomeCny=covInfoElement.getINCOME_CNY().toString();
-					String taxRate=covInfoElement.getTAX_RATE().toString();
-					System.out.println(insCod);
-					System.out.println(insNam);
-					/*if("Z".equals(taxRate)||"F".equals(taxRate)){
-						invtypValue="1";
-					}*/
-					double taxRateValue = 0;
-					if("S".equals(taxRate)){
-						taxRateValue=0.06;
-					}else if("N".equals(taxRate)){
-						taxRateValue=0.03;
-					}else if("Z".equals(taxRate)){
-						taxRateValue=0;
-					}else if("P".equals(taxRate)){
-						taxRateValue=0.17;
-					}else if("F".equals(taxRate)){
-						taxRateValue=0;
-					}else{
-						taxRateValue=0;
-					}
-					i++;
-					transIdList.add(UUID+i);
-					vmsTransInfo.setTransUUID(UUID+i);
-					vmsTransInfo.setInvtyp(invtypValue);
-					vmsTransInfo.setFeetyp(feetyp);
-					vmsTransInfo.setAmtCny(Double.parseDouble(amtCny));
-					vmsTransInfo.setTaxAmtCny(Double.parseDouble(taxAmtCny));
-					vmsTransInfo.setIncomeCny(Double.parseDouble(incomeCny));
-					vmsTransInfo.setTaxRate(taxRateValue);
-					vmsTransInfo.setVatRateCode(taxRate);
-					vmsTransInfo.setTransType(transType);
-					vmsTransInfo.setInsCod(insCod);
-					vmsTransInfo.setInsNam(insNam);
-					
-					System.out.println("9999999999999999999999-------封装报文4");
-					
-					/*result=vmsTransInfoDao.insert(vmsTransInfo);*/
-					
-					result = vmsTransInfoDao.update(vmsTransInfo);
-					
-					System.out.println("101010101010101010101010-------封装报文5");
-
-				}
-				vmsCustomerInfo.setInvtyp(invtypValue);
-				/*result=vmsCustomerInfoDao.insert(vmsCustomerInfo);*/
-				System.out.println("101010101010101010101010-------封装报文6");
-				
-				if("Y".equals(result)){	
-					List<BillInfo> billList = transToEachBill(transIdList);
-					for (BillInfo billInfo : billList) {
-						billInfo.setCustomerEmail(customerEmail);
-						billInfo.setCherNum(chernum);
-						billInfomation.put(billInfo, vmsTransInfo.getRepnum());
-					}
-				}else{
-					throw new HavaErrorMessageException("解析报文插入客户信息或者交易信息失败");
-				}
-			
-			/*}
-			
-			 * 00002保存交易信息成功
-			 * */
-			
+		BillInfo billInfo = new BillInfo();
+		result=returnXmlInformation(doc, "专票客户信息不完整", UUID, billInfo, "1","");
+		throw new RuntimeException(result);
+		}*/
+		
+		
+		/*Map map = new HashMap();				
+		map.put("instId",instId);				
+		instId = vmsTransInfoDao.find(map);*/
+		
+		//2018-06-14新增，校验当前机构是否配置过机构映射
+		/*String parentId = vmsTransInfoDao.findMechanism(instId,invtyp); //机构代码和发票类型
+		if(parentId != null && !"".equals(parentId)){
+			instId = parentId;
+		}*/
+        
+		System.out.println("8888888888888888-------封装报文3");
+		
+		VmsTransInfo vmsTransInfo=new VmsTransInfo();
+		
+		vmsTransInfo.setTransUUID(UUID);
+		vmsTransInfo.setBusinessId(businessId);
+		vmsTransInfo.setInstId(instId);
+		vmsTransInfo.setQdFlag(qdFlag);
+		vmsTransInfo.setChernum(chernum);
+		vmsTransInfo.setRepnum(repnum);
+		vmsTransInfo.setTtmprcno(ttmprcno);
+		vmsTransInfo.setOrigcurr(origcurr);
+		vmsTransInfo.setOrigamt(Double.parseDouble(origamt));
+		vmsTransInfo.setAcctamt(Double.parseDouble(acctamt));
+		vmsTransInfo.setTrdt(trdt);
+		vmsTransInfo.setInvtyp(invtyp);
+		vmsTransInfo.setCustomerid(customerNo);
+		vmsTransInfo.setCustomerAccount(customerAccount);
+		vmsTransInfo.setBustyp(bustyp);
+		vmsTransInfo.setBillfreq(billfreq);
+		if(polyear!=null&&!"".equals(polyear)){
+			System.out.println(polyear);
+			if(polyear.contains(".")) {
+				System.out.println(polyear.substring(0, polyear.indexOf(".")));
+				vmsTransInfo.setPolyear(Integer.parseInt(polyear.substring(0, polyear.indexOf("."))));
+			}else {
+				vmsTransInfo.setPolyear(Integer.parseInt(polyear));
 			}
-			System.out.println("101010101010101010101010-------封装报文7");
+			
+		}
+		vmsTransInfo.setHissdte(hissdte);
+		vmsTransInfo.setPlanlongdesc(planlongdesc);
+		vmsTransInfo.setInstfrom(instfrom);
+		vmsTransInfo.setInstto(instto);
+		vmsTransInfo.setOccdate(occdate);
+		if(premterm!=null&&!"".equals(premterm)){
+			System.out.println(premterm);
+			if(polyear.contains(".")) {
+				vmsTransInfo.setPremterm(Integer.parseInt(premterm.substring(0, polyear.indexOf("."))));
+			}else {
+				vmsTransInfo.setPremterm(Integer.parseInt(premterm));
+			}
+			
+		}
+		
+		VmsCustomerInfo vmsCustomerInfo=new VmsCustomerInfo();
+		vmsCustomerInfo.setCustomerNo(customerNo);
+		vmsCustomerInfo.setCustomerName(customerName);
+		vmsCustomerInfo.setCustomerTaxno(customerTaxno);
+		vmsCustomerInfo.setCustomerAddressand(customerAddressand);
+		vmsCustomerInfo.setTaxpayerType(taxpayerType);
+		vmsCustomerInfo.setCustomerPhone(customerPhone);
+		vmsCustomerInfo.setCustomerBankand(customerBankand);
+		vmsCustomerInfo.setCustomerAccount(customerAccount);
+		vmsCustomerInfo.setInvtyp(invtyp);
+		vmsCustomerInfo.setBusinessId(businessId);
+		vmsCustomerInfo.setCustomerEmail(customerEmail);
+		vmsCustomerInfo.setChernum(chernum);
+		
+		
+		/*Element covListElement=bussInfoElement.element("COVLIST");
+		List<Element> covInfoList=covListElement.elements("COVINFO");*/
+		
+		/*if(batchRunTransInfoINSList==null||batchRunTransInfoINSList.size()<1){
+			throw new HavaErrorMessageException("险种报文信息解析为空");
+		}*/
+		int i = 1;
+//				List<CovInfo> covList=new ArrayList<CovInfo>();
+		/*
+		 * transIdList 存放生成交易的id存放的id
+		 * */
+		
+		/**
+		 * 遍历不同的险种
+		 */
+		List<String> transIdList = new ArrayList<String>();
+		for(TransInfoTemp covInfoElement:batchRunTransInfoINSList){
+			String transType = covInfoElement.getTRANS_TYPE();
+			String insCod=covInfoElement.getINSCOD();
+			String insNam=covInfoElement.getINSNAM();
+			String feetyp=covInfoElement.getFEETYP();
+			String amtCny=covInfoElement.getAMT_CNY().toString();
+			String taxAmtCny=covInfoElement.getTAX_AMT_CNY().toString();
+			String incomeCny=covInfoElement.getINCOME_CNY().toString();
+			String taxRate=covInfoElement.getTAX_RATE().toString();
+			System.out.println(insCod);
+			System.out.println(insNam);
+			/*if("Z".equals(taxRate)||"F".equals(taxRate)){
+				invtypValue="1";
+			}*/
+			double taxRateValue = 0;
+			if("S".equals(taxRate)){
+				taxRateValue=0.06;
+			}else if("N".equals(taxRate)){
+				taxRateValue=0.03;
+			}else if("Z".equals(taxRate)){
+				taxRateValue=0;
+			}else if("P".equals(taxRate)){
+				taxRateValue=0.17;
+			}else if("F".equals(taxRate)){
+				taxRateValue=0;
+			}else{
+				taxRateValue=0;
+			}
+			i++;
+			transIdList.add(UUID+i);
+			vmsTransInfo.setTransUUID(UUID+i);
+			vmsTransInfo.setInvtyp(invtypValue);
+			vmsTransInfo.setFeetyp(feetyp);
+			vmsTransInfo.setAmtCny(Double.parseDouble(amtCny));
+			vmsTransInfo.setTaxAmtCny(Double.parseDouble(taxAmtCny));
+			vmsTransInfo.setIncomeCny(Double.parseDouble(incomeCny));
+			vmsTransInfo.setTaxRate(taxRateValue);
+			vmsTransInfo.setVatRateCode(taxRate);
+			vmsTransInfo.setTransType(transType);
+			vmsTransInfo.setInsCod(insCod);
+			vmsTransInfo.setInsNam(insNam);
+			
+			System.out.println("9999999999999999999999-------封装报文4");
+			
+			/*result=vmsTransInfoDao.insert(vmsTransInfo);*/
+			
+			result = vmsTransInfoDao.update(vmsTransInfo);
+			
+			System.out.println("101010101010101010101010-------封装报文5");
+
+		}
+		vmsCustomerInfo.setInvtyp(invtypValue);
+		/*result=vmsCustomerInfoDao.insert(vmsCustomerInfo);*/
+		System.out.println("101010101010101010101010-------封装报文6");
+		
+		if("Y".equals(result)){	
+			List<BillInfo> billList = transToEachBill(transIdList);
+			for (BillInfo billInfo : billList) {
+				billInfo.setCustomerEmail(customerEmail);
+				billInfo.setCherNum(chernum);
+				billInfomation.put(billInfo, vmsTransInfo.getRepnum());
+			}
+		}else{
+			throw new HavaErrorMessageException("解析报文插入客户信息或者交易信息失败");
+		}
+		
+		/*}
+		
+		 * 00002保存交易信息成功
+		 * */
+	
+		System.out.println("101010101010101010101010-------封装报文7");
 		return billInfomation;
 		
 	}

@@ -1586,10 +1586,10 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 		Map map = new HashMap();
 		map.put("chernum", chernum);
 		map.put("customerId", customerId);
-		if(tag) {  //判断是否是团险电子发票
+		if(tag) {  //判断是否是团险电子发票，团险电子发票因自动跑批时开具电子发票，此时还未写入应用表中，所以需要从中间表中查；
 			batchRunTransInfoINSList=batchRunService.batchRunTransInfoOfINS(map);
 			batchRunCustomerInfoByID=batchRunService.batchRunCustomerInfoOfINS(map);
-		}else {
+		}else {  //而个险犹豫期的数据已经在应用表中，所以从应用表中查找数据
 			batchRunTransInfoINSList=batchRunService.batchRunTransInfoOfINSForHesitate(map);
 			batchRunCustomerInfoByID=batchRunService.batchRunCustomerInfoOfINSForHesitate(map);
 		}
@@ -1650,7 +1650,7 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	 * 功能：调用税控接口，开具电子发票; 开具时间较长，防止超时，开启新线程
 	 * @throws ParseException
 	 */
-	public void batchRunTimeOfElectron(){
+	public String batchRunTimeOfElectron(){
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -1661,13 +1661,14 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 						List obj = (List)list.get(i);
 						List<TransInfoTemp> transInfoTemp = (List<TransInfoTemp>) obj.get(0);
 						Map xmlmap = (Map) obj.get(1);
-						vmsElectronWebService.transService(xmlmap,transInfoTemp);
+						result = vmsElectronWebService.transService(xmlmap,transInfoTemp);
 					}
 				}catch(Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
+		return result;
 	}
 
 	
