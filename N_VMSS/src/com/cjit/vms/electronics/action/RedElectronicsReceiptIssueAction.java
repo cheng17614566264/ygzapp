@@ -2,18 +2,23 @@ package com.cjit.vms.electronics.action;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.cjit.common.util.JXLTool;
 import com.cjit.common.util.StringUtil;
 import com.cjit.vms.electronics.model.ElectroniscStatusUtil;
 import com.cjit.vms.electronics.service.RedElectronicsIssueService;
+import com.cjit.vms.taxdisk.tools.AjaxReturn;
 import com.cjit.vms.trans.action.DataDealAction;
+import com.cjit.vms.trans.action.createBill.CreateBillAction;
 import com.cjit.vms.trans.model.RedReceiptApplyInfo;
 import com.cjit.vms.trans.service.redRecipt.RedReceiptApplyInfoService;
 import com.cjit.vms.trans.util.DataUtil;
+import com.cjit.ws.common.utils.Utils;
 
 import jxl.Workbook;
 import jxl.write.Label;
@@ -33,6 +38,7 @@ public class RedElectronicsReceiptIssueAction extends DataDealAction {
 	private static final long serialVersionUID = -112620524105020393L;
 	private RedElectronicsIssueService redElectronicsIssueService;
 	private RedReceiptApplyInfo redReceiptApplyInfo = new RedReceiptApplyInfo();
+	private CreateBillAction createBillAction;
 	
 	/**
 	 * 新增
@@ -190,6 +196,43 @@ public class RedElectronicsReceiptIssueAction extends DataDealAction {
 		ws.addCell(cell16);
 		ws.addCell(cell17);
 	}
+	
+	/**
+	 * 新增
+	 * 日期：2018-09-07
+	 * 作者：刘俊杰
+	 * 功能：红票开具
+	 */
+	public void redElectronicsReceiptBillIssue() {
+		AjaxReturn ajax = new AjaxReturn();
+		StringBuffer sbMessage = new StringBuffer();
+		try {
+			String billId = request.getParameter("billId");
+			createBillAction.setBillId(billId);
+			
+			createBillAction.batchRunTimeOfElectron(Utils.dfxj1001);
+			do {
+				Thread.sleep(1000);
+			}while(createBillAction.getResult() == null);
+			String resultOfMake = createBillAction.getResult();
+			sbMessage.append(billId+resultOfMake);  //开具结果
+			if (sbMessage != null && sbMessage.toString().length() > 0) {
+				ajax.setMessage(sbMessage.toString());
+			}
+			returnResult(ajax);
+		}catch(Exception e) {
+			e.printStackTrace();
+			log.error("TransInfoAction-transToEachBill", e);
+		}
+		
+	}
+	
+	private void returnResult(AjaxReturn ajaxReturn) throws Exception {
+		response.setHeader("Content-Type", "text/xml;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.print(JSON.toJSONString(ajaxReturn));
+		out.close();
+	}
 
 	public RedElectronicsIssueService getRedElectronicsIssueService() {
 		return redElectronicsIssueService;
@@ -197,4 +240,11 @@ public class RedElectronicsReceiptIssueAction extends DataDealAction {
 	public void setRedElectronicsIssueService(RedElectronicsIssueService redElectronicsIssueService) {
 		this.redElectronicsIssueService = redElectronicsIssueService;
 	}
+	public CreateBillAction getCreateBillAction() {
+		return createBillAction;
+	}
+	public void setCreateBillAction(CreateBillAction createBillAction) {
+		this.createBillAction = createBillAction;
+	}
+	
 }

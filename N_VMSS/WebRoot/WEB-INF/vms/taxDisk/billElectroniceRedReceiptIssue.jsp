@@ -184,7 +184,45 @@
 				alert("请选择票据记录");
 				return false;
 			}
-			checkDiskAndSelver("",BillRedIssueSelvlet());
+			/* checkDiskAndSelver("",BillRedIssueSelvlet()); */
+			
+			object = document.getElementsByName("selectBillIds");
+			var i = 0; var num = 0;
+			for (i=0; i<object.length; i++) {
+				if (object[i].checked) {
+					num++;
+				}
+			}
+			if(num > 1){
+				alert("请选择一项纪录进行红冲开具");
+				return false;
+			}
+			var billId = "";
+			for (i=0; i<object.length; i++) {
+				if (object[i].checked) {
+					billId = object[i].value;
+				}
+			}
+			$.ajax({
+				url : "redElectronicsReceiptBillIssue.action",
+				type : "POST",
+				async : true,
+				data : {
+					"billId" : billId
+				},
+				dataType : "text",
+				success : function(ajaxReturn) {
+					var ajaxReturns = $.parseJSON(ajaxReturn);
+					alert(ajaxReturns.message);
+					//刷新页面
+					submitAction( document.forms[0], "listElectronicsRedReceiptIssue.action?fromFlag=menu&paginationList.showCount=FALSE");
+				},
+				error : function() {
+					alert("false");
+					//刷新页面
+					submitAction( document.forms[0], "listElectronicsRedReceiptIssue.action?fromFlag=menu&paginationList.showCount=FALSE");
+				}
+			});
 			
 		}
 		
@@ -192,7 +230,7 @@
 发票开具 服务
 */
 
-		/* function BillRedIssueSelvlet(){
+		 function BillRedIssueSelvlet(){
 			var billIds = document.getElementsByName("selectBillIds");
 			var fapiaoTypes = document.getElementsByName("fapiaoTypes");
 			var fapiaoType = fapiaoTypes[0].value;
@@ -299,7 +337,7 @@
 						submitAction(document.forms[0], "listIssueBill.action?paginationList.showCount="+"false");
 						document.forms[0].action="listIssueBill.action?paginationList.showCount="+"false";
 			return j;
-		} */
+		}
 	
 	
 		

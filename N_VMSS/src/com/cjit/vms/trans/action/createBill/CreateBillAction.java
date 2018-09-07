@@ -44,6 +44,7 @@ import com.cjit.vms.trans.service.impl.TransInfoServiceImpl;
 import com.cjit.vms.trans.util.DataUtil;
 import com.cjit.vms.trans.util.ImageUtil;
 import com.cjit.webService.client.entity.ApplicationForm;
+import com.cjit.ws.common.utils.Utils;
 import com.cjit.ws.service.impl.VmsElectronWebServiceImp;
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -74,9 +75,22 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 		this.result = result;
 	}
 	//end 2018-09-03
-
-
-
+	
+	/**
+	 * 新增
+	 * 日期：2018-09-07
+	 * 作者：刘俊杰
+	 * 说明：票据id
+	 */
+	private String billId;
+	
+	public String getBillId() {
+		return billId;
+	}
+	public void setBillId(String billId) {
+		this.billId = billId;
+	}
+	//end 2018-09-07
 
 	/*实例化*/
 	BillInfo bi=new BillInfo();
@@ -1564,7 +1578,7 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	        }
 
 	        //开电子发票
-			batchRunTimeOfElectron();
+			batchRunTimeOfElectron(Utils.dfxj1001);
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -1650,24 +1664,43 @@ public class CreateBillAction extends DataDealAction implements ModelDriven<Bill
 	 * 功能：调用税控接口，开具电子发票; 开具时间较长，防止超时，开启新线程
 	 * @throws ParseException
 	 */
-	public void batchRunTimeOfElectron(){
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
-					VmsElectronWebServiceImp vmsElectronWebService =  (VmsElectronWebServiceImp) applicationContext.getBean("vmsElectronWebService");
-					for(int i = 0; i<list.size(); i++) {
-						List obj = (List)list.get(i);
-						List<TransInfoTemp> transInfoTemp = (List<TransInfoTemp>) obj.get(0);
-						Map xmlmap = (Map) obj.get(1);
-						result = vmsElectronWebService.transService(xmlmap,transInfoTemp);
+	public void batchRunTimeOfElectron(final String interfaceCode){
+		if(Utils.dfxj1001.equals(interfaceCode)) {  //电子发票开具
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+						VmsElectronWebServiceImp vmsElectronWebService =  (VmsElectronWebServiceImp) applicationContext.getBean("vmsElectronWebService");
+						for(int i = 0; i<list.size(); i++) {
+							List obj = (List)list.get(i);
+							List<TransInfoTemp> transInfoTemp = (List<TransInfoTemp>) obj.get(0);
+							Map xmlmap = (Map) obj.get(1);
+							result = vmsElectronWebService.transService(xmlmap,transInfoTemp,interfaceCode);
+						}
+					}catch(Exception e) {
+						e.printStackTrace();
 					}
-				}catch(Exception e) {
-					e.printStackTrace();
 				}
-			}
-		}).start();
+			}).start();
+		} else if(Utils.dfxj1008.equals(interfaceCode)) {  //电子发票快速红冲
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+						VmsElectronWebServiceImp vmsElectronWebService =  (VmsElectronWebServiceImp) applicationContext.getBean("vmsElectronWebService");
+						List<TransInfoTemp> transInfoTemp = new ArrayList();
+						Map xmlmap = new HashMap();
+						xmlmap.put("billId", billId);
+						result = vmsElectronWebService.transService(xmlmap,transInfoTemp,interfaceCode);
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
+		}
+		
 	}
 	
 	

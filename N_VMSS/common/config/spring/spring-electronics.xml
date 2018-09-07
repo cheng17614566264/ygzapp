@@ -61,6 +61,7 @@
 		class="com.cjit.vms.electronics.action.RedElectronicsReceiptIssueAction" 
 		scope="prototype">
 		<property name="redElectronicsIssueService" ref="redElectronicsIssueService" />
+		<property name="createBillAction" ref="createBillAction" />
 	</bean>
 	<bean id="redElectronicsIssueService" 
 		class="com.cjit.vms.electronics.service.impl.RedElectronicsIssueServiceImpl"

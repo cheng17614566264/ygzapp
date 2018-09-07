@@ -261,7 +261,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 	 */
 
 	/*public String transService(final String xml){*/
-	public String transService(final Map xmlmap,final List<TransInfoTemp> batchRunTransInfoINSList) {
+	public String transService(final Map xmlmap,final List<TransInfoTemp> batchRunTransInfoINSList, String interfaceCode) {
 		@SuppressWarnings("unchecked")
 		/*String result = transactionTemplate.execute(new TransactionCallback() {
 
@@ -288,6 +288,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 					doc = DocumentHelper.createDocument();
 					doc.setXMLEncoding("UTF-8");
 					if("0011".equals(RequestType)){*/
+					if(Utils.dfxj1001.equals(interfaceCode)) {
 						try {
 							/**
 							 * 解析报文
@@ -345,7 +346,7 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 										//Product product = new Product();
 										map.put("billInfo", billInfo);
 										map.put("goodsList", goodsList);
-										String st = ei.taxWebservice(map);
+										String st = ei.taxWebservice(map,interfaceCode);
 										Map maps = new HashMap();
 										maps = ei.printXML(st);
 										System.out.println(maps.get("fapiaoCode")+":"+maps.get("fapiaoNo")+":"+maps.get("PDFURL")+":"+maps.get("result")+":"+billInfo.getCustomerEmail());
@@ -519,23 +520,34 @@ public class VmsElectronWebServiceImp extends GenericServiceImpl{
 								}*/
 							//}	
 								
-						}
-					}catch(HavaErrorMessageException HEMe){
-						HEMe.printStackTrace();
-						/*status.setRollbackOnly();*/
-						System.out.println("解析报文出错");
-						/*String renturnerrorxml= blueErrorReturnXnl(RequestType, uuid, "", "", "",HEMe.getMessage());*/
-						result = "开票失败--解析报文出错,请联系相关人员";
-						return result;
-					}
-						
-						catch (Exception e) {
+							}
+						}catch(HavaErrorMessageException HEMe){
+							HEMe.printStackTrace();
 							/*status.setRollbackOnly();*/
-						e.printStackTrace();
-						/*String renturnerrorxml= blueErrorReturnXnl(RequestType, uuid, "", "", "","解析报文出错");*/
-						String renturnerrorxml= null;
-						//new RuntimeException(renturnerrorxml);
-						result = "开票失败--系统异常,请联系相关人员";
+							System.out.println("解析报文出错");
+							/*String renturnerrorxml= blueErrorReturnXnl(RequestType, uuid, "", "", "",HEMe.getMessage());*/
+							result = "开票失败--解析报文出错,请联系相关人员";
+							return result;
+						}
+							
+							catch (Exception e) {
+								/*status.setRollbackOnly();*/
+							e.printStackTrace();
+							/*String renturnerrorxml= blueErrorReturnXnl(RequestType, uuid, "", "", "","解析报文出错");*/
+							String renturnerrorxml= null;
+							//new RuntimeException(renturnerrorxml);
+							result = "开票失败--系统异常,请联系相关人员";
+							return result;
+						}
+					}
+					/**
+					 * 新增
+					 * 日期：2018-09-07
+					 * 作者：刘俊杰
+					 * 功能：电票红冲
+					 */
+					else if(Utils.dfxj1008.equals(interfaceCode)) {
+						result = "开具成功";
 						return result;
 					}
 			/*}

@@ -24,6 +24,7 @@ import com.cjit.vms.interval.function.service.IntervalDao;
 import com.cjit.vms.trans.action.createBill.CreateBillAction;
 import com.cjit.vms.trans.model.TransInfoTemp;
 import com.cjit.webService.client.entity.ApplicationForm;
+import com.cjit.ws.common.utils.Utils;
 import com.cjit.ws.service.impl.VmsElectronWebServiceImp;
 
 /**
@@ -144,7 +145,7 @@ public class IntervalTask {
 				createBillAction.getTransInfoForINSCOD(temp.getCHERNUM(),temp.getCUSTOMER_ID(),false);
 			}
 			//开具电子发票
-			createBillAction.batchRunTimeOfElectron();
+			createBillAction.batchRunTimeOfElectron(Utils.dfxj1001);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

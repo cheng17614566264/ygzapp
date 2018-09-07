@@ -86,6 +86,10 @@
 		<action name="redElectronicsReceiptBillIssueToExcel" method="redElectronicsReceiptBillIssueToExcel"
 			class="redElectronicsReceiptIssueAction">
 		</action>
+		<!-- 红票开具 -->
+		<action name="redElectronicsReceiptBillIssue" method="redElectronicsReceiptBillIssue"
+			class="redElectronicsReceiptIssueAction">
+		</action>
 		
 		
 	<!-- 【红冲审核】页面[审核通过],[审核拒绝]事件 -->
