@@ -20,4 +20,21 @@ public interface RedElectronicsBillInvoiceAuditService {
 	public List findRedElectronicsAuditList(String sqlId, BillInfo billInfo,
 			String userID, PaginationList paginationList);
 
+	
+	/**
+	 * 电子发票红冲查询票据
+	 * cheng 0907 新增
+	 * @return
+	 */
+	public com.cjit.vms.trans.model.BillInfo findElectronicsBillInfo(
+			String string);
+
+	/**
+	 * 电子发票红冲审核更新
+	 * cheng 0907 新增
+	 * @return
+	 */
+	public void saveElectronicsBillInfo(com.cjit.vms.trans.model.BillInfo bill,
+			boolean b);
+
 }

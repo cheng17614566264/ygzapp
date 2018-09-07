@@ -70,40 +70,31 @@
 			class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
 			<result name="success">WEB-INF/vms/taxDisk/billElectronicsInvoiceAudit.jsp</result>
 		</action>
-		
-		
-		<!--新增
-			日期：2018-09-07
-			作者：刘俊杰
-		-->
-		<!-- 【红冲开具】页面 -->
-		<!-- 页面数据查询 -->
-		<action name="listElectronicsRedReceiptIssue" method="listElectronicsRedReceiptIssue"
-			class="redElectronicsReceiptIssueAction">
-			<result name="success">WEB-INF/vms/taxDisk/billElectroniceRedReceiptIssue.jsp</result>
-		</action>
-		<!-- 红冲开具页面excel打印 -->
-		<action name="redElectronicsReceiptBillIssueToExcel" method="redElectronicsReceiptBillIssueToExcel"
-			class="redElectronicsReceiptIssueAction">
-		</action>
-		<!-- 红票开具 -->
-		<action name="redElectronicsReceiptBillIssue" method="redElectronicsReceiptBillIssue"
-			class="redElectronicsReceiptIssueAction">
-		</action>
-		
-		
+	
 	<!-- 【红冲审核】页面[审核通过],[审核拒绝]事件 -->
-	<!-- <action name="redElectronicsReceiptApprove" method="redElectronicsReceiptApprove"
+	 <action name="redElectronicsReceiptApprove" method="redElectronicsReceiptApprove"
 		class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
-		<result name="success" type="redirect">listRedReceiptApprove.action
+		<result name="success" type="redirect">listElectronicsRedInvoiceAudit.action?fromFlag=${"menu"}
 		</result>
 	</action>
-	<action name="toRedElectronicsReceiptRefuse" method="toRedElectronicsReceiptRefuse"
-		class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
-		<result name="success">WEB-INF/vms/redReceipt/approveListToCancelReason.jsp
-		</result>
+	<!--  cheng 0907  新增 审核拒绝   -->
+	<action name="toElectronicsRedReceiptRefuse" method="toElectronicsRedReceiptRefuse"
+			class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
+			<result name="success">WEB-INF/vms/taxDisk/electronicsApproveListToCancelReason.jsp
+			</result>                 
 	</action>
-	-->
+	<!--  cheng 0907  新增 审核拒绝   -->
+	<action name="redElectronicsRefuse" method="redElectronicsRefuse" class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
+		</action>	
+		
+	<!-- cheng 0907  开具审核退回原因页 -->
+		<action name="billElectronicsCancelReason_shdh" method="billElectronicsCancelReason_shdh"
+			class="com.cjit.vms.electronics.action.RedElectronicsBillReceiptAction">
+			<result name="success">WEB-INF/vms/taxDisk/billElectronicsCancelReason_shdh.jsp
+			</result>   
+		</action>
+		
+		
 
 	</package>
 

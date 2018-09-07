@@ -495,15 +495,6 @@ public class ElectronicsIssue {
 		else if (interfaceCode.equals(Utils.dfxj1005)) {
 			content = createDownloadXML(map);	//下载地址查询接口
 		}
-		/**
-		 * 新增
-		 * 日期：2018-09-07
-		 * 作者：刘俊杰
-		 * 说明：新增发票快速红冲接口
-		 */
-		else if (interfaceCode.equals(Utils.dfxj1008)) {
-			content = createRedReceiptXML(map);	//发票快速红冲接口
-		}
 		content = content.replaceAll("\r\n", "").replaceAll("\n", "");// 去掉空格和换行
 		sb.append(content);
 		sb.append("</content>");
@@ -830,24 +821,6 @@ public class ElectronicsIssue {
 		strXML = strWtr.toString();
 		return strXML;
 	}
-	
-	public String createRedReceiptXML(Map map) throws IOException {
-		StringBuffer content = new StringBuffer("");
-		BillInfo billInfo = (BillInfo) map.get("billInfo");
-		List<Product> list= (List<Product>) map.get("goodsList");
-		content.append("<REQUEST_COMMON_FPKSHC class='REQUEST_COMMON_FPKSHC'> ");
-		content.append("<FPQQLSH>TEST" + Utils.formatToTime() + "01"+ "</FPQQLSH>"); //发票请求流水号
-		content.append("<XSF_NSRSBH>" + billInfo.getTaxno() + "</XSF_NSRSBH>"); //销售方纳税人识别号
-		content.append("<XSF_MC>"+ billInfo.getName()+"</XSF_MC>"); //销售方名称
-		content.append("<YFP_DM>"+billInfo.getBillCode()+"</YFP_DM>"); //原发票代码
-		content.append("<YFP_HM>"+billInfo.getBillNo()+"</YFP_HM>"); //原发票号码
-		content.append("</REQUEST_COMMON_FPKSHC>");
-		System.out.println("content内容："+content.toString());
-		return  new BASE64Encoder().encodeBuffer(content.toString().getBytes("UTF-8"));
-	}
-	
-	
-	
 
 	/**
 	 * 创建电票红冲报文
@@ -888,7 +861,7 @@ public class ElectronicsIssue {
 	 * 
 	 * @throws Exception
 	 * */
-	public String taxWebservice(Map map, String interfaceCode) throws Exception {
+	public String taxWebservice(Map map) throws Exception {
 		
 		String requestData = null;// 初始化请求报文
 		String rsData = null;// 初始化结果报文
@@ -902,7 +875,7 @@ public class ElectronicsIssue {
 //		String fpdm = "050003521333"; //发票代码
 //		String fphm = "85004524";//发票号码
 		String interfaceLau = Utils.interfaceLau_xml;
-		//String interfaceCode = Utils.dfxj1001;// 开具
+		String interfaceCode = Utils.dfxj1001;// 开具
 		String requestInterface = Utils.post_https;// 使用post请求方式
 		// 组装请求报文
 		requestData = getSendToTaxXML(appid,contentPassword,interfaceCode,map);

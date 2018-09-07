@@ -77,9 +77,6 @@ public class ElectroniscStatusUtil {
 			} else if (ELECTRONICS_REDBILL_STATUS_306
 					.equals(ElectronicsDataStatus)) {
 				return ELECTRONICS_REDBILL_STATUS_306_CH;
-			} else if (ELECTRONICS_REDBILL_STATUS_307
-					.equals(ElectronicsDataStatus)) {
-				return ELECTRONICS_REDBILL_STATUS_307_CH;
 			}
 		}
 		return "";

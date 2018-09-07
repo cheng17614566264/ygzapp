@@ -1,6 +1,8 @@
 package com.cjit.vms.electronics.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONArray;
 
@@ -127,6 +129,13 @@ public interface RedElectronicsBillService {
    * @param billItemInfo 
    * @param isUpdate 
    */ 
-   public void updateRedBill(BillInfo billInfo); 
+   public void updateRedBill(BillInfo billInfo);
+
+   /**
+	 * 电子发票红冲查询票据
+	 * cheng 0907 新增
+	 * @return
+	 */
+	public BillInfo findElectronicsBillInfo(String string); 
 
 }

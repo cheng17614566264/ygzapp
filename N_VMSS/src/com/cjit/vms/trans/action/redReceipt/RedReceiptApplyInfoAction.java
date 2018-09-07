@@ -136,7 +136,6 @@ public class RedReceiptApplyInfoAction extends DataDealAction {
 		redReceiptApplyInfo.setBillEndDate(request.getParameter("billEndDate"));
 		redReceiptApplyInfo.setHissDteBegin(request.getParameter("vtiHissDteBegin"));
 		redReceiptApplyInfo.setHissDteEnd(request.getParameter("vtiHissDteEnd"));
-
 		redReceiptApplyInfo.setLstAuthInstId(lstAuthInstId);
 		redReceiptApplyInfoService.findRedReceiptList(redReceiptApplyInfo, paginationList,DataUtil.BILL_STATUS_26);
 		this.request.setAttribute("paginationList", paginationList);
@@ -173,7 +172,6 @@ public class RedReceiptApplyInfoAction extends DataDealAction {
 		billFreqlList = this.vmsCommonService.findCodeDictionary("PAYMENT_FREQUENCY");
 		feeTypList = this.vmsCommonService.findCodeDictionary("CHARGES_TYPE");
 		dsouRceList = this.vmsCommonService.findCodeDictionary("DATA_SOURCE");
-		redReceiptApplyInfoService.findRedReceiptList(redReceiptApplyInfo, paginationList,DataUtil.BILL_STATUS_22);
 		if (StringUtil.isEmpty(flag)) {
 			redReceiptApplyInfo.setFapiaoType("0");
 		}
@@ -183,7 +181,7 @@ public class RedReceiptApplyInfoAction extends DataDealAction {
 		List lstAuthInstId = new ArrayList();
 		this.getAuthInstList(lstAuthInstId);
 		redReceiptApplyInfo.setLstAuthInstId(lstAuthInstId);
-		redReceiptApplyInfoService.findRedReceiptList(redReceiptApplyInfo, paginationList);
+		redReceiptApplyInfoService.findRedReceiptList(redReceiptApplyInfo, paginationList,DataUtil.BILL_STATUS_22);
 		this.request.setAttribute("paginationList", paginationList);
 		return SUCCESS;
 	}
@@ -2251,7 +2249,7 @@ public class RedReceiptApplyInfoAction extends DataDealAction {
 
 		return SUCCESS;
 	}
-    public void shjj(){
+    public void shjj(){  //TODOtoRedReceiptRefuse
     	String billId = request.getParameter("billId");
 		String[] ids = billId.split(",");
 		String result = request.getParameter("result");

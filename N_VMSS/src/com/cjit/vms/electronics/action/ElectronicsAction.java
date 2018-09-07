@@ -36,7 +36,6 @@ import com.cjit.vms.trans.model.createBill.TransInfo;
 import com.cjit.vms.trans.service.createBill.BillValidationService;
 import com.cjit.vms.trans.util.DataUtil;
 import com.cjit.vms.trans.util.JXLTool;
-import com.cjit.ws.common.utils.Utils;
 
 public class ElectronicsAction extends DataDealAction {
 
@@ -423,7 +422,7 @@ public class ElectronicsAction extends DataDealAction {
 						TransInfoTemp temp = transinfoList.get(0);
 						createBillAction.getTransInfoForINSCOD(temp.getCHERNUM(),temp.getCUSTOMER_ID(),false);
 						//开具电子发票
-						createBillAction.batchRunTimeOfElectron(Utils.dfxj1001);
+						createBillAction.batchRunTimeOfElectron();
 						do {
 							Thread.sleep(1000);
 						}while(createBillAction.getResult() == null);

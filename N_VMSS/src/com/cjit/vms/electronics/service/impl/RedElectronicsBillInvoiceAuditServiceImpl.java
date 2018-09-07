@@ -33,8 +33,6 @@ public class RedElectronicsBillInvoiceAuditServiceImpl extends
 			Organization org = (Organization) instIds.get(i);
 			lstTmp.add(org.getId());
 		}
-		// 查询负数红票
-		billInfo.setDataStatus("20");
 		map.put("auth_inst_ids", lstTmp);
 		map.put("billInfo", billInfo);
 		if (paginationList == null) {
@@ -44,4 +42,44 @@ public class RedElectronicsBillInvoiceAuditServiceImpl extends
 		}
 
 	}
+
+	
+	/**
+	 * 电子发票红冲查询票据
+	 * cheng 0907 新增
+	 * @return
+	 */
+	@Override
+	public BillInfo findElectronicsBillInfo(String billId) {
+		BillInfo billInfo = new BillInfo();
+		billInfo.setBillId(billId);
+		Map map = new HashMap();
+		map.put("billInfo", billInfo);
+		List list = find("findElectronicsBillInfoByBillId", map);
+		if (list != null && list.size() == 1) {
+			return (BillInfo) list.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * 电子发票红冲审核更新
+	 * cheng 0907 新增
+	 * @return
+	 */
+	/**
+	 * 【红冲审核】页面[审核通过]
+	 */
+	@Override
+	public void saveElectronicsBillInfo(BillInfo billInfo, boolean isUpdate) {
+		Map param = new HashMap();
+		param.put("billInfo", billInfo);
+		if (isUpdate) {
+			this.save("updateElectronicesRedBill", param);
+		} else {
+			this.save("saveBill", param);
+		}
+	}
+	
 }

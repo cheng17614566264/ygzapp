@@ -1,6 +1,8 @@
 package com.cjit.vms.electronics.action;
 
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,12 +10,17 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.cjit.gjsz.system.model.User;
+import com.cjit.vms.electronics.model.ElectroniscStatusUtil;
 import com.cjit.vms.electronics.service.ElectronicsService;
 import com.cjit.vms.electronics.service.RedElectronicsBillInvoiceAuditService;
 import com.cjit.vms.electronics.service.RedElectronicsBillService;
 import com.cjit.vms.taxdisk.tools.AjaxReturn;
 import com.cjit.vms.trans.action.DataDealAction;
 import com.cjit.vms.trans.model.BillInfo;
+import com.cjit.vms.trans.model.BillItemInfo;
+import com.cjit.vms.trans.model.RedReceiptApplyInfo;
+import com.cjit.vms.trans.model.RedReceiptTransInfo;
+import com.cjit.vms.trans.util.DataUtil;
 
 public class RedElectronicsInvoiceAudit extends DataDealAction {
 
@@ -44,12 +51,18 @@ public class RedElectronicsInvoiceAudit extends DataDealAction {
 			String strFromViewFlg = request.getParameter("fromFlag");
 			billInfo = new BillInfo();
 			// 区分电票
-			billInfo.setFapiaoType("1");
+			billInfo.setFapiaoType("2"); 
+			// 该查询默认为待审核电子红票
+			billInfo.setDataStatus("303");
 			if ("menu".equals(strFromViewFlg)) {
+				
+				fromFlag = null;
+				System.out.println("第一次进入...");
 				paginationList.setCurrentPage(1);
 				paginationList.setPageSize(20);
 
 			} else {
+				System.out.println("第二次进入...");
 				this.billInfo.setCustomerName(this.request.getParameter(
 						"billInfo.customerName").trim());
 				System.out.println(this.request
@@ -170,95 +183,119 @@ public class RedElectronicsInvoiceAudit extends DataDealAction {
 		out.close();
 	}
 
-	// // 【红冲审核】页面[审核通过],[审核拒绝]
-	// public String redReceiptApprove() throws Exception {
-	// if (!sessionInit(true)) {
-	// request.setAttribute("message", "用户失效");
-	// return ERROR;
-	// }
-	// String billId = request.getParameter("billId");
-	// String[] ids = billId.split(",");
-	// String result = request.getParameter("result");
-	// BillInfo bill;
-	// if (result.equals("17")) {
-	// for (int i = 0; i < ids.length; i++) {
-	// bill = new BillInfo();
-	// if (!ids[i].equals("") && ids[i] != null) {
-	// bill = redReceiptApplyInfoService.findBillInfo1(ids[i]);
-	// if (bill == null) {
-	// request.setAttribute("message", "数据错误");
-	// return ERROR;
-	// }
-	//
-	// bill.setCancelAuditor(getCurrentUser().getId());
-	// // 原bill状态：[17：红冲已审核]
-	// bill.setDataStatus(DataUtil.BILL_STATUS_17);
-	// redReceiptApplyInfoService.saveBillInfo1(bill, true);
-	// // 红冲bill状态：[21：红冲审核已通过]
-	// bill.setDataStatus(DataUtil.BILL_STATUS_21);
-	// redReceiptApplyInfoService.updateRedBill(bill);
-	// }
-	// }
-	// this.message = "审核成功";
-	// this.request.setAttribute("message", this.message);
-	// } else {
-	// String cancelReason = request.getParameter("cancelReason");
-	// cancelReason = URLDecoder.decode(cancelReason, "utf-8");
-	// for (int i = 0; i < ids.length; i++) {
-	// bill = new BillInfo();
-	// if (!ids[i].equals("") && ids[i] != null) {
-	// bill = redReceiptApplyInfoService.findBillInfo1(ids[i]);
-	// if (bill == null) {
-	// request.setAttribute("message", "数据错误");
-	// return ERROR;
-	// }
-	// Map map = new HashMap();
-	// map.put("searchCondition", "t.DATASTATUS in (16)");
-	// RedReceiptApplyInfo rrai =
-	// redReceiptApplyInfoService.findListByBillId(ids[i], map);
-	// if (null != rrai && rrai.getFapiaoType().equals("0")) {
-	// redReceiptApplyInfoService.deleteApplyInfo(bill.getBillNo());
-	// }
-	// bill.setCancelInitiator("");
-	// bill.setDataStatus(bill.getOperateStatus());
-	// bill.setOperateStatus("");
-	// bill.setCancelReason(cancelReason);
-	// bill.setBalance(bill.getSumAmt());
-	// redReceiptApplyInfoService.saveBillInfo1(bill, true);
-	// // 删除billInfo
-	// Map dataMap = new HashMap();
-	// dataMap.put("oriBillCode", bill.getBillCode());
-	// dataMap.put("oriBillNo", bill.getBillNo());
-	// List list = redReceiptApplyInfoService.findReleaseTrans(dataMap);
-	// // 删除VMS_HC_APPLY_INFO
-	// redReceiptApplyInfoService.deleteApplyInfo(bill.getBillCode(),
-	// bill.getBillNo());
-	// BillItemInfo bii;
-	// BillItemInfo tempItem = new BillItemInfo();
-	// RedReceiptTransInfo rrti = (RedReceiptTransInfo) list.get(0);
-	// redReceiptApplyInfoService.deleteBillInfo(rrti.getBillId());
-	// tempItem.setBillId(rrti.getBillId());
-	// List itemList =
-	// redReceiptApplyInfoService.findBillItemInfoList(tempItem);
-	// for (int j = 0; j < itemList.size(); j++) {
-	// bii = (BillItemInfo) itemList.get(j);
-	// redReceiptApplyInfoService.deleteBillItemInfo(rrti.getBillId(),
-	// bii.getBillItemId());
-	// }
-	// for (int k = 0; k < list.size(); k++) {
-	// rrti = (RedReceiptTransInfo) list.get(k);
-	// transInfoService.deleteTransBill(rrti.getTransId(), rrti.getBillId());
-	// }
-	// }
-	// }
-	// this.message = "成功拒绝申请！";
-	// this.setResultMessages(message);
-	// printWriterResult("sucess");
-	// }
-	//
-	// return SUCCESS;
-	// }
+	// 电子【红冲审核】页面[审核通过],[审核拒绝]
+		public String redElectronicsReceiptApprove() throws Exception {
+			if (!sessionInit(true)) {
+				request.setAttribute("message", "用户失效");
+				return ERROR;
+			}
+			String billId = request.getParameter("billId"); 
+			System.err.println("billId@  "+billId);
+			String[] ids = billId.split(",");
+			String result = request.getParameter("result");
+			BillInfo bill;
+			if (result.equals("307")) {
+				
+				for (int i = 0; i < ids.length; i++) {
+					bill = new BillInfo();
+					if (!ids[i].equals("") && ids[i] != null) {
+						bill = redElectronicsBillInvoiceAuditService.findElectronicsBillInfo(ids[i]);
+						if (bill == null) {
+							request.setAttribute("message", "数据错误");
+							return ERROR;
+						}
 
+						bill.setCancelAuditor(getCurrentUser().getId());
+						bill.setDataStatus(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_307);
+						redElectronicsBillInvoiceAuditService.saveElectronicsBillInfo(bill, true);
+						/*// 红冲bill状态：[21：红冲审核已通过]
+						bill.setDataStatus(DataUtil.BILL_STATUS_21);
+						redReceiptApplyInfoService.updateRedBill(bill);*/
+					}
+				}
+				this.message = "审核成功";
+				this.request.setAttribute("message", this.message);
+			} else {
+				String cancelReason = request.getParameter("cancelReason");
+				cancelReason = URLDecoder.decode(cancelReason, "utf-8");
+				for (int i = 0; i < ids.length; i++) {
+					bill = new BillInfo();
+					if (!ids[i].equals("") && ids[i] != null) {
+						bill = redElectronicsBillInvoiceAuditService.findElectronicsBillInfo(ids[i]);
+						if (bill == null) {
+							request.setAttribute("message", "数据错误");
+							return ERROR;
+						}
+						bill.setCancelAuditor(getCurrentUser().getId());
+						bill.setCancelReason(cancelReason);
+						bill.setDataStatus(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_304);
+						redElectronicsBillInvoiceAuditService.saveElectronicsBillInfo(bill, true);
+						
+					}
+				}
+				this.message = "成功拒绝申请！";
+				this.setResultMessages(message);
+				printWriterResult("sucess");
+			}
+
+			return SUCCESS;
+		}
+		
+		// 电子【红冲审核】[审核拒绝]
+		 public void redElectronicsRefuse() throws Exception{ 
+		    	String billId = request.getParameter("billId");
+				String[] ids = billId.split(",");
+				BillInfo bill;
+				
+				String cancelReason = request.getParameter("cancelReason");
+				cancelReason = URLDecoder.decode(cancelReason, "utf-8");
+				System.out.println("billId%%"+billId);
+				for (int i = 0; i < ids.length; i++) {
+					bill = new BillInfo();
+					if (!ids[i].equals("") && ids[i] != null) {
+						bill = redElectronicsBillInvoiceAuditService.findElectronicsBillInfo(ids[i]);
+						if (bill == null) {
+							request.setAttribute("message", "数据错误");
+							return;
+						}
+						bill.setCancelAuditor(getCurrentUser().getId());
+						bill.setCancelReason(cancelReason);
+						bill.setDataStatus(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_304);
+						redElectronicsBillInvoiceAuditService.saveElectronicsBillInfo(bill, true);
+					}
+				}
+				this.message = "成功拒绝申请！";
+				this.setResultMessages(message);
+				try {
+					printWriterResult("sucess");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		    }
+		
+		
+		/**
+		 * cheng 新增  0907
+		 * 添加拒绝原因
+		 * 
+		 */
+		public String toElectronicsRedReceiptRefuse() {
+			request.setAttribute("billId", request.getParameter("billId")); 
+			request.setAttribute("result", request.getParameter("result"));
+			
+			System.err.println("request.getAttribute();"+request.getAttribute("billId")+   "    @billId@"+request.getParameter("billId"));
+			return SUCCESS;
+		}
+		
+		
+		
+   
+	private void printWriterResult(String result) throws Exception {
+			response.setHeader("Content-Type", "text/xml; charset=utf-8");
+			PrintWriter out = response.getWriter();
+			out.print(result);
+			out.close();
+		}
 	public RedElectronicsBillInvoiceAuditService getRedElectronicsBillInvoiceAuditService() {
 		return redElectronicsBillInvoiceAuditService;
 	}

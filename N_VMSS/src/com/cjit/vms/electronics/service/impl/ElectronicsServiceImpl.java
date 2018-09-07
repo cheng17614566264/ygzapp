@@ -581,4 +581,25 @@ public class ElectronicsServiceImpl extends GenericServiceImpl implements
 		this.save("updateElectronicsTransRedStatusOfNotMake", map);
 	}
 
+	
+	/**
+	 * 新增
+	 * 日期：2018-09-07
+	 * 作者：cheng
+	 * 说明：查看驳回原因
+	 */
+	@Override
+	public com.cjit.vms.trans.model.createBill.BillInfo findBillInfo(
+			String billId, String fapiaoType) {
+		Map map = new HashMap();
+		map.put("billId", billId);
+		map.put("fapiaoType", fapiaoType);
+		@SuppressWarnings("unchecked")
+		List<BillInfo> list = find("findBillByBillIdOrFaPiaoType", map);
+		if (list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+
 }

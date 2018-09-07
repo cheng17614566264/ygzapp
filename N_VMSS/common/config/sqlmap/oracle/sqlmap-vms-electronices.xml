@@ -4,18 +4,9 @@
 <sqlMap namespace="vms">
 	<!--测试 -->
 	<typeAlias alias="InstUtil" type="com.cjit.vms.electronics.model.InstUtil" />
-	<!--新增
-		日期：2018-09-06
-		作者：刘俊杰
-	-->
+	<!--新增 日期：2018-09-06 作者：刘俊杰 -->
 	<typeAlias alias="TransInfoTemp" type="com.cjit.vms.trans.model.TransInfoTemp" />
-	<!-- end 2018-09-06 -->
-	<!--新增
-		日期：2018-09-07
-		作者：刘俊杰
-	-->
-	<typeAlias alias="redReceiptApplyInfo" type="com.cjit.vms.trans.model.RedReceiptApplyInfo" />
-	<!-- end 2018-09-07 -->
+	<!-- end 2018-08-30 -->
 
 	<!--电子发票展示 -->
 	<select id="findElectronicsList" parameterClass="java.util.Map"
@@ -590,11 +581,12 @@
 			</isNotEmpty>
 		</dynamic>
 		<dynamic>
-			<isNotEmpty prepend="and" property="dataStatus"> 
-			   t.DATASTATUS in <!-- cheng修 0906 状态值是多个 改为in --> 
-			   <iterate property="dataStatus" open="(" close=")" conjunction=","> 
-			   #dataStatus[]# 
-			   </iterate> 
+			<isNotEmpty prepend="and" property="dataStatus">
+				t.DATASTATUS in <!-- cheng修 0906 状态值是多个 改为in -->
+				<iterate property="dataStatus" open="(" close=")"
+					conjunction=",">
+					#dataStatus[]#
+				</iterate>
 			</isNotEmpty>
 		</dynamic>
 		<dynamic>
@@ -823,11 +815,12 @@
 			</isNotEmpty>
 		</dynamic>
 		<dynamic>
-			<isNotEmpty prepend="and" property="dataStatus"> 
-			   t.DATASTATUS in <!-- cheng修 0906 状态值是多个 改为in --> 
-			   <iterate property="dataStatus" open="(" close=")" conjunction=","> 
-			   #dataStatus[]# 
-			   </iterate> 
+			<isNotEmpty prepend="and" property="dataStatus">
+				t.DATASTATUS in <!-- cheng修 0906 状态值是多个 改为in -->
+				<iterate property="dataStatus" open="(" close=")"
+					conjunction=",">
+					#dataStatus[]#
+				</iterate>
 			</isNotEmpty>
 		</dynamic>
 		<dynamic>
@@ -2544,223 +2537,183 @@
 			</isNotEmpty>
 		</dynamic>
 	</select>
-	<!--新增
-		日期：2018-09-06
-		作者：刘俊杰
-		说明：从交易表中查出此交易对应的所有交易信息
-	 -->
-	<select id="selectTransInfoOfElectronicsReuse" parameterClass="java.util.Map" resultClass="TransInfoTemp">
+	<!--新增 日期：2018-09-06 作者：刘俊杰 说明：从交易表中查出此交易对应的所有交易信息 -->
+	<select id="selectTransInfoOfElectronicsReuse" parameterClass="java.util.Map"
+		resultClass="TransInfoTemp">
 		SELECT CHERNUM,
 		CUSTOMER_ID
 		FROM vms_trans_info
-		WHERE TRANS_ID=#transId#
+		WHERE
+		TRANS_ID=#transId#
 	</select>
-	<!--新增
-		日期：2018-09-06
-		作者：刘俊杰
-		说明：从交易表中查出此交易对应的所有交易信息
-	 -->
-	 <update id="updateElectronicsTransRedStatusOfNotMake" parameterClass="java.util.Map">
-	 	UPDATE vms_trans_info
-		SET DATASTATUS=#dataStatus# 
+	<!--新增 日期：2018-09-06 作者：刘俊杰 说明：从交易表中查出此交易对应的所有交易信息 -->
+	<update id="updateElectronicsTransRedStatusOfNotMake"
+		parameterClass="java.util.Map">
+		UPDATE vms_trans_info
+		SET DATASTATUS=#dataStatus#
 		WHERE TRANS_ID=#transId#
-	 </update>
-	 
-	<!-- 查询 票据 cheng 0906--> 
-   <select id="findElectronicesBillInfo" parameterClass="java.util.Map" 
-   resultClass="billInfo"> 
-   select BILL_ID as billId, 
-   BILL_CODE as billCode, 
-   BILL_NO as billNo, 
-   BILL_DATE as billDate, 
-   APPLY_DATE as applyDate, 
-   CUSTOMER_NAME as 
-   customerName, 
-   CUSTOMER_ID AS 
-   customerId, 
-   CUSTOMER_TAXNO as customerTaxno, 
-   CUSTOMER_ADDRESSANDPHONE 
-   as customerAddressandphone, 
-   CUSTOMER_BANKANDACCOUNT as 
-   customerBankandaccount, 
-   AMT_SUM as amtSum, 
-   TAX_AMT_SUM as taxAmtSum, 
-   SUM_AMT as sumAmt, 
-   REMARK as remark, 
-   DRAWER as drawer, 
-   REVIEWER as 
-   reviewer, 
-   PAYEE as payee, 
-   NAME as name, 
-   TAXNO as taxno, 
-   ADDRESSANDPHONE as 
-   addressandphone, 
-   BANKANDACCOUNT as bankandaccount, 
-   INSTCODE as instCode, 
-   CANCEL_INITIATOR as cancelInitiator, 
-   CANCEL_AUDITOR as cancelAuditor, 
-   t.DESCRIPTION as description, 
-   DATASTATUS as dataStatus, 
-   IS_HANDIWORK as 
-   isHandiwork, 
-   FAPIAO_TYPE as fapiaoType, 
-   ISSUE_TYPE as issueType, 
-   TAX_DISK_NO as taxDiskNo, 
-   MACHINE_NO as machineNo, 
-   NOTICE_NO as 
-   noticeNo, 
-   BALANCE as balance, 
-   OPERATESTATUS as operateStatus, 
-   CANCEL_REASON as cancelReason, 
-   ori_bill_code as oriBillCode, 
-   ori_bill_no as oriBillNo, 
-   INSURE_ID as cherNum 
-   from 
-   VMS_BILL_INFO t 
-      <dynamic prepend="where"> 
-    
-   <isNotEmpty prepend="and" property="billidArray"> 
-   tb.bill_id in 
-   <iterate property="billidArray" conjunction="," open="(" close=")"> 
-   #billidArray[]# 
-   </iterate> 
-   </isNotEmpty> 
-    
-      <isNotEmpty prepend="" property="billInfo.orderBy"> 
-   $billInfo.orderBy$ 
-   </isNotEmpty> 
-   </dynamic> 
-   </select>
-   
-   <!-- 程 20180829   修改发票开具是查询的状态值 为22   20180830改为26 
-   		新增
-   		日期：2018-09-07
-   		作者：刘俊杰
-   		功能：准备电子红票开具页面数据，查询电子发票红票申请通过的数据
-   -->
-	<select id="findElectronicsBillInfoIssueList" parameterClass="java.util.Map"
-		resultClass="redReceiptApplyInfo">
-		SELECT * FROM
-		(SELECT (@rowNum:=@rowNum+1) AS rowIndex,N.* FROM (
-		select
-		c.TTMPRCNO as ttmprcno,
-		c.CHERNUM as insureId,
-		A.TRANS_ID as
-		transId,
-		b.BILL_ID as billId,
-		b.ORI_BILL_CODE as oriBillCode,
-		b.ORI_BILL_NO as oriBillNo,
-		d.CUSTOMER_CNAME as customerName,
-		b.AMT_SUM
-		as amtSum,
-		b.TAX_AMT_SUM as taxAmtSum,
-		b.SUM_AMT as sumAmt,
-		b.ISSUE_TYPE
-		as issueType,
-		b.FAPIAO_TYPE as fapiaoType,
-		b.DATASTATUS as datastatus,
-		c.HISSDTE as hissDte,
-		b.DSOURCE as dSource
-		from vms_trans_bill a
-		left
-		join vms_bill_info b on a.bill_id = b.bill_id
-		left join vms_trans_info
-		c on a.trans_id = c.trans_id
-		left join vms_customer_info d on
-		c.CUSTOMER_ID=d.CUSTOMER_ID
-		where b.DATASTATUS=#dataStatus# <!-- 0903修为动态获取 -->
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.ttmprcno">
-			c.TTMPRCNO=#redReceiptApplyInfo.ttmprcno#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.insureId">
-			c.CHERNUM =#redReceiptApplyInfo.insureId#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.customerName">
-			d.CUSTOMER_CNAME =#redReceiptApplyInfo.customerName#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.oriBillCode">
-			b.ORI_BILL_CODE =#redReceiptApplyInfo.oriBillCode#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.oriBillNo">
-			b.ORI_BILL_NO =#redReceiptApplyInfo.oriBillNo#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.fapiaoType">
-			b.FAPIAO_TYPE =#redReceiptApplyInfo.fapiaoType#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.issueType">
-			b.ISSUE_TYPE =#redReceiptApplyInfo.issueType#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.dSource">
-			b.DSOURCE =#redReceiptApplyInfo.dSource#
-		</isNotEmpty>
-		<dynamic>
-			<isNotEmpty prepend="and" property="redReceiptApplyInfo.billBeginDate"> 
-				<!-- <![CDATA[ Trunc(to_date(b.BILL_DATE,'yyyy-mm-dd hh24:mi:ss')) >= Trunc(to_date(#redReceiptApplyInfo.billBeginDate#,'yyyy-mm-dd hh24:mi:ss')) ]]> -->
-			    <![CDATA[ cast((str_to_date(b.BILL_DATE,'%Y-%m-%d %H:%i:%s')) as date) >= cast((str_to_date(#redReceiptApplyInfo.billBeginDate#,'%Y-%m-%d %H:%i:%s'))as date) ]]>
-			</isNotEmpty>
-		</dynamic>
-		<dynamic>
-			<isNotEmpty prepend="and" property="redReceiptApplyInfo.billEndDate"> 
-				<!-- <![CDATA[ Trunc(to_date(b.BILL_DATE,'yyyy-mm-dd hh24:mi:ss')) <= Trunc(to_date(#redReceiptApplyInfo.billEndDate#,'yyyy-mm-dd hh24:mi:ss')) ]]> -->
-			    <![CDATA[ cast((str_to_date(b.BILL_DATE,'%Y-%m-%d %H:%i:%s'))as date) <= cast((str_to_date(#redReceiptApplyInfo.billEndDate#,'%Y-%m-%d %H:%i:%s'))as date) ]]>
-			</isNotEmpty>
-		</dynamic>
-		<dynamic>
-			<isNotEmpty prepend="and" property="redReceiptApplyInfo.hissDteBegin"> 
-				<!-- <![CDATA[ Trunc(to_date(b.HISSDTE,'yyyy-mm-dd hh24:mi:ss')) >= Trunc(to_date(#redReceiptApplyInfo.hissDteBegin#,'yyyy-mm-dd hh24:mi:ss')) ]]> -->
-			    <![CDATA[ cast((str_to_date(b.HISSDTE,'%Y-%m-%d %H:%i:%s')) as date)>= cast((str_to_date(#redReceiptApplyInfo.hissDteBegin#,'%Y-%m-%d %H:%i:%s'))as date) ]]>
-			</isNotEmpty>
-		</dynamic>
-		<dynamic>
-			<isNotEmpty prepend="and" property="redReceiptApplyInfo.hissDteEnd"> 
-				<!-- <![CDATA[ Trunc(to_date(b.HISSDTE,'yyyy-mm-dd hh24:mi:ss')) <= Trunc(to_date(#redReceiptApplyInfo.hissDteEnd#,'yyyy-mm-dd hh24:mi:ss')) ]]> -->
-			     <![CDATA[ cast((str_to_date(b.HISSDTE,'%Y-%m-%d %H:%i:%s'))as date) <= cast((str_to_date(#redReceiptApplyInfo.hissDteEnd#,'%Y-%m-%d %H:%i:%s'))as date) ]]>
-			</isNotEmpty>
-		</dynamic>
-		
-		
-		<isNotEmpty prepend="and" property="endIndex"> 
+	</update>
 
-				<![CDATA[ ROWNUM <= #endIndex#]]>
-		</isNotEmpty> 
-		order by ORI_BILL_NO desc
-		) N
-		) T WHERE 1=1
-		<isNotEmpty prepend="and" property="startIndex"> 
-				<![CDATA[ T.rowIndex > #startIndex#  ]]>
-		</isNotEmpty>
+	<!-- 查询 票据 cheng 0906 -->
+	<select id="findElectronicesBillInfo" parameterClass="java.util.Map"
+		resultClass="billInfo">
+		select BILL_ID as billId,
+		BILL_CODE as billCode,
+		BILL_NO as billNo,
+		BILL_DATE as billDate,
+		APPLY_DATE as applyDate,
+		CUSTOMER_NAME as
+		customerName,
+		CUSTOMER_ID AS
+		customerId,
+		CUSTOMER_TAXNO as customerTaxno,
+		CUSTOMER_ADDRESSANDPHONE
+		as customerAddressandphone,
+		CUSTOMER_BANKANDACCOUNT as
+		customerBankandaccount,
+		AMT_SUM as amtSum,
+		TAX_AMT_SUM as taxAmtSum,
+		SUM_AMT as sumAmt,
+		REMARK as remark,
+		DRAWER as drawer,
+		REVIEWER as
+		reviewer,
+		PAYEE as payee,
+		NAME as name,
+		TAXNO as taxno,
+		ADDRESSANDPHONE as
+		addressandphone,
+		BANKANDACCOUNT as bankandaccount,
+		INSTCODE as instCode,
+		CANCEL_INITIATOR as cancelInitiator,
+		CANCEL_AUDITOR as cancelAuditor,
+		t.DESCRIPTION as description,
+		DATASTATUS as dataStatus,
+		IS_HANDIWORK as
+		isHandiwork,
+		FAPIAO_TYPE as fapiaoType,
+		ISSUE_TYPE as issueType,
+		TAX_DISK_NO as taxDiskNo,
+		MACHINE_NO as machineNo,
+		NOTICE_NO as
+		noticeNo,
+		BALANCE as balance,
+		OPERATESTATUS as operateStatus,
+		CANCEL_REASON as cancelReason,
+		ori_bill_code as oriBillCode,
+		ori_bill_no as oriBillNo,
+		INSURE_ID as cherNum
+		from
+		VMS_BILL_INFO t
+		<dynamic prepend="where">
+
+			<isNotEmpty prepend="and" property="billidArray">
+				tb.bill_id in
+				<iterate property="billidArray" conjunction="," open="("
+					close=")">
+					#billidArray[]#
+				</iterate>
+			</isNotEmpty>
+
+			<isNotEmpty prepend="" property="billInfo.orderBy">
+				$billInfo.orderBy$
+			</isNotEmpty>
+		</dynamic>
+
 	</select>
-	<select id="findElectronicsBillInfoIssueListCount" parameterClass="java.util.Map"
-		resultClass="long">
-		select
-		count(1)
-		from vms_trans_bill a
-		left join vms_bill_info b on
-		a.bill_id = b.bill_id
-		left join vms_trans_info c on a.trans_id =
-		c.trans_id
-		left join vms_customer_info d on c.CUSTOMER_ID=d.CUSTOMER_ID
-		where b.DATASTATUS= #dataStatus# <!-- 修改为动态获取 0905 -->
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.ttmprcno">
-			c.TTMPRCNO=#redReceiptApplyInfo.ttmprcno#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.insureId">
-			c.CHERNUM =#redReceiptApplyInfo.insureId#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.customerName">
-			d.CUSTOMER_CNAME =#redReceiptApplyInfo.customerName#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.oriBillCode">
-			b.ORI_BILL_CODE =#redReceiptApplyInfo.oriBillCode#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.oriBillNo">
-			b.ORI_BILL_NO =#redReceiptApplyInfo.oriBillNo#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.fapiaoType">
-			b.FAPIAO_TYPE =#redReceiptApplyInfo.fapiaoType#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="redReceiptApplyInfo.issueType">
-			b.ISSUE_TYPE =#redReceiptApplyInfo.issueType#
-		</isNotEmpty>
+    <!--  
+         cheng 新增  0907
+                                更新红冲后红票状态
+    
+    
+    -->
+    
+    <update id="updateElectronicesRedBill" parameterClass="java.util.Map">
+		update vms_bill_info
+		set DATASTATUS = #billInfo.dataStatus#,
+		CANCEL_AUDITOR = #billInfo.cancelAuditor#,
+		CANCEL_REASON
+		= #billInfo.cancelReason#
+		where
+		 bill_id = #billInfo.billId#
+		
+	</update>
+    <!-- <update id="updateRedBill" parameterClass="java.util.Map">
+		update vms_bill_info
+		biN
+		set DATASTATUS = #billInfo.dataStatus#
+		where exists
+		(
+		select 1
+		from
+		(select * from vms_bill_info bii) biO
+		where biN.ORI_BILL_CODE = biO.BILL_CODE
+		and
+		biN.ORI_BILL_NO = biO.BILL_NO
+		and biO.bill_id = #billInfo.billId#
+		)
+	</update> -->
+   <!-- 
+      cheng 0907
+                     新增   审核通过更新状态
+    -->
+    <update id="updateElectronicesBill" parameterClass="java.util.Map">
+		update VMS_BILL_INFO set
+		BILL_CODE = #billInfo.billCode#,
+		BILL_NO = #billInfo.billNo#,
+		BILL_DATE
+		= #billInfo.billDate#,
+		CUSTOMER_NAME = #billInfo.customerName#,
+		CUSTOMER_TAXNO = #billInfo.customerTaxno#,
+		AMT_SUM = #billInfo.amtSum#,
+		TAX_AMT_SUM = #billInfo.taxAmtSum#,
+		SUM_AMT = #billInfo.sumAmt#,
+		NAME =
+		#billInfo.name#,
+		TAXNO = #billInfo.taxno#,
+		ADDRESSANDPHONE =
+		#billInfo.addressandphone#,
+		BANKANDACCOUNT = #billInfo.bankandaccount#,
+		INSTCODE = #billInfo.instCode#,
+		CANCEL_INITIATOR =
+		#billInfo.cancelInitiator#,
+		CANCEL_AUDITOR = #billInfo.cancelAuditor#,
+		ORI_BILL_CODE = #billInfo.oriBillCode#,
+		ORI_BILL_NO =
+		#billInfo.oriBillNo#,
+		DATASTATUS = #billInfo.dataStatus#,
+		OPERATESTATUS
+		= #billInfo.operateStatus#,
+		BALANCE = #billInfo.balance#,
+		CANCEL_REASON
+		= #billInfo.cancelReason#,
+		NOTICE_NO = #billInfo.noticeNo#
+		where
+		BILL_ID
+		= #billInfo.billId#
+	</update>
+
+   <!--findBillByBillIdOrFaPiaoType  -->
+   
+   <select id="findBillByBillIdOrFaPiaoType" parameterClass="java.util.Map"
+		resultClass="com.cjit.vms.trans.model.createBill.BillInfo">
+		select 
+		CANCEL_REASON as cancelReason
+		from
+		VMS_BILL_INFO where 1=1
+		<dynamic>
+			  
+			<isNotEmpty prepend="and" property="billId">
+				BILL_ID=#billId#
+			</isNotEmpty>
+			
+			  <isNotEmpty prepend="and" property="fapiaoType">
+				 FAPIAO_TYPE=#fapiaoType#
+			 </isNotEmpty>
+		</dynamic>
+
 	</select>
+   
+   
+
 </sqlMap>

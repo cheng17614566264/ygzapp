@@ -63,17 +63,17 @@
 					billId += "," + chkBoexes[i].value;
 				}
 			}
-			if (result == 17) {
+			if (result == 307) {
 				if (!confirm("确定将选中票据进行审核处理？")) {
 					return false;
 				}
 				submitAction(document.forms[0],
-						"redReceiptApprove.action?billId=" + billId
+						"redElectronicsReceiptApprove.action?billId=" + billId
 								+ "&result=" + result);
 				document.forms[0].action = "listElectronicsRedInvoiceAudit.action";
 			} else {
 
-				OpenModalWindowSubmit("toRedReceiptRefuse.action?billId="
+				OpenModalWindowSubmit("toElectronicsRedReceiptRefuse.action?billId="
 						+ billId + "&result=" + result, 500, 250, true);
 				//document.forms[0].action = "listElectronicsRedInvoiceAudit.action"; 
 				//submitAction(document.forms[0], "toRedReceiptRefuse.action?billId="+billId +"&result="+result);
@@ -257,10 +257,10 @@
 					</div>
 					<table id="tbl_tools" width="100%" border="0">
 						<tr>
-							<td align="left"><a href="#" onclick="cancel(17)"> <img
+							<td align="left"><a href="#" onclick="cancel(307)"> <img
 									src="<c:out value="${bopTheme}"/>/themes/images/icons/icon1017.png" />
 									审核通过
-							</a> <a href="#" onclick="cancel(1)"> <img
+							</a> <a href="#" onclick="cancel(304)"> <img
 									src="<c:out value="${bopTheme}"/>/themes/images/icons/icon1018.png" />
 									审核打回
 							</a> <a href="#" onclick="exportExcel()"> <img

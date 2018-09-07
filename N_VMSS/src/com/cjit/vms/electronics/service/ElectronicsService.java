@@ -148,6 +148,15 @@ public interface ElectronicsService {
 	 */
 	public void updateElectronicsTransRedStatusOfNotMake(Map map);
 	//end 2018-09-06
+    
+	/**
+	 * 新增
+	 * 日期：2018-09-07
+	 * 作者：cheng
+	 * 说明：查看驳回原因
+	 */
+	public com.cjit.vms.trans.model.createBill.BillInfo findBillInfo(
+			String billId, String fapiaoType);
 
 
 }

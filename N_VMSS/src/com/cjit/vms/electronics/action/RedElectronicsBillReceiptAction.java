@@ -260,15 +260,26 @@ public class RedElectronicsBillReceiptAction extends DataDealAction {
 				}
 			} else {
 				try {
-					List<BillInfo> billList = null; 
+					
+					
+				/*	List<BillInfo> billList = null; 
 					   billList = redElectronicsBillService.findBillInfo(billidArray); 
 					   if (billList == null) { 
 					   request.setAttribute("message", "数据错误"); 
 					   return; 
-					   } 
-					   for(int i = 0 ; i < billList.size() ; i++) { 
-					   billList.get(i).setDataStatus("303"); //电票红冲后 
-					   redElectronicsBillService.updateRedBill(billList.get(i)); 
+					   } */
+					
+					   for(int i = 0 ; i < billidArray.length ; i++) { 
+						     BillInfo bill = null;
+							 bill = redElectronicsBillService.findElectronicsBillInfo(billidArray[i]);
+							 
+							 if (bill == null) {
+								request.setAttribute("message", "数据错误");
+								return;
+							 }
+							 
+					          bill.setDataStatus("303"); //电票红冲后 
+					         redElectronicsBillService.updateRedBill(bill); 
 					   } 
 					this.message = java.net.URLEncoder.encode(
 							validateResult.toString(), "UTF-8");
@@ -282,8 +293,8 @@ public class RedElectronicsBillReceiptAction extends DataDealAction {
 	}
 	
 	/** 
-	   * 发票红冲 
-	   * cheng 0906 引入发票红冲 
+	   * 发票红冲    暂时不用
+	   * cheng 0906 引入发票红冲  
 	   * @return 
 	   */ 
 	   public String redReceiptReleaseTrans() { 
@@ -848,6 +859,36 @@ public class RedElectronicsBillReceiptAction extends DataDealAction {
 		}
 		return bodyFormat;
 	}
+	
+	/**
+	 * cheng 0907
+	 * 审核打回原因
+	 * 
+	 * @return
+	 */
+	public String billElectronicsCancelReason_shdh() {
+		try {
+			String billId = request.getParameter("billId");
+			System.err.println("billId:"+billId);
+			String fapiaoType = request.getParameter("fapiaoType");
+			System.err.println("fapiaoType:"+fapiaoType);
+
+			
+			com.cjit.vms.trans.model.createBill.BillInfo billInfo = electronicsService.findBillInfo(billId,fapiaoType);
+			
+			request.setAttribute("transInfo", billInfo.getCancelReason());
+			return SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return ERROR;
+	}
+	
+	
+	
+	
+	
 
 	public RedElectronicsBillService getRedElectronicsBillService() {
 		return redElectronicsBillService;

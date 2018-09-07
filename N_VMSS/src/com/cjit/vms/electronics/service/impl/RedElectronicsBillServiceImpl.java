@@ -225,9 +225,25 @@ public class RedElectronicsBillServiceImpl extends GenericServiceImpl implements
 	public void updateRedBill(BillInfo billInfo) {  
 		Map param = new HashMap();  
 		param.put("billInfo", billInfo);  
-		this.save("updateRedBill", param);  
+		this.save("updateElectronicesRedBill", param);  
 	 }
-	
+	/**
+	 * 电子发票红冲查询票据
+	 * cheng 0907 新增
+	 * @return
+	 */
+	public BillInfo findElectronicsBillInfo(String billId) {
+		BillInfo billInfo = new BillInfo();
+		billInfo.setBillId(billId);
+		Map map = new HashMap();
+		map.put("billInfo", billInfo);
+		List list = find("findElectronicsBillInfoByBillId", map);
+		if (list != null && list.size() == 1) {
+			return (BillInfo) list.get(0);
+		} else {
+			return null;
+		}
+	}
 	
 	
 	

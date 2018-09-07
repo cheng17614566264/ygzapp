@@ -412,7 +412,7 @@
 										   test='dataStatus=="303"'>审核中</s:elseif> <s:elseif 
 										   test='dataStatus=="305"'>合并红冲开票中</s:elseif> <s:elseif 
 										   test='dataStatus=="306"'>单笔红冲开票中</s:elseif> <s:elseif 
-										   test='dataStatus=="301"'>已开具蓝票</s:elseif> <s:else>未知状态</s:else> 
+										   test='dataStatus=="301"'>已开具蓝票</s:elseif> 
 									</td> 
 									<!--操作-->
 									<td align="center"><a
@@ -420,7 +420,19 @@
 											<img
 											src="<c:out value="${bopTheme}"/>/themes/images/icons/icon1014.png"
 											title="查看交易" style="border-width: 0px;" />
-									</a> <s:if test="fapiaoType==0">
+									</a> 
+									
+									<s:if test='dataStatus=="304"'>
+												<a href="javascript:void(0);"     
+													onClick="OpenModalWindowSubmit('billElectronicsCancelReason_shdh.action?billId=<s:property value='billId'/>&fapiaoType=<s:property value='fapiaoType' />',500,300,true)">
+												<img
+												src="<c:out value="${bopTheme}"/>/themes/images/icons/info.png"
+												title="查看驳回原因" style="border-width: 0px;" />
+												</a>
+										</s:if>
+									
+									
+									<s:if test="fapiaoType==0">
 											<a
 												href="billElectronicsInfoAndTransList.action?fromFlag=menu&cherNum=<s:property value='cherNum'/>">
 												<img

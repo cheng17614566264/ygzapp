@@ -9,12 +9,6 @@ public class Utils {
 	public static final String dfxj1003 = "DFXJ1003"; // 发票库存信息
 	public static final String dfxj1004 = "DFXJ1004"; // 发票查询
 	public static final String dfxj1005 = "DFXJ1005"; // 发票下载地址查询
-	/**
-	 * 新增
-	 * 日期：2018-09-07
-	 * 作者：刘俊杰
-	 */
-	public static final String dfxj1008 = "DFXJ1008"; //发票快速红冲接口
 	
 	public static final String interfaceLau_json = "json";//语言-json
 	public static final String interfaceLau_xml = "xml";//语言-xml
@@ -28,7 +22,6 @@ public class Utils {
 	
 	public static final String requestUrlMethod_xml = "/services/DZFPService";//xml的webservice请求方法名
 	public static final String requestUrlMethod_json = "/services/DZFPJsonService";//json的webservice请求方法名
-	
 	
 	/**
 	 * 获取指定格式时间(yyyy-MM-dd)
