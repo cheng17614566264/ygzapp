@@ -9,7 +9,13 @@
 		作者：刘俊杰
 	-->
 	<typeAlias alias="TransInfoTemp" type="com.cjit.vms.trans.model.TransInfoTemp" />
-	<!-- end 2018-08-30 -->
+	<!-- end 2018-09-06 -->
+	<!--新增
+		日期：2018-09-07
+		作者：刘俊杰
+	-->
+	<typeAlias alias="redReceiptApplyInfo" type="com.cjit.vms.trans.model.RedReceiptApplyInfo" />
+	<!-- end 2018-09-07 -->
 
 	<!--电子发票展示 -->
 	<select id="findElectronicsList" parameterClass="java.util.Map"
@@ -2624,6 +2630,137 @@
    $billInfo.orderBy$ 
    </isNotEmpty> 
    </dynamic> 
-       
-   </select> 
+   </select>
+   
+   <!-- 程 20180829   修改发票开具是查询的状态值 为22   20180830改为26 
+   		新增
+   		日期：2018-09-07
+   		作者：刘俊杰
+   		功能：准备电子红票开具页面数据，查询电子发票红票申请通过的数据
+   -->
+	<select id="findElectronicsBillInfoIssueList" parameterClass="java.util.Map"
+		resultClass="redReceiptApplyInfo">
+		SELECT * FROM
+		(SELECT (@rowNum:=@rowNum+1) AS rowIndex,N.* FROM (
+		select
+		c.TTMPRCNO as ttmprcno,
+		c.CHERNUM as insureId,
+		A.TRANS_ID as
+		transId,
+		b.BILL_ID as billId,
+		b.ORI_BILL_CODE as oriBillCode,
+		b.ORI_BILL_NO as oriBillNo,
+		d.CUSTOMER_CNAME as customerName,
+		b.AMT_SUM
+		as amtSum,
+		b.TAX_AMT_SUM as taxAmtSum,
+		b.SUM_AMT as sumAmt,
+		b.ISSUE_TYPE
+		as issueType,
+		b.FAPIAO_TYPE as fapiaoType,
+		b.DATASTATUS as datastatus,
+		c.HISSDTE as hissDte,
+		b.DSOURCE as dSource
+		from vms_trans_bill a
+		left
+		join vms_bill_info b on a.bill_id = b.bill_id
+		left join vms_trans_info
+		c on a.trans_id = c.trans_id
+		left join vms_customer_info d on
+		c.CUSTOMER_ID=d.CUSTOMER_ID
+		where b.DATASTATUS=#dataStatus# <!-- 0903修为动态获取 -->
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.ttmprcno">
+			c.TTMPRCNO=#redReceiptApplyInfo.ttmprcno#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.insureId">
+			c.CHERNUM =#redReceiptApplyInfo.insureId#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.customerName">
+			d.CUSTOMER_CNAME =#redReceiptApplyInfo.customerName#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.oriBillCode">
+			b.ORI_BILL_CODE =#redReceiptApplyInfo.oriBillCode#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.oriBillNo">
+			b.ORI_BILL_NO =#redReceiptApplyInfo.oriBillNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.fapiaoType">
+			b.FAPIAO_TYPE =#redReceiptApplyInfo.fapiaoType#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.issueType">
+			b.ISSUE_TYPE =#redReceiptApplyInfo.issueType#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.dSource">
+			b.DSOURCE =#redReceiptApplyInfo.dSource#
+		</isNotEmpty>
+		<dynamic>
+			<isNotEmpty prepend="and" property="redReceiptApplyInfo.billBeginDate"> 
+				<!-- <![CDATA[ Trunc(to_date(b.BILL_DATE,'yyyy-mm-dd hh24:mi:ss')) >= Trunc(to_date(#redReceiptApplyInfo.billBeginDate#,'yyyy-mm-dd hh24:mi:ss')) ]]> -->
+			    <![CDATA[ cast((str_to_date(b.BILL_DATE,'%Y-%m-%d %H:%i:%s')) as date) >= cast((str_to_date(#redReceiptApplyInfo.billBeginDate#,'%Y-%m-%d %H:%i:%s'))as date) ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="redReceiptApplyInfo.billEndDate"> 
+				<!-- <![CDATA[ Trunc(to_date(b.BILL_DATE,'yyyy-mm-dd hh24:mi:ss')) <= Trunc(to_date(#redReceiptApplyInfo.billEndDate#,'yyyy-mm-dd hh24:mi:ss')) ]]> -->
+			    <![CDATA[ cast((str_to_date(b.BILL_DATE,'%Y-%m-%d %H:%i:%s'))as date) <= cast((str_to_date(#redReceiptApplyInfo.billEndDate#,'%Y-%m-%d %H:%i:%s'))as date) ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="redReceiptApplyInfo.hissDteBegin"> 
+				<!-- <![CDATA[ Trunc(to_date(b.HISSDTE,'yyyy-mm-dd hh24:mi:ss')) >= Trunc(to_date(#redReceiptApplyInfo.hissDteBegin#,'yyyy-mm-dd hh24:mi:ss')) ]]> -->
+			    <![CDATA[ cast((str_to_date(b.HISSDTE,'%Y-%m-%d %H:%i:%s')) as date)>= cast((str_to_date(#redReceiptApplyInfo.hissDteBegin#,'%Y-%m-%d %H:%i:%s'))as date) ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="redReceiptApplyInfo.hissDteEnd"> 
+				<!-- <![CDATA[ Trunc(to_date(b.HISSDTE,'yyyy-mm-dd hh24:mi:ss')) <= Trunc(to_date(#redReceiptApplyInfo.hissDteEnd#,'yyyy-mm-dd hh24:mi:ss')) ]]> -->
+			     <![CDATA[ cast((str_to_date(b.HISSDTE,'%Y-%m-%d %H:%i:%s'))as date) <= cast((str_to_date(#redReceiptApplyInfo.hissDteEnd#,'%Y-%m-%d %H:%i:%s'))as date) ]]>
+			</isNotEmpty>
+		</dynamic>
+		
+		
+		<isNotEmpty prepend="and" property="endIndex"> 
+
+				<![CDATA[ ROWNUM <= #endIndex#]]>
+		</isNotEmpty> 
+		order by ORI_BILL_NO desc
+		) N
+		) T WHERE 1=1
+		<isNotEmpty prepend="and" property="startIndex"> 
+				<![CDATA[ T.rowIndex > #startIndex#  ]]>
+		</isNotEmpty>
+	</select>
+	<select id="findElectronicsBillInfoIssueListCount" parameterClass="java.util.Map"
+		resultClass="long">
+		select
+		count(1)
+		from vms_trans_bill a
+		left join vms_bill_info b on
+		a.bill_id = b.bill_id
+		left join vms_trans_info c on a.trans_id =
+		c.trans_id
+		left join vms_customer_info d on c.CUSTOMER_ID=d.CUSTOMER_ID
+		where b.DATASTATUS= #dataStatus# <!-- 修改为动态获取 0905 -->
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.ttmprcno">
+			c.TTMPRCNO=#redReceiptApplyInfo.ttmprcno#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.insureId">
+			c.CHERNUM =#redReceiptApplyInfo.insureId#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.customerName">
+			d.CUSTOMER_CNAME =#redReceiptApplyInfo.customerName#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.oriBillCode">
+			b.ORI_BILL_CODE =#redReceiptApplyInfo.oriBillCode#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.oriBillNo">
+			b.ORI_BILL_NO =#redReceiptApplyInfo.oriBillNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.fapiaoType">
+			b.FAPIAO_TYPE =#redReceiptApplyInfo.fapiaoType#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="redReceiptApplyInfo.issueType">
+			b.ISSUE_TYPE =#redReceiptApplyInfo.issueType#
+		</isNotEmpty>
+	</select>
 </sqlMap>

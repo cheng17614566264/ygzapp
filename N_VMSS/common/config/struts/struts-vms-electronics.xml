@@ -70,7 +70,24 @@
 			class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">
 			<result name="success">WEB-INF/vms/taxDisk/billElectronicsInvoiceAudit.jsp</result>
 		</action>
-	
+		
+		
+		<!--新增
+			日期：2018-09-07
+			作者：刘俊杰
+		-->
+		<!-- 【红冲开具】页面 -->
+		<!-- 页面数据查询 -->
+		<action name="listElectronicsRedReceiptIssue" method="listElectronicsRedReceiptIssue"
+			class="redElectronicsReceiptIssueAction">
+			<result name="success">WEB-INF/vms/taxDisk/billElectroniceRedReceiptIssue.jsp</result>
+		</action>
+		<!-- 红冲开具页面excel打印 -->
+		<action name="redElectronicsReceiptBillIssueToExcel" method="redElectronicsReceiptBillIssueToExcel"
+			class="redElectronicsReceiptIssueAction">
+		</action>
+		
+		
 	<!-- 【红冲审核】页面[审核通过],[审核拒绝]事件 -->
 	<!-- <action name="redElectronicsReceiptApprove" method="redElectronicsReceiptApprove"
 		class="com.cjit.vms.electronics.action.RedElectronicsInvoiceAudit">

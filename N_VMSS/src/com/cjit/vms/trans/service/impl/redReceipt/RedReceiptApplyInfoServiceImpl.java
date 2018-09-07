@@ -406,25 +406,25 @@ public class RedReceiptApplyInfoServiceImpl extends GenericServiceImpl
 	}
 	// cheng 0905 新增 查询票据 红冲开具 ，红冲打印 
    public List findRedReceiptList(RedReceiptApplyInfo redReceiptApplyInfo, 
-   PaginationList paginationList,String dataStatus) { 
-   Map map = new HashMap(); 
-   List instIds = redReceiptApplyInfo.getLstAuthInstId(); 
-   List lstTmp = new ArrayList(); 
-   for (int i = 0; i < instIds.size(); i++) { 
-   Organization org = (Organization) instIds.get(i); 
-   lstTmp.add(org.getId()); 
-   } 
-   map.put("auth_inst_ids", lstTmp); 
-   //String dataStatus = redReceiptApplyInfo.getDatastatus(); 
-   System.err.println("dataStatus: "+dataStatus); 
-   if (dataStatus != null && "3,7".equals(dataStatus)) { 
-   redReceiptApplyInfo.setDatastatus(null); 
-   map.put("issueRedStatuses", dataStatus.split(",")); 
-   } 
-   map.put("redReceiptApplyInfo", redReceiptApplyInfo); 
-   map.put("dataStatus", dataStatus); //新增 0903 cheng 
-   //findbillRedPrintList 
-   return find("findBillInfoList", map, paginationList);  
+	   PaginationList paginationList,String dataStatus) { 
+	   Map map = new HashMap(); 
+	   List instIds = redReceiptApplyInfo.getLstAuthInstId(); 
+	   List lstTmp = new ArrayList(); 
+	   for (int i = 0; i < instIds.size(); i++) { 
+		   Organization org = (Organization) instIds.get(i); 
+		   lstTmp.add(org.getId()); 
+	   } 
+	   map.put("auth_inst_ids", lstTmp); 
+	   //String dataStatus = redReceiptApplyInfo.getDatastatus(); 
+	   System.err.println("dataStatus: "+dataStatus); 
+	   if (dataStatus != null && "3,7".equals(dataStatus)) { 
+		   redReceiptApplyInfo.setDatastatus(null); 
+		   map.put("issueRedStatuses", dataStatus.split(",")); 
+	   } 
+	   map.put("redReceiptApplyInfo", redReceiptApplyInfo); 
+	   map.put("dataStatus", dataStatus); //新增 0903 cheng 
+	   //findbillRedPrintList 
+	   return find("findBillInfoList", map, paginationList);  
    } 
 
 }

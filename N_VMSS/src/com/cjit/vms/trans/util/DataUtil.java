@@ -549,7 +549,7 @@ public class DataUtil {
 				return ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_205_CH;
 			} else if(ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_206.equals(datastatus)) {
 				return ElectroniscStatusUtil.ELECTRONICS_TRANS_STATUS_206_CH;
-			} 
+			}
 		} else if ("BILL".equalsIgnoreCase(bussFlag)) {
 			if (BILL_STATUS_1.equals(datastatus)) {
 				return BILL_STATUS_1_CH;
@@ -593,6 +593,20 @@ public class DataUtil {
 				return BILL_STATUS_21_CH;
 			} else if (BILL_STATUS_99.equals(datastatus)) {
 				return BILL_STATUS_99_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_301.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_301_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_302.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_302_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_303.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_303_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_304.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_304_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_305.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_305_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_306.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_306_CH;
+			} else if(ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_307.equals(datastatus)) {
+				return ElectroniscStatusUtil.ELECTRONICS_REDBILL_STATUS_307_CH;
 			}
 		} else if ("INPUT_INVOICE".equalsIgnoreCase(bussFlag)) {
 			if (INPUT_INVOICE_STATUS_1.equals(datastatus)) {

@@ -52,5 +52,20 @@
 		<property name="redElectronicsBillService" ref="redElectronicsBillService" />
 		<property name="logManagerService" ref="logManagerService"></property> <!-- 新增日志  20180904 cheng-->
 	</bean>
+	<!--新增
+		日期：2018-09-07
+		作者：刘俊杰
+		说明：电子红票开具页面
+	-->
+	<bean id="redElectronicsReceiptIssueAction" 
+		class="com.cjit.vms.electronics.action.RedElectronicsReceiptIssueAction" 
+		scope="prototype">
+		<property name="redElectronicsIssueService" ref="redElectronicsIssueService" />
+	</bean>
+	<bean id="redElectronicsIssueService" 
+		class="com.cjit.vms.electronics.service.impl.RedElectronicsIssueServiceImpl"
+		parent="genericService">
+	</bean>
+	
 
 </beans>

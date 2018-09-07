@@ -32,6 +32,8 @@ public class ElectroniscStatusUtil {
 	public static final String ELECTRONICS_REDBILL_STATUS_305_CH = "合并红冲开票中";
 	public static final String ELECTRONICS_REDBILL_STATUS_306 = "306";
 	public static final String ELECTRONICS_REDBILL_STATUS_306_CH = "单笔红冲开票中";
+	public static final String ELECTRONICS_REDBILL_STATUS_307 = "307";
+	public static final String ELECTRONICS_REDBILL_STATUS_307_CH = "红冲审核通过";
 
 	public static String getElctronicsDataStatusCH(
 			String ElectronicsDataStatus, String bussFlag) {
@@ -75,6 +77,9 @@ public class ElectroniscStatusUtil {
 			} else if (ELECTRONICS_REDBILL_STATUS_306
 					.equals(ElectronicsDataStatus)) {
 				return ELECTRONICS_REDBILL_STATUS_306_CH;
+			} else if (ELECTRONICS_REDBILL_STATUS_307
+					.equals(ElectronicsDataStatus)) {
+				return ELECTRONICS_REDBILL_STATUS_307_CH;
 			}
 		}
 		return "";
